@@ -19,4 +19,5 @@ Hollar-Front/*.key
 Hollar-Front/*.mobileprovision
 Hollar-Front/*.orig.*
 Hollar-Front/web-build/
+Hollar-Front/.env
 .DS_Store

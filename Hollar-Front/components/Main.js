@@ -3,12 +3,20 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { changeCount } from "../store/count";
+import io from "socket.io-client"
+import IP from "./env"
+import Router from "./Route/Route"
+
 
 class Main extends React.Component {
   constructor() {
     super()
     this.decrementCount = this.decrementCount.bind(this)
     this.incrementCount = this.incrementCount.bind(this)
+  }
+  componentDidMount() {
+    const socket = io(`${IP}`)
+    
   }
   decrementCount() {
     let { count, actions } = this.props;
@@ -21,6 +29,8 @@ class Main extends React.Component {
     actions(count);
   }
   render() {
+
+    console.log('test props')
     const { count } = this.props;
     return (
       <View style={styles.container}>
@@ -41,6 +51,7 @@ class Main extends React.Component {
             onPress={() => this.decrementCount()}
           />
         </View>
+        <Router />
       </View>
     );
   }
