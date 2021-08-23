@@ -1,29 +1,170 @@
-'use strict'
+"use strict";
 
-const {db, models: {User} } = require('../server/db')
+const {
+  db,
+  models: { User, Event, Message },
+} = require("../server/db");
 
 /**
  * seed - this function clears the database, updates tables to
  *      match the models, and populates the database.
  */
 async function seed() {
-  await db.sync({ force: true }) // clears db and matches models to tables
-  console.log('db synced!')
+  await db.sync({ force: true }); // clears db and matches models to tables
+  console.log("db synced!");
 
   // Creating Users
   const users = await Promise.all([
-    User.create({ username: 'cody', password: '123' }),
-    User.create({ username: 'murphy', password: '123' }),
-  ])
+    User.create({
+      username: "cody",
+      password: "123",
+      firstName: "Cody",
+      lastName: "Pug",
+      email: "codyPug@pug.com",
+      phoneNumber: "123-456-7891",
+      zipCode: 12341,
+      city: "pugville",
+      state: "puppy",
+    }),
+    User.create({
+      username: "murphy",
+      password: "123",
+      firstName: "Murphy",
+      lastName: "Golden",
+      email: "murphyGold@gold.com",
+      phoneNumber: "123-456-7891",
+      zipCode: 12341,
+      city: "goldentown",
+      state: "doge",
+    }),
 
-  console.log(`seeded ${users.length} users`)
-  console.log(`seeded successfully`)
+    User.create({
+      username: "drew",
+      password: "123",
+      firstName: "drew",
+      lastName: "yeet",
+      email: "drew@pug.com",
+      phoneNumber: "123-456-7891",
+      zipCode: 12341,
+      city: "pugville",
+      state: "puppy",
+    }),
+    User.create({
+      username: "Ray",
+      password: "123",
+      firstName: "Ray",
+      lastName: "Golden",
+      email: "ray@gold.com",
+      phoneNumber: "123-456-7891",
+      zipCode: 12341,
+      city: "goldentown",
+      state: "doge",
+    }),
+
+    User.create({
+      username: "benLee",
+      password: "123",
+      firstName: "Ben",
+      lastName: "Lee",
+      email: "ben@ben.com",
+      phoneNumber: "456-123-7891",
+      zipCode: 54321,
+      city: "Richmond",
+      state: "Virginia",
+    }),
+    User.create({
+      username: "jai",
+      password: "123",
+      firstName: "Jai",
+      lastName: "Tejpal",
+      email: "jai@jai.com",
+      phoneNumber: "123-456-7891",
+      zipCode: 12341,
+      city: "Miami",
+      state: "Florida",
+    }),
+  ]);
+
+  //Creating Events
+  const events = await Promise.all([
+    Event.create({
+      name: "frisbee golf",
+      location: "park",
+      maxAttendees: 5,
+      description: "Let's play frisbee golf",
+      eventObjectType: "event",
+    }),
+    Event.create({
+      name: "tennis",
+      maxAttendees: "2",
+      location: "123 main st",
+      description: "play a game with me",
+      eventObjectType: "group",
+    }),
+    Event.create({
+      name: "actual golf",
+      maxAttendees: "25",
+      location: "the beach",
+      description: "windmills are not allowed",
+      eventObjectType: "group",
+    }),
+    Event.create({
+      name: "hockey",
+      location: "rink",
+      maxAttendees: 10,
+      description: "Let's play hockey",
+      eventObjectType: "event",
+    }),
+  ]);
+  // Create Message
+  const messages = await Promise.all([
+    Message.create({
+      userId: 1,
+      eventId: 1,
+      messageContent: "Hello world",
+    }),
+    Message.create({
+      userId: 2,
+      eventId: 1,
+      messageContent: "H",
+    }),
+    Message.create({
+      userId: 1,
+      eventId: 1,
+      messageContent: "Hello world",
+    }),
+    Message.create({
+      userId: 5,
+      eventId: 3,
+      messageContent: "Anyone free?",
+    }),
+    Message.create({
+      userId: 4,
+      eventId: 3,
+      messageContent: "What's up?",
+    }),
+    Message.create({
+      userId: 3,
+      eventId: 3,
+      messageContent: "Let's do it",
+    }),
+  ]);
+
+  console.log(`seeded ${users.length} users`);
+  console.log(`seeded ${events.length} events`);
+  console.log(`seeded ${messages.length} messages`);
+  console.log(`seeded successfully`);
+
   return {
     users: {
       cody: users[0],
-      murphy: users[1]
-    }
-  }
+      murphy: users[1],
+    },
+    events: {
+      frisbee: events[0],
+      tennis: events[1],
+    },
+  };
 }
 
 /*
@@ -32,16 +173,16 @@ async function seed() {
  The `seed` function is concerned only with modifying the database.
 */
 async function runSeed() {
-  console.log('seeding...')
+  console.log("seeding...");
   try {
-    await seed()
+    await seed();
   } catch (err) {
-    console.error(err)
-    process.exitCode = 1
+    console.error(err);
+    process.exitCode = 1;
   } finally {
-    console.log('closing db connection')
-    await db.close()
-    console.log('db connection closed')
+    console.log("closing db connection");
+    await db.close();
+    console.log("db connection closed");
   }
 }
 
@@ -51,8 +192,8 @@ async function runSeed() {
   any errors that might occur inside of `seed`.
 */
 if (module === require.main) {
-  runSeed()
+  runSeed();
 }
 
 // we export the seed function for testing purposes (see `./seed.spec.js`)
-module.exports = seed
+module.exports = seed;
