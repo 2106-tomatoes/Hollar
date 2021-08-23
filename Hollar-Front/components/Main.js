@@ -13,27 +13,19 @@ class Main extends React.Component {
     super()
     this.state={
       socket:{},
-      message:''
     }
- 
   }
   componentDidMount() {
     const socket = io(`${IP}`)
     this.setState({
       socket:socket
     })
-  
-
   }
   
 
   render() {
-
-      
-    return ( 
-    
+    return (     
       <Router socket={this.state.socket}/>
-  
     )
   }
 }

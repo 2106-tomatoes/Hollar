@@ -18,7 +18,7 @@ export default class Routes extends React.Component {
 
     const socket = this.props.socket
     return (
-      <NativeRouter>
+      <NativeRouter> 
         <View style={styles.container}>
           <Switch>
             <Route exact path="/" component={LoginScreen}  />

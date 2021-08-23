@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native
 import { connect } from 'react-redux';
 import {io} from "socket.io-client"
 import IP from "../env"
-import {getCurrentChat} from "../../store/chatroom"
+import {getChatThunk} from "../../store/chatroom"
 
 
 const Chatroom =(props)=>{
@@ -16,13 +16,13 @@ const Chatroom =(props)=>{
         socket.on('recieved', function(){
             console.log('server got the message!')})
     }, []);
-    console.log('chatroom props>', props)
+   
     
     return(
 
         <View style={styles.container}>
         <Text>Chatroom</Text>
-   
+        
         <Button title="Back Home" onPress={()=> history.push("/home") } />
            
         </View>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   
   const mapDispatchToProps = dispatch => {
     return {
-        getChat: () => dispatch(getCurrentChat())
+        getChat: () => dispatch(getChatThunk())
      }
   };
   

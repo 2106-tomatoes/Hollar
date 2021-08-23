@@ -149,6 +149,21 @@ async function seed() {
       messageContent: "Let's do it",
     }),
   ]);
+  
+  //Set Attendees
+  const user1 = await User.findByPk(1)
+  const user2 = await User.findByPk(2)
+  const user3 = await User.findByPk(3)
+  const user4 = await User.findByPk(4)
+  const user5 = await User.findByPk(5)
+  const user6 = await User.findByPk(6)
+  
+  await user1.addEvents([2,3])
+  await user2.addEvents([1,2])
+  await user3.addEvents([3,4])
+  await user4.addEvents([2,4])
+  await user5.addEvents([2,3])
+  await user6.addEvents([1,4])
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded ${events.length} events`);
