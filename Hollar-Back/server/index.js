@@ -21,6 +21,9 @@ const init = async () => {
       //   const time = (new Date()).toLocaleString()
       //   socket.emit('time-change', time)
       // }, 1000)
+      socket.on('disconnect', function () {
+        console.log('user disconnected: ', socket.id);
+      });
      });
   } catch (ex) {
     console.log(ex)
