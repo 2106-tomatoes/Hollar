@@ -1,8 +1,15 @@
-import { createStore, combineReducers } from 'redux';
-import countReducer from './count';
-const rootReducer = combineReducers({
-  count: countReducer
-});
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import countReducer from './count'
+import chatroomReducer from './chatroom'
 
-const store = createStore(rootReducer);
+const rootReducer = combineReducers({
+  count: countReducer,
+  chatroom: chatroomReducer,
+});
+const middleware = composeWithDevTools(
+  applyMiddleware(thunkMiddleware)
+)
+const store = createStore(rootReducer, middleware);
 export default store;

@@ -3,12 +3,12 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { connect } from 'react-redux';
 
 
-const Test =(props)=>{
+const Login =(props)=>{
     const history = props.history
     return(
         <View style={styles.container}>
-            <Text>Test Page</Text>
-            <Button title="Test Home" onPress={()=> history.push("/") } />
+            <Text>Login Page</Text>
+            <Button title="Go To Channels" onPress={()=> history.push("/home") } />
         </View>
     )
 
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default Test
+export default Login

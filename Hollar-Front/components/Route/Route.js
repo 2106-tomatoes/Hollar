@@ -3,17 +3,28 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { NativeRouter, Switch, Route } from "react-router-native";
 
+import LoginScreen from "../Screens/LoginScreen";
 import Home from "../Screens/Home";
-import Test from "../Screens/Test";
+import Chatroom from "../Screens/Chatroom"
 
 export default class Routes extends React.Component {
+    constructor(props) {
+      super(props);
+
+    }
+
+
   render() {
+
+    const socket = this.props.socket
     return (
-      <NativeRouter>
+      <NativeRouter> 
         <View style={styles.container}>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/test" component={Test} />
+            <Route exact path="/" component={LoginScreen}  />
+            <Route exact path="/home" component={Home} />
+            {/* <Route exact path="/chatroom" component={Chatroom} /> */}
+            <Route exact path="/chatroom" render={()=><Chatroom socket={socket} />} />
           </Switch>
         </View>
       </NativeRouter>

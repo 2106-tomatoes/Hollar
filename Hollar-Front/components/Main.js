@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { changeCount } from "../store/count";
-import io from "socket.io-client"
+import {io} from "socket.io-client"
 import IP from "./env"
 import Router from "./Route/Route"
 
@@ -11,49 +11,22 @@ import Router from "./Route/Route"
 class Main extends React.Component {
   constructor() {
     super()
-    this.decrementCount = this.decrementCount.bind(this)
-    this.incrementCount = this.incrementCount.bind(this)
+    this.state={
+      socket:{},
+    }
   }
   componentDidMount() {
     const socket = io(`${IP}`)
-    
+    this.setState({
+      socket:socket
+    })
   }
-  decrementCount() {
-    let { count, actions } = this.props;
-    count--;
-    actions(count);
-  }
-  incrementCount() {
-    let { count, actions } = this.props;
-    count++;
-    actions(count);
-  }
-  render() {
+  
 
-    console.log('test props')
-    const { count } = this.props;
-    return (
-      <View style={styles.container}>
-        <View>
-          <Button
-            title="increment"
-            onPress={() => this.incrementCount()}
-          />
-        </View>
-        <View>
-          <Text>
-              {count}
-          </Text>
-        </View>
-        <View>
-          <Button
-            title="decrement"
-            onPress={() => this.decrementCount()}
-          />
-        </View>
-        <Router />
-      </View>
-    );
+  render() {
+    return (     
+      <Router socket={this.state.socket}/>
+    )
   }
 }
 
