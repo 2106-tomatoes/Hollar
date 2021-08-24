@@ -3,6 +3,7 @@ const socket = require('socket.io');
 const PORT = process.env.PORT || 8080
 const app = require('./app')
 const seed = require('../script/seed');
+const axios = require('axios').default
 
 const init = async () => {
   try {
@@ -21,9 +22,9 @@ const init = async () => {
       socket.on('disconnect', function () {
         console.log('user disconnected: ', socket.id);
       });
-      socket.on('testSocket', function(){
-        console.log('i can read this emit')
-        socket.emit('recieved')
+      socket.on('chatMessage', (message) => {
+        console.log('message has been sent', message)
+        socket.emit('getMessage', message)
        
       })
 

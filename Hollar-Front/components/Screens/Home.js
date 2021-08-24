@@ -11,10 +11,10 @@ const Home =(props)=>{
     useEffect(()=>{
       props.getChatList(1);
   }, []);
-    
+
     return(
         <View style={styles.container}>
-          <TouchableHighlight onPress={()=>history.push("/chatroom")} underlayColor="white">
+          <TouchableHighlight onPress={()=>history.push("/chatroom/1")} underlayColor="white">
           <View style={styles.button}>
             <Text style={styles.buttonText}>A Chatroom Title</Text>
           </View>
