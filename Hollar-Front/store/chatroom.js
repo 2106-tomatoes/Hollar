@@ -1,10 +1,13 @@
 import axios from "axios";
 //import {LOCALHOST8080} from "../components/env";
 const LOCALHOST8080 = 'http://localhost:8080';
+const BEN_IP_ADDR = 'http://192.168.1.34:8080';
+
 //Actions
 const GET_CHAT = 'GET_CHAT';
 const SEND_CHAT = 'SEND_CHAT'
 const GET_CHAT_LIST = 'GET_CHAT_LIST';
+
 //Action creators
 const initialState = {
   messages: [],
@@ -35,9 +38,9 @@ export function getChat(messages) {
 export const getChatListThunk = (userId) => {
   return async (dispatch) => { 
     try {
-      console.log(`thunk time${userId}`);
+      console.log(`getChatListThunk, userId: ${userId}`);
       //console.log('localhost>', LOCALHOST8080)
-      const {data: chatList} = await axios.get(`${LOCALHOST8080}/api/events/${userId}`);
+      const {data: chatList} = await axios.get(`${LOCALHOST8080}/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
       dispatch(getChatList(chatList));
     } catch (e) {
       console.log(`e`, e);
@@ -48,7 +51,6 @@ export const getChatThunk = (eventId) => {
   
     return async (dispatch) => {
       try {
-        
         const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
        
         dispatch(getChat(response.data))

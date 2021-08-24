@@ -1,28 +1,63 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Button, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import {getChatListThunk} from '../../store/chatroom';
 
 
 const Home =(props)=>{
-    const history = props.history
-
+  const { history, eventList } = props;
     
-    useEffect(()=>{
-      props.getChatList(1);
+  useEffect(()=>{
+    props.getChatList(1);
   }, []);
 
-    return(
-        <View style={styles.container}>
-          <TouchableHighlight onPress={()=>history.push("/chatroom/1")} underlayColor="white">
+
+  if(eventList.length  === 0) {
+    return (
+      <View>
+        <Text>No messages</Text>
+      </View>
+    );
+  }
+
+  return(
+    // <View style={styles.container}>
+    //   <FlatList
+    //     data={[
+    //       {key: 'Devin'},
+    //       {key: 'Dan'},
+    //       {key: 'Dominic'},
+    //       {key: 'Jackson'},
+    //       {key: 'James'},
+    //       {key: 'Joel'},
+    //       {key: 'John'},
+    //       {key: 'Jillian'},
+    //       {key: 'Jimmy'},
+    //       {key: 'Julie'},
+    //     ]}
+    //     renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+    //   />
+    // </View>
+
+    <View style={styles.container}>
+      {eventList.map((event) => {
+        return (
+        <TouchableHighlight key={event.id} onPress={()=>history.push(`/chatroom/${event.id}`)} underlayColor="white">
           <View style={styles.button}>
-            <Text style={styles.buttonText}>A Chatroom Title</Text>
+            <Text style={styles.buttonText}>{event.name}</Text>
+            <Text style={styles.buttonText}>{event.maxAttendees}</Text>
+            <Text style={styles.buttonText}>{event.location}</Text>
+            <Text style={styles.buttonText}>{event.description}</Text>
           </View>
         </TouchableHighlight>
-        <Button title="Logout" onPress={()=> history.push("/") } />
-           
-        </View>
-    )
+        );
+      })}
+      
+    <Button title="Logout" onPress={()=> history.push("/") } />
+        
+    </View>
+    
+  );
 
 }
 const styles = StyleSheet.create({
@@ -36,8 +71,8 @@ const styles = StyleSheet.create({
 
   const mapStateToProps = state => {
     return {
-        messageList:state.chatList
-     }
+      eventList: state.chatroom.chatList
+    }
   }; 
   const mapDispatchToProps = dispatch => {
     return {
