@@ -25,8 +25,17 @@ router.get("/:id", async (req,res,next) => {
 
 router.post("/:id", async(req,res,next)=>{
     try{
-        console.log('req',req.body)
-        res.status(201).send(await Message.create(req.body))
+        const newMessage = await Message.create(req.body)
+        const sendMessage = await Message.findOne({
+          where: {
+            id: newMessage.id
+          },
+          include: {
+            model: User
+          }
+        })
+        console.log("send message", sendMessage)
+        res.status(201).send(sendMessage)
     }
     catch(err){
         console.log('this error is happening')

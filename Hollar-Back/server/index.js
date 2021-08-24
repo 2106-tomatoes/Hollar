@@ -3,7 +3,6 @@ const socket = require('socket.io');
 const PORT = process.env.PORT || 8080
 const app = require('./app')
 const seed = require('../script/seed');
-const axios = require('axios').default
 
 const init = async () => {
   try {

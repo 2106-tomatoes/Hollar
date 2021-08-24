@@ -50,7 +50,7 @@ export const getChatThunk = (eventId) => {
       try {
         
         const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
-        console.log('response', response.data)
+       
         dispatch(getChat(response.data))
       } catch (error) {
         console.log('e',error);
@@ -65,8 +65,8 @@ export const getChatThunk = (eventId) => {
       try {
         
         const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`,content)
-        console.log('response', response.data)
-        dispatch(getChat(response.data))
+        console.log("response from post", response.data)
+        dispatch(sendChat(response.data))
       } catch (error) {
         console.log('e',error);
       }
@@ -80,7 +80,9 @@ export default function chatroomReducer(state = initialState, action) {
        case GET_CHAT_LIST:
               return {...state, chatList: action.chatList}
         case SEND_CHAT:
-             return {...state, messages:action.info.messageContent}
+        //   console.log("action.info.messageContent", action.info.messageContent)
+        //   console.log("Return statement in reducer", {...state, messages: [...state.messages, action.info.messageContent]})
+             return {...state, messages: [...state.messages, action.info]}
         default:
             return state;
             

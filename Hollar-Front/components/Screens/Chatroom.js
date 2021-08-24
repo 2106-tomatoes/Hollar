@@ -14,8 +14,8 @@ import IP from "../env";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 
 const Chatroom = (props) => {
-  const history = props.history;
-  const getChat = props.getChat;
+
+  const {history,getChat,message,socket} = props 
   const userId = 1;
   const [input, setInput] = useState("");
   const chatPackage = {
@@ -24,26 +24,25 @@ const Chatroom = (props) => {
     eventId: props.match.params.id,
   };
   useEffect(() => {
-    const socket = props.socket;
+  
     getChat(props.match.params.id);
 
-    socket.on("getMessage", function (message) {
-      props.sendChat(props.match.params.id, message);
-    });
-  }, [props.message.length]);
+  }, []);
   function submitChatMessage(e) {
-      e.preventDefault( )
+    e.preventDefault();
     props.socket.emit("chatMessage", chatPackage);
 
     setInput("");
   }
 
-  const messages = props.message;
+    socket.on("getMessage", function (message) {
+      props.sendChat(props.match.params.id, message);
+    });
+
 
   return (
     <View style={styles.container}>
-      {messages.map((mes) => {
-          console.log('mes',mes)
+      {message.map((mes) => {
         return (
           <View>
             <Text>{mes.user.username}:</Text>
