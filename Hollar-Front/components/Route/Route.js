@@ -17,6 +17,7 @@ export default class Routes extends React.Component {
   render() {
 
     const socket = this.props.socket
+ 
     return (
       <NativeRouter> 
         <View style={styles.container}>
@@ -24,7 +25,7 @@ export default class Routes extends React.Component {
             <Route exact path="/" component={LoginScreen}  />
             <Route exact path="/home" component={Home} />
             {/* <Route exact path="/chatroom" component={Chatroom} /> */}
-            <Route exact path="/chatroom" render={(routeProps) => <Chatroom {...routeProps} socket={socket} />} />
+            <Route path="/chatroom/:id" render={({match})=><Chatroom socket={socket} match={match}/>} />
           </Switch>
         </View>
       </NativeRouter>
