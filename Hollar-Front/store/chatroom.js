@@ -1,6 +1,8 @@
 import axios from "axios";
 //import {LOCALHOST8080} from "../components/env";
 const LOCALHOST8080 = 'http://localhost:8080';
+const BEN_IP_ADDR = 'http://192.168.1.34:8080';
+
 //Actions
 const GET_CHAT = 'GET_CHAT';
 const SEND_CHAT = 'SEND_CHAT'
@@ -38,7 +40,7 @@ export const getChatListThunk = (userId) => {
     try {
       console.log(`getChatListThunk, userId: ${userId}`);
       //console.log('localhost>', LOCALHOST8080)
-      const {data: chatList} = await axios.get(`http://192.168.1.34:8080/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
+      const {data: chatList} = await axios.get(`${LOCALHOST8080}/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
       dispatch(getChatList(chatList));
     } catch (e) {
       console.log(`e`, e);
@@ -49,9 +51,8 @@ export const getChatThunk = (eventId) => {
   
     return async (dispatch) => {
       try {
-        
-        const response = await axios.get(`http://192.168.1.34:8080/api/chatroom/${eventId}`)
-        console.log('response', response.data)
+        const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
+       
         dispatch(getChat(response.data))
       } catch (error) {
         console.log('e',error);
@@ -66,8 +67,8 @@ export const getChatThunk = (eventId) => {
       try {
         
         const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`,content)
-        console.log('response', response.data)
-        dispatch(getChat(response.data))
+        console.log("response from post", response.data)
+        dispatch(sendChat(response.data))
       } catch (error) {
         console.log('e',error);
       }
@@ -81,7 +82,9 @@ export default function chatroomReducer(state = initialState, action) {
        case GET_CHAT_LIST:
               return {...state, chatList: action.chatList}
         case SEND_CHAT:
-             return {...state, messages:action.info.messageContent}
+        //   console.log("action.info.messageContent", action.info.messageContent)
+        //   console.log("Return statement in reducer", {...state, messages: [...state.messages, action.info.messageContent]})
+             return {...state, messages: [...state.messages, action.info]}
         default:
             return state;
             
