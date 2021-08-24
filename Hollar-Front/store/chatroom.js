@@ -26,9 +26,9 @@ export function getChat(messages) {
 export const getChatListThunk = (userId) => {
   return async (dispatch) => { 
     try {
-      console.log(`thunk time${userId}`);
+      console.log(`getChatListThunk, userId: ${userId}`);
       //console.log('localhost>', LOCALHOST8080)
-      const {data: chatList} = await axios.get(`${LOCALHOST8080}/api/events/${userId}`);
+      const {data: chatList} = await axios.get(`http://192.168.1.34:8080/api/events/${userId}`);
       dispatch(getChatList(chatList));
     } catch (e) {
       console.log(`e`, e);
@@ -38,7 +38,8 @@ export const getChatListThunk = (userId) => {
 export const getChatThunk = (eventId) => {
     return async (dispatch) => {
       try {
-        const {data:messages} = await axios.get(`api/chatroom/${eventId}`)
+        const {data:messages} = await axios.get(`http://192.168.1.34:8080/api/chatroom/${eventId}`)
+        console.log('At getChatThunk, messages:', messages);
         dispatch(getChat(messages))
       } catch (error) {
         console.log('e',error);

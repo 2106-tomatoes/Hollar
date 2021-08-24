@@ -24,7 +24,7 @@ export default class Routes extends React.Component {
             <Route exact path="/" component={LoginScreen}  />
             <Route exact path="/home" component={Home} />
             {/* <Route exact path="/chatroom" component={Chatroom} /> */}
-            <Route exact path="/chatroom" render={()=><Chatroom socket={socket} />} />
+            <Route exact path="/chatroom" render={(routeProps) => <Chatroom {...routeProps} socket={socket} />} />
           </Switch>
         </View>
       </NativeRouter>
