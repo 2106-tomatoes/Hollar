@@ -1,58 +1,109 @@
-import React, {useState , useEffect} from 'react';
-import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
-import { connect } from 'react-redux';
-import {io} from "socket.io-client"
-import IP from "../env"
-import {getChatThunk} from "../../store/chatroom"
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TouchableHighlight,
+  TextInput,
+} from "react-native";
+import { Link } from "react-router-native";
+import { connect } from "react-redux";
+import { io } from "socket.io-client";
+import IP from "../env";
+import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 
+const Chatroom = (props) => {
+  const history = props.history;
+  const getChat = props.getChat;
+  const userId = 1;
+  const [input, setInput] = useState("");
+  const chatPackage = {
+    messageContent: input,
+    userId,
+    eventId: props.match.params.id,
+  };
+  const messages = props.message;
 
-const Chatroom =(props)=>{
-    const history = props.history
-    const getChat = props.getChat
+  useEffect(() => {
+    const socket = props.socket;
+    const eventId = props.match.params.id;
+  
+    getChat(eventId);
 
-    useEffect(()=>{
-        const socket = props.socket
-        getChat()
-        socket.on('recieved', function(){
-            console.log('server got the message!')})
-    }, []);
-   
-    
-    return(
+    socket.on("getMessage", function (message) {
+      props.sendChat(props.match.params.id, message);
+    });
+  }, [props.message.length]);
 
-        <View style={styles.container}>
-        <Text>Chatroom</Text>
-        
-        <Button title="Back Home" onPress={()=> history.push("/home") } />
-           
-        </View>
-    )
+  function submitChatMessage(e) {
+      e.preventDefault( )
+    props.socket.emit("chatMessage", chatPackage);
 
-}
+    setInput("");
+  }
+
+  console.log('Chatroom, eventId:', props.match.params.id);
+  // console.log('Chatroom, msgs from getChat:', messages);
+
+  return (
+    <View style={styles.container}>
+      {messages.map((mes) => {
+          // console.log('mes',mes)
+        return (
+          <View>
+            <Text>{mes.user.username}:</Text>
+            <Text>{mes.messageContent}</Text>
+          </View>
+        );
+      })}
+
+      <TextInput
+        style={styles.textInput}
+        value={input}
+        onChangeText={(chatMessage) => {
+          setInput(chatMessage);
+        }}
+        onSubmitEditing={submitChatMessage}
+        maxLength={20}
+      />
+
+      <Link to={"/home"}>
+        <Text>Back to Home</Text>
+      </Link>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#fff",
-      alignItems: "center",
-      justifyContent: "center"
-    }
-    
-  });
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textInput: {
+    borderColor: "#CCCCCC",
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    height: 20,
+    fontSize: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+});
 
-  const mapStateToProps = state => {
-  
-    return {
-        message:state.chatroom.messages
-     }
+const mapStateToProps = (state) => {
+  return {
+    message: state.chatroom.messages,
   };
-  
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-        getChat: () => dispatch(getChatThunk())
-     }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getChat: (id) => dispatch(getChatThunk(id)),
+    sendChat: (id, content) => dispatch(sendChatThunk(id, content)),
   };
-  
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(Chatroom)
-  
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chatroom);
