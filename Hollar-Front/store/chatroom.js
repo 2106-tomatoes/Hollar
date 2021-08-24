@@ -38,7 +38,7 @@ export const getChatListThunk = (userId) => {
     try {
       console.log(`getChatListThunk, userId: ${userId}`);
       //console.log('localhost>', LOCALHOST8080)
-      const {data: chatList} = await axios.get(`http://192.168.1.34:8080/api/events/${userId}`);
+      const {data: chatList} = await axios.get(`http://192.168.1.34:8080/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
       dispatch(getChatList(chatList));
     } catch (e) {
       console.log(`e`, e);
