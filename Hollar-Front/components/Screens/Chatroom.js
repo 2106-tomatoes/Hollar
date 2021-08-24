@@ -24,20 +24,29 @@ const Chatroom = (props) => {
     eventId: props.match.params.id,
   };
   useEffect(() => {
-  
+    //Get chat for current eventId
     getChat(props.match.params.id);
+    //Listen for msgs and post the msgs to db for the current eventId
+    socket.on("getMessage", async function  (message) {
+      console.log('i got a message!');
+      await props.sendChat(props.match.params.id, message);
+  
+      
+       
+    
+    }); // <--- move this out of useEffect?
 
   }, []);
+  // socket.on("getMessage", function (message) {
+  //   props.sendChat(props.match.params.id, message);
+  // });
   function submitChatMessage(e) {
     e.preventDefault();
     props.socket.emit("chatMessage", chatPackage);
-
     setInput("");
   }
 
-    socket.on("getMessage", function (message) {
-      props.sendChat(props.match.params.id, message);
-    });
+    
 
 
   return (
@@ -94,8 +103,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getChat: (id) => dispatch(getChatThunk(id)),
-    sendChat: (id, content) => dispatch(sendChatThunk(id, content)),
+    getChat: (eventId) => dispatch(getChatThunk(eventId)),
+    sendChat: (eventId, content) => dispatch(sendChatThunk(eventId, content)),
   };
 };
 

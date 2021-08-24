@@ -34,8 +34,8 @@ router.post("/:id", async(req,res,next)=>{
             model: User
           }
         })
-        console.log("send message", sendMessage)
-        res.status(201).send(sendMessage)
+        console.log("send message", sendMessage.messageContent);
+        res.status(201).send(sendMessage);
     }
     catch(err){
         console.log('this error is happening')

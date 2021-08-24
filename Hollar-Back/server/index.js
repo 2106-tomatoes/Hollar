@@ -23,7 +23,7 @@ const init = async () => {
       });
       socket.on('chatMessage', (message) => {
         console.log('message has been sent', message)
-        socket.emit('getMessage', message)
+        socket.broadcast.emit('getMessage', message)
        
       })
 

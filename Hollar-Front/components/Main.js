@@ -1,55 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { connect } from 'react-redux';
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
+import { connect } from "react-redux";
 import { changeCount } from "../store/count";
-import {io} from "socket.io-client"
-import IP from "./env"
-import Router from "./Route/Route"
-
+import { io } from "socket.io-client";
+import IP from "./env";
+import Router from "./Route/Route";
 
 class Main extends React.Component {
   constructor() {
-    super()
-    this.state={
-      socket:{},
-    }
+    super();
+    this.state = {
+      socket: {},
+    };
   }
   componentDidMount() {
-    const socket = io(`${IP}`)
+    const socket = io(`${IP}`);
     this.setState({
-      socket:socket
-    })
+      socket: socket,
+    });
   }
-  
 
   render() {
-    return (     
-      <Router socket={this.state.socket}/>
-    )
+    return <Router socket={this.state.socket} />;
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     count: state.count,
-  }
+  };
 };
 
-
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    actions: (count) => dispatch(changeCount(count))
-  }
+    actions: (count) => dispatch(changeCount(count)),
+  };
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
