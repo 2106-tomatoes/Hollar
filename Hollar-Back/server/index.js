@@ -21,11 +21,11 @@ const init = async () => {
       socket.on('disconnect', function () {
         console.log('user disconnected: ', socket.id);
       });
-      socket.on('testSocket', function(){
-        console.log('i can read this emit')
-        socket.emit('recieved')
+      socket.on('testSocket', function(msg){
+        console.log('received msg:', msg)
+        socket.emit('recieved', msg);
        
-      })
+      });
 
      });
   } catch (ex) {
