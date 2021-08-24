@@ -23,14 +23,19 @@ const Chatroom = (props) => {
     userId,
     eventId: props.match.params.id,
   };
+  const messages = props.message;
+
   useEffect(() => {
     const socket = props.socket;
-    getChat(props.match.params.id);
+    const eventId = props.match.params.id;
+  
+    getChat(eventId);
 
     socket.on("getMessage", function (message) {
       props.sendChat(props.match.params.id, message);
     });
   }, [props.message.length]);
+
   function submitChatMessage(e) {
       e.preventDefault( )
     props.socket.emit("chatMessage", chatPackage);
@@ -38,12 +43,13 @@ const Chatroom = (props) => {
     setInput("");
   }
 
-  const messages = props.message;
+  console.log('Chatroom, eventId:', props.match.params.id);
+  // console.log('Chatroom, msgs from getChat:', messages);
 
   return (
     <View style={styles.container}>
       {messages.map((mes) => {
-          console.log('mes',mes)
+          // console.log('mes',mes)
         return (
           <View>
             <Text>{mes.user.username}:</Text>

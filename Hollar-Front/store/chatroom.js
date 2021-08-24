@@ -5,6 +5,7 @@ const LOCALHOST8080 = 'http://localhost:8080';
 const GET_CHAT = 'GET_CHAT';
 const SEND_CHAT = 'SEND_CHAT'
 const GET_CHAT_LIST = 'GET_CHAT_LIST';
+
 //Action creators
 const initialState = {
   messages: [],
@@ -49,7 +50,7 @@ export const getChatThunk = (eventId) => {
     return async (dispatch) => {
       try {
         
-        const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
+        const response = await axios.get(`http://192.168.1.34:8080/api/chatroom/${eventId}`)
         console.log('response', response.data)
         dispatch(getChat(response.data))
       } catch (error) {
