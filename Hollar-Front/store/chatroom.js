@@ -1,5 +1,5 @@
 import axios from "axios";
-//import {LOCALHOST8080} from "../components/env";
+
 const LOCALHOST8080 = 'http://localhost:8080';
 const BEN_IP_ADDR = 'http://192.168.1.34:8080';
 
@@ -36,7 +36,7 @@ export function getChat(messages) {
   }
 
 export const getChatListThunk = (userId) => {
-  return async (dispatch) => { 
+  return async (dispatch) => {
     try {
       console.log(`getChatListThunk, userId: ${userId}`);
       //console.log('localhost>', LOCALHOST8080)
@@ -48,11 +48,11 @@ export const getChatListThunk = (userId) => {
   }
 }
 export const getChatThunk = (eventId) => {
-  
+
     return async (dispatch) => {
       try {
         const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
-       
+
         dispatch(getChat(response.data))
       } catch (error) {
         console.log('e',error);
@@ -62,10 +62,10 @@ export const getChatThunk = (eventId) => {
 
 
   export const sendChatThunk = (eventId,content) => {
-  
+
     return async (dispatch) => {
       try {
-        
+
         const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`,content)
         console.log("response from post", response.data)
         dispatch(sendChat(response.data))
@@ -87,7 +87,7 @@ export default function chatroomReducer(state = initialState, action) {
              return {...state, messages: [...state.messages, action.info]}
         default:
             return state;
-            
+
 
     }
 }
