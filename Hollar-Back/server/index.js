@@ -21,8 +21,11 @@ const init = async () => {
       socket.on('disconnect', function () {
         console.log('user disconnected: ', socket.id);
       });
+      //Listen for chatMsg and send it to all connected clients
       socket.on('chatMessage', (message) => {
         console.log('message has been sent', message)
+        // Post to db in here?
+        
         socket.broadcast.emit('getMessage', message)
        
       })
