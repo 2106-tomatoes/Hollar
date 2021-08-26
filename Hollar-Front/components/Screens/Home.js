@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { connect, useSelector } from "react-redux";
 import { getChatListThunk } from "../../store/home";
+import socketio from '../../socket';
 
 const Home = (props) => {
   const { history, chatList } = props;
@@ -17,6 +18,16 @@ const Home = (props) => {
   useEffect(() => {
     props.getChatList(user.id);
   }, []);
+
+
+
+
+  function joinEventRoom(eventId) {
+    console.log('Home, joinEventRoom, eventId:', eventId);
+    history.push(`/chatroom/${eventId}`);
+    //Emit to join/create the room
+    socketio.emit('joinRoom', eventId);
+  }
 
 
   if (chatList.length === 0) {
@@ -38,7 +49,7 @@ const Home = (props) => {
         return (
           <TouchableHighlight
             key={event.id}
-            onPress={() => history.push(`/chatroom/${event.id}`)}
+            onPress={() => joinEventRoom(event.id)}
             underlayColor="white"
           >
             <View style={styles.button}>

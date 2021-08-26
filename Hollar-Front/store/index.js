@@ -5,6 +5,7 @@ import chatroomReducer from "./chatroom";
 import userReducer from './user'
 import eventReducer from './event'
 import homeReducer from './home';
+//
 
 const rootReducer = combineReducers({
   chatroom: chatroomReducer,
@@ -14,6 +15,5 @@ const rootReducer = combineReducers({
 });
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(rootReducer, middleware);
-
 
 export default store;

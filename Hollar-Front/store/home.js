@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LOCALHOST8080 } from "@env";
+import { LOCALHOST8080, IP_ADD } from "@env";
 
 const GET_CHAT_LIST = 'GET_CHAT_LIST';
 
@@ -14,7 +14,7 @@ export const getChatListThunk = (userId) => {
   return async (dispatch) => {
     try {
       console.log(`getChatListThunk, userId: ${userId}`);
-      const {data: chatList} = await axios.get(`${LOCALHOST8080}/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
+      const {data: chatList} = await axios.get(`${IP_ADD}/api/events/${userId}`); // MAKE SURE TO CHANGE THIS IP ADDRESS TO YOUR OWN NETWORK IP
       dispatch(getChatList(chatList));
     } catch (e) {
       console.log(`e`, e);
