@@ -89,31 +89,63 @@ async function seed() {
   const events = await Promise.all([
     Event.create({
       name: "frisbee golf",
-      location: "park",
+      location: "2 15th St NW, Washington, DC 20024",
       maxAttendees: 5,
       description: "Let's play frisbee golf",
       eventObjectType: "event",
+      latitude: 38.8895,
+      longitude: -77.0353,
+      attendanceDate: "2021-08-30"
     }),
     Event.create({
       name: "tennis",
-      maxAttendees: "2",
-      location: "123 main st",
+      maxAttendees: 2,
+      location: "600 h st ne, washington, dc 20002, usa",
       description: "play a game with me",
       eventObjectType: "group",
+      latitude: 38.9002,
+      longitude: -76.9975,
+      attendanceDate: "2021-08-27"
     }),
     Event.create({
       name: "actual golf",
-      maxAttendees: "25",
-      location: "the beach",
+      maxAttendees: 25,
+      location: "2 Lincoln Memorial Cir NW Washington, DC 20037",
       description: "windmills are not allowed",
       eventObjectType: "group",
+      latitude: 38.904237,
+      longitude: -77.052129,
+      attendanceDate: "2021-08-28"
     }),
     Event.create({
       name: "hockey",
-      location: "rink",
+      location: "Central Park, New York, NY",
       maxAttendees: 10,
       description: "Let's play hockey",
       eventObjectType: "event",
+      latitude: 40.7812,
+      longitude: -73.9665,
+      attendanceDate: "2021-08-28"
+    }),
+    Event.create({
+      name: "eating",
+      location: "700 L'Enfant Plaza SW, Washington DC, DC 20024",
+      maxAttendees: 10,
+      description: "Let's play eating",
+      eventObjectType: "event",
+      latitude: 38.883896,
+      longitude: -77.02535,
+      attendanceDate: "2021-08-29"
+    }),
+    Event.create({
+      name: "You can't see me",
+      location: "2 15th St NW, Washington, DC 20024",
+      maxAttendees: 5,
+      description: "Already Happened",
+      eventObjectType: "event",
+      latitude: 38.8895,
+      longitude: -77.0353,
+      attendanceDate: "2021-08-24"
     }),
   ]);
   // Create Message
