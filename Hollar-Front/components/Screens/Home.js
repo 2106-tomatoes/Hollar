@@ -8,17 +8,18 @@ import {
   TouchableHighlight,
 } from "react-native";
 import { connect, useSelector } from "react-redux";
-import { getChatListThunk } from "../../store/chatroom";
+import { getChatListThunk } from "../../store/home";
 
 const Home = (props) => {
-  const { history, eventList } = props;
+  const { history, chatList } = props;
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
     props.getChatList(user.id);
   }, []);
 
-  if (eventList.length === 0) {
+
+  if (chatList.length === 0) {
     return (
       <View>
         <Text>No messages</Text>
@@ -27,30 +28,13 @@ const Home = (props) => {
   }
 
   return (
-    // <View style={styles.container}>
-    //   <FlatList
-    //     data={[
-    //       {key: 'Devin'},
-    //       {key: 'Dan'},
-    //       {key: 'Dominic'},
-    //       {key: 'Jackson'},
-    //       {key: 'James'},
-    //       {key: 'Joel'},
-    //       {key: 'John'},
-    //       {key: 'Jillian'},
-    //       {key: 'Jimmy'},
-    //       {key: 'Julie'},
-    //     ]}
-    //     renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-    //   />
-    // </View>
 
     <View style={styles.container}>
       <Button
         title="Create An Event!"
         onPress={() => history.push("/createevent")}
       />
-      {eventList.map((event) => {
+      {chatList.map((event) => {
         return (
           <TouchableHighlight
             key={event.id}
@@ -82,7 +66,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    eventList: state.chatroom.chatList,
+    chatList: state.home.chatList,
   };
 };
 const mapDispatchToProps = (dispatch) => {

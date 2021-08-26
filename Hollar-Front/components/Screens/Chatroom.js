@@ -9,49 +9,48 @@ import {
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
-import { io } from "socket.io-client";
-import IP from "../env";
+// import { io } from "socket.io-client";
+// import IP from "../env";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
+import socketio from '../../socket';
 
 const Chatroom = (props) => {
+  const { history, getChat, message, user } = props 
 
-  const {history,getChat,message,socket} = props 
-  const userId = 1;
+  const userId = user.id;
   const [input, setInput] = useState("");
+  const eventId = props.match.params.id
   const chatPackage = {
     messageContent: input,
     userId,
-    eventId: props.match.params.id,
+    eventId,
   };
 
   useEffect(() => {
-    //Get chat for current eventId
-    getChat(props.match.params.id);
-    //Listen for msgs and post the msgs to db for the current eventId
-    socket.on("getMessage", async function  (message) {
-      console.log('i got a message!');
-      await props.sendChat(props.match.params.id, message);
-    
-    });
+    getChat(eventId);
 
   }, []);
   
-  function submitChatMessage(e) {
+  async function submitChatMessage(e) {
     e.preventDefault();
-    props.socket.emit("chatMessage", chatPackage);
+
+    const postResponse = await props.sendChat(eventId, chatPackage);
+    // console.log('Chatroom, postResponse', postResponse);
+    socketio.emit('chatMessage', postResponse);
+    // console.log('Chatroom, emitted');
+
     setInput("");
   }
 
 
-  console.log('Chatroom, eventId:', props.match.params.id);
-  // console.log('Chatroom, msgs from getChat:', messages);
+  // console.log('Chatroom, store state:', props.state);  
 
   return (
     <View style={styles.container}>
       {message.map((mes) => {
           // console.log('mes',mes)
         return (
-          <View>
+          <View key={mes.id}>
             <Text>{mes.user.username}:</Text>
             <Text>{mes.messageContent}</Text>
           </View>
@@ -96,13 +95,15 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     message: state.chatroom.messages,
+    user: state.user
+    // state: state
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getChat: (eventId) => dispatch(getChatThunk(eventId)),
-    sendChat: (eventId, content) => dispatch(sendChatThunk(eventId, content)),
+    sendChat: (eventId, chatPackage) => dispatch(sendChatThunk(eventId, chatPackage)),
   };
 };
 

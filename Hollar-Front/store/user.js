@@ -1,13 +1,11 @@
 import axios from 'axios'
 import {LOCALHOST8080} from "@env"
 
-
-
 const SET_USER = 'SET_USER'
 const CREATE_USER = 'CREATE_USER'
 
 
-const gotUser = (user) => {
+const setUser = (user) => {
   return {
     type: SET_USER,
     user
@@ -21,7 +19,7 @@ const createUser = (user) => {
   }
 }
 
-export const gotUserThunk = (username, password, history) => {
+export const setUserThunk = (username, password, history) => {
   return async (dispatch) => {
     try {
       const lowerUsername = username.toLowerCase()
@@ -32,7 +30,7 @@ export const gotUserThunk = (username, password, history) => {
       if (data === null) {
         history.push('/login')
       } else {
-        dispatch(gotUser(data))
+        dispatch(setUser(data))
         history.push('/home')
       }
     } catch (error) {

@@ -23,6 +23,7 @@ router.get("/:id", async (req,res,next) => {
     }
   } )
 
+// api/chatroom/eventId
 router.post("/:id", async(req,res,next)=>{
     try{
         const newMessage = await Message.create(req.body)

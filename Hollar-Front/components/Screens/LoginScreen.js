@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect, useDispatch } from "react-redux";
-import { gotUserThunk } from '../../store/user'
+import { setUserThunk } from '../../store/user'
 
 
 const Login = (props) => {
@@ -21,7 +21,7 @@ const Login = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    dispatch(gotUserThunk(username, password, history));
+    dispatch(setUserThunk(username, password, history));
   };
 
   return (
