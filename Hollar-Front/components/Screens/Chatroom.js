@@ -12,12 +12,12 @@ import { connect } from "react-redux";
 // import { io } from "socket.io-client";
 // import IP from "../env";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
-import socketio from '../../socket.js';
+import socketio from '../../socket';
 
 const Chatroom = (props) => {
+  const { history, getChat, message, user } = props 
 
-  const {history,getChat,message,socket} = props 
-  const userId = 1;
+  const userId = user.id;
   const [input, setInput] = useState("");
   const eventId = props.match.params.id
   const chatPackage = {
@@ -27,22 +27,23 @@ const Chatroom = (props) => {
   };
 
   useEffect(() => {
-    //Get chat for current eventId
     getChat(eventId);
 
   }, []);
   
-  function submitChatMessage(e) {
+  async function submitChatMessage(e) {
     e.preventDefault();
-    
-    props.sendChat(eventId, chatPackage);
-    // socketio.emit('chatMessage', )
+
+    const postResponse = await props.sendChat(eventId, chatPackage);
+    // console.log('Chatroom, postResponse', postResponse);
+    socketio.emit('chatMessage', postResponse);
+    // console.log('Chatroom, emitted');
+
     setInput("");
   }
 
 
-  // console.log('Chatroom, eventId:', props.match.params.id);
-  // console.log('Chatroom, msgs from getChat:', messages);
+  // console.log('Chatroom, store state:', props.state);  
 
   return (
     <View style={styles.container}>
@@ -94,6 +95,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     message: state.chatroom.messages,
+    user: state.user
+    // state: state
   };
 };
 

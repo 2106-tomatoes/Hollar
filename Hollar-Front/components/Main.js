@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { connect } from "react-redux";
-import { changeCount } from "../store/count";
 // import { io } from "socket.io-client";
 import IP from "./env";
 import Router from "./Route/Route";

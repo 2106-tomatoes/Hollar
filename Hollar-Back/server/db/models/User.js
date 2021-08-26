@@ -93,13 +93,18 @@ User.findByToken = async function (token) {
 /**
  * hooks
  */
-const hashPassword = async (user) => {
-  //in case the password has been changed, we want to encrypt it with bcrypt
-  if (user.changed("password")) {
-    user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
-  }
-};
+// const hashPassword = async (user) => {
+//   //in case the password has been changed, we want to encrypt it with bcrypt
+//   if (user.changed("password")) {
+//     user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
+//   }
+// };
 
-User.beforeCreate(hashPassword);
-User.beforeUpdate(hashPassword);
-User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
+// const lowerUsername = async (user) => {
+//   const lowercaseUsername = user.username.toLowerCase()
+//   user.username = lowercaseUsername
+// }
+
+// User.beforeCreate(hashPassword);
+// User.beforeUpdate(hashPassword);
+// User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
