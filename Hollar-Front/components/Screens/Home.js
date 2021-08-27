@@ -18,7 +18,6 @@ const Home = (props) => {
     props.getChatList(user.id);
   }, []);
 
-
   if (chatList.length === 0) {
     return (
       <View>
@@ -28,8 +27,11 @@ const Home = (props) => {
   }
 
   return (
-
     <View style={styles.container}>
+      <Button
+        title="Find Nearby Events!"
+        onPress={() => history.push("/nearbyevents")}
+      />
       <Button
         title="Create An Event!"
         onPress={() => history.push("/createevent")}

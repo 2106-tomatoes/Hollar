@@ -9,6 +9,7 @@ import Chatroom from "../Screens/Chatroom"
 import SignUp from "../Screens/SignUp"
 import StartUp from "../Screens/StartUp"
 import CreateEvent from "../Screens/CreateEvent"
+import NearbyEvent from "../Screens/NearbyEvents"
 
 export default class Routes extends React.Component {
     constructor(props) {
@@ -30,7 +31,7 @@ export default class Routes extends React.Component {
             <Route exact path="/signup" component={SignUp}  />
             <Route exact path="/home" component={Home} />
             <Route exact path="/createevent" component={CreateEvent} />
-            {/* <Route exact path="/chatroom" component={Chatroom} /> */}
+            <Route exact path="/nearbyevents" component={NearbyEvent} />
             <Route path="/chatroom/:id" render={({match})=><Chatroom socket={socket} match={match}/>} />
           </Switch>
         </View>

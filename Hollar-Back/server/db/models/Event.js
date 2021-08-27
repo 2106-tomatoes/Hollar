@@ -22,7 +22,17 @@ const Event = db.define("event", {
     type: Sequelize.ENUM("dm", "group", "event"),
     allowNull: false,
   },
-  //Add Tags Here
+  longitude:{
+    type: Sequelize.FLOAT
+  },
+  latitude:{
+    type: Sequelize.FLOAT
+  },
+  attendanceDate:{
+    type: Sequelize.DATEONLY,
+    allowNull:false
+
+  }
 });
 
 module.exports = Event;
