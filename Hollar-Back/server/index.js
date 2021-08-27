@@ -23,12 +23,12 @@ const init = async () => {
         console.log('user disconnected: ', socket.id);
       });
       
-      //Listen for joinRoom to join the clients to a room by eventId
+      //Listen for joinRoom to join the client to a room by eventId
       socket.on('joinRoom', (eventId) => {
         socket.join(`eventRm${eventId}`);
       });
 
-      //Listen for chatMsg from clients and emit chatMsg to room
+      //Listen for chatMsg from client and emit chatMsg to room
       socket.on('chatMessage', (message) => {
         const eventId = message.eventId;
         console.log('socket.rooms:', socket.rooms);
@@ -36,6 +36,15 @@ const init = async () => {
         //Emit chatMsg to clients in room
         io.to(`eventRm${eventId}`).emit('getMessage', message);
         
+      })
+
+      //Listen for leaveRoom from client and leave the room for client
+      socket.on('leaveRoom', (usernameAndEventId) => {
+        const eventId = usernameAndEventId.eventId;
+        const username = usernameAndEventId.username;
+        socket.leave(`eventRm${eventId}`);
+        console.log('socket.rooms:', socket.rooms);
+        io.to(`eventRm${eventId}`).emit(`${username} has left the room`);
       })
     });
     
