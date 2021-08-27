@@ -7,17 +7,32 @@ import {
   Button,
   TouchableHighlight,
 } from "react-native";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { getChatListThunk } from "../../store/home";
 import socketio from '../../socket';
+import { setOrigin } from "../../store/origin";
 
 const Home = (props) => {
   const { history, chatList } = props;
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     props.getChatList(user.id);
+    dispatch(setOrigin({latitude:38.8977, longitude:-77.0365}))
   }, []);
+
+
+  const getCurrentLocation = async () => {
+    // if(!Location.hasServicesEnabledAsync()){
+        await Location.requestForegroundPermissionsAsync()
+    // }
+    console.log('address',await Location.geocodeAsync('1600 Pennsylvania Ave NW, Washington, DC 20006'))
+    const {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync()
+    const getCurrentLocation = {latitude,longitude}
+    console.log('get',getCurrentLocation)
+    dispatch(setOrigin(getCurrentLocation))
+}
 
 
 
