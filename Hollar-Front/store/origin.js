@@ -2,7 +2,6 @@ const SET_ORIGIN = 'SET_ORIGIN'
 
 
 export function setOrigin(origin) {
-  console.log('origin',origin)
   return {
   type: SET_ORIGIN,
   origin

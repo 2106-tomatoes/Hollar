@@ -22,9 +22,8 @@ const createUser = (user) => {
 export const setUserThunk = (username, password, history) => {
   return async (dispatch) => {
     try {
-      const lowerUsername = username.toLowerCase()
       const { data } = await axios.get(`${LOCALHOST8080}/api/users/login`, {headers: {
-        username: lowerUsername,
+        username,
         password
       }})
       if (data === null) {

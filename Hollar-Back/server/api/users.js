@@ -31,19 +31,31 @@ router.get('/login', async (req, res, next) => {
   }
 })
 
-router.get('/:id', async (req, res, next) => {
+router.get("/:userId/events", async (req,res,next) => {
   try {
-    const users = await User.findAll({
-      // explicitly select only the id and username fields - even though
-      // users' passwords are encrypted, it won't help if we just
-      // send everything to anyone who asks!
-      attributes: ['id', 'username']
-    })
-    res.json(users)
-  } catch (err) {
-    next(err)
+    //console.log("userId in backend", req.params.id);
+    const user = await User.findByPk(req.params.userId);
+
+    res.send (await user.getEvents());
+  } catch (error) {
+    //console.log('stuffs broke yo' + error);
+    next(error)
   }
-})
+} )
+
+// router.get('/:id', async (req, res, next) => {
+//   try {
+//     const users = await User.findAll({
+//       // explicitly select only the id and username fields - even though
+//       // users' passwords are encrypted, it won't help if we just
+//       // send everything to anyone who asks!
+//       attributes: ['id', 'username']
+//     })
+//     res.json(users)
+//   } catch (err) {
+//     next(err)
+//   }
+// })
 
 router.post('/', async (req,res,next) => {
   try {
