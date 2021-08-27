@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LOCALHOST8080 } from "@env";
+import { LOCALHOST8080, IP_ADD } from "@env";
 
 const GET_CHAT_LIST = 'GET_CHAT_LIST';
 

@@ -37,13 +37,7 @@ export const getChatThunk = (eventId) => {
 export const sendChatThunk = (eventId, chatPackage) => {
   return async (dispatch) => {
     try {
-      //1. Post
-      const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`, chatPackage)
-      // console.log("sendChatThunk, response from post", response.data)
-      //2. Emit chatMsg to server, CAN WE DO THIS HERE?
-      // socketio.emit('chatMessage', response.data)
-      //3. Dispatch msg to store
-      // dispatch(sendChat(response.data))
+      const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`, chatPackage);
       return response.data;
     } catch (error) {
       console.log('e',error);

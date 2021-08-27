@@ -15,19 +15,27 @@ const init = async () => {
     
     // start listening (and create a 'server' object representing our server)
     const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
-    const serverSocket = socket(server);
-    serverSocket.on('connection', (socket) => {
+    const io = socket(server);
+    // Listen for incoming client connections
+    io.on('connection', (socket) => {
       console.log(`Connection from client ${socket.id}`);
       socket.on('disconnect', function () {
         console.log('user disconnected: ', socket.id);
       });
-      //Listen for chatMsg and send it to all connected clients
+      
+      //Listen for joinRoom to join the clients to a room by eventId
+      socket.on('joinRoom', (eventId) => {
+        socket.join(`eventRm${eventId}`);
+      });
+
+      //Listen for chatMsg from clients and emit chatMsg to room
       socket.on('chatMessage', (message) => {
-        console.log('message has been sent', message)
-        // Post to db in here?
+        const eventId = message.eventId;
+        console.log('socket.rooms:', socket.rooms);
+
+        //Emit chatMsg to clients in room
+        io.to(`eventRm${eventId}`).emit('getMessage', message);
         
-        socket.broadcast.emit('getMessage', message)
-       
       })
     });
     
