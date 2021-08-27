@@ -12,7 +12,11 @@ socketio.on('connect', () => {
   socketio.on('getMessage', (message) => {
     // console.log("got message from server with message: ", message)
     store.dispatch(sendChat(message))
-  })
+  });
+
+  // socketio.on('leaveRoom', (leaveRoomMsg) => {
+
+  // })
 });
 
 

@@ -9,8 +9,6 @@ import {
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
-// import { io } from "socket.io-client";
-// import IP from "../env";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 import socketio from '../../socket';
 
@@ -18,7 +16,7 @@ const Chatroom = (props) => {
   const { history, getChat, message, user } = props 
 
   const userId = user.id;
-  const username = user.user.username;
+  // const username = user.username;
   const [input, setInput] = useState("");
   const eventId = props.match.params.id
   const chatPackage = {
@@ -31,9 +29,9 @@ const Chatroom = (props) => {
     getChat(eventId);
 
     //ComponentWillUnmount and leave room
-    return function leaveEventRoom() {
-      socketio.emit('leaveRoom', { username, eventId });
-    }
+    // return function leaveEventRoom() {
+    //   socketio.emit('leaveRoom', { username, eventId });
+    // }
 
   }, []);
   

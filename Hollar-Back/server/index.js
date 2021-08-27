@@ -39,13 +39,13 @@ const init = async () => {
       })
 
       //Listen for leaveRoom from client and leave the room for client
-      socket.on('leaveRoom', (usernameAndEventId) => {
-        const eventId = usernameAndEventId.eventId;
-        const username = usernameAndEventId.username;
-        socket.leave(`eventRm${eventId}`);
-        console.log('socket.rooms:', socket.rooms);
-        io.to(`eventRm${eventId}`).emit(`${username} has left the room`);
-      })
+      // socket.on('leaveRoom', (usernameAndEventId) => {
+      //   const eventId = usernameAndEventId.eventId;
+      //   const username = usernameAndEventId.username;
+      //   socket.leave(`eventRm${eventId}`);
+      //   console.log('socket.rooms:', socket.rooms);
+      //   io.to(`eventRm${eventId}`).emit('leaveRoom', `${username} has left the room`);
+      // })
     });
     
   } catch (ex) {
