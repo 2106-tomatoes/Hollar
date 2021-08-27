@@ -18,6 +18,7 @@ const Chatroom = (props) => {
   const { history, getChat, message, user } = props 
 
   const userId = user.id;
+  const username = user.user.username;
   const [input, setInput] = useState("");
   const eventId = props.match.params.id
   const chatPackage = {
@@ -28,6 +29,11 @@ const Chatroom = (props) => {
 
   useEffect(() => {
     getChat(eventId);
+
+    //ComponentWillUnmount and leave room
+    return function leaveEventRoom() {
+      socketio.emit('leaveRoom', { username, eventId });
+    }
 
   }, []);
   
