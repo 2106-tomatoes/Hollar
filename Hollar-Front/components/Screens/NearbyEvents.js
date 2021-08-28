@@ -148,8 +148,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
     height: 40,
+    width: 300,
     margin: 12,
     // borderWidth: 1,
-    paddingHorizontal: 50,
+    paddingHorizontal: 20,
   },
 });
