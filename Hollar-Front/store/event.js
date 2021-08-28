@@ -48,9 +48,7 @@ export const createEventThunk = (
 export const findEventsThunk = (origin, radius = 20) => {
   return async (dispatch) => {
     try {
-      console.log("inside thunk")
       const { data: openEvents } = await axios.get(`${LOCALHOST8080}/api/events`)
-      console.log("events Open from axios call", openEvents)
 
       //COMMENT OUT THIS LINE WHEN YOU WANT TO USE GOOGLE API!!!
       dispatch(findEvent(openEvents))
