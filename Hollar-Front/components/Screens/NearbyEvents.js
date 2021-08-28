@@ -60,8 +60,8 @@ const NearbyEvents = () => {
           initialRegion={{
             latitude: origin.latitude,
             longitude: origin.longitude,
-            latitudeDelta: 0.008,
-            longitudeDelta: 0.008,
+            latitudeDelta: 0.003,
+            longitudeDelta: 0.003,
           }}
         >
           {origin !== null && (
@@ -80,12 +80,33 @@ const NearbyEvents = () => {
           <TextInput
             style={styles.textInput}
             autoCapitalize="none"
-            placeholder="Search Hobbies"
+            placeholder="Search Events"
             onChangeText={searchHandler}
             value={search}
           />
         </View>
-        <ScrollView style={{ flex: 1 }}>
+        <FlatList
+        data={displayEvents}
+        style={{ flex: 1 }}
+        keyExtractor={item=>item.id.toString()}
+        ItemSeparatorComponent={() => {
+          return <View style={{height: 1, backgroundColor: '#DDDDDF'}} />;
+        }}
+        renderItem={({item}) => {
+          return (
+            <TouchableOpacity
+            // onPress={() => {}}
+            style={{ margin: 15 }}
+          >
+            <Text>{item.name}</Text>
+            <Text>{item.location}</Text>
+            <Text>{item.maxAttendees}</Text>
+            <Text>{item.attendanceDate}</Text>
+          </TouchableOpacity>
+          )
+        }}
+        />
+        {/* <View style={{ flex: 4 }}>
           {displayEvents.map((event) => {
             return (
               <TouchableOpacity
@@ -100,7 +121,7 @@ const NearbyEvents = () => {
               </TouchableOpacity>
             );
           })}
-        </ScrollView>
+        </View> */}
       </View>
     );
   }
@@ -116,14 +137,19 @@ const styles = StyleSheet.create({
     width: width,
   },
   inputContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: -175,
-    height: "30%",
+    height: 40,
+    margin: 12,
+    // height: "30%",
   },
   textInput: {
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
+    height: 40,
+    margin: 12,
+    // borderWidth: 1,
+    paddingHorizontal: 50,
   },
 });

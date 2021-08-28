@@ -15,11 +15,12 @@ import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 import socketio from '../../socket';
 
 const Chatroom = (props) => {
-  const { history, getChat, message, user } = props 
+  // console.log("props in chatroom", props)
+  const { history, getChat, message, user } = props
 
   const userId = user.id;
   const [input, setInput] = useState("");
-  const eventId = props.match.params.id
+  const eventId = props.route.params.eventId
   const chatPackage = {
     messageContent: input,
     userId,
@@ -30,7 +31,7 @@ const Chatroom = (props) => {
     getChat(eventId);
 
   }, []);
-  
+
   async function submitChatMessage(e) {
     e.preventDefault();
 
@@ -43,7 +44,7 @@ const Chatroom = (props) => {
   }
 
 
-  // console.log('Chatroom, store state:', props.state);  
+  // console.log('Chatroom, store state:', props.state);
 
   return (
     <View style={styles.container}>
@@ -67,9 +68,9 @@ const Chatroom = (props) => {
         maxLength={20}
       />
 
-      <Link to={"/home"}>
+      {/* <Link to={"/home"}>
         <Text>Back to Home</Text>
-      </Link>
+      </Link> */}
     </View>
   );
 };

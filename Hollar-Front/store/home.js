@@ -29,7 +29,7 @@ const initialState = {
 export default function homeReducer(state = initialState, action) {
   switch(action.type) {
     case GET_CHAT_LIST: {
-      return { ...state, chatList: action.chatList };
+      return {...state, chatList: action.chatList}
     }
     default: {
       return state;

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import { connect } from "react-redux";
 // import { io } from "socket.io-client";
 import IP from "./env";
-import Router from "./Route/Route";
+import LoginNavigator from "./Route/LoginNavigator";
 
 class Main extends React.Component {
   constructor() {
@@ -21,7 +21,7 @@ class Main extends React.Component {
   // }
 
   render() {
-    return <Router />;
+    return <LoginNavigator />;
   }
 }
 

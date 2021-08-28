@@ -5,92 +5,100 @@ import {
   Text,
   View,
   Button,
-  TouchableHighlight,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { getChatListThunk } from "../../store/home";
-import socketio from '../../socket';
+import socketio from "../../socket";
 import { setOrigin } from "../../store/origin";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = (props) => {
-  const { history, chatList } = props;
+  const { history } = props;
+  const [displayList, setDisplayList] = useState([]);
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch()
+  const chatList = useSelector((state) => state.home.chatList);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    props.getChatList(user.id);
-    dispatch(setOrigin({latitude:38.8977, longitude:-77.0365}))
+    navigation.addListener("focus", () => {
+      props.getChatList(user.id);
+      dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }));
+    });
   }, []);
 
+  useEffect(() => {
+    setDisplayList(chatList);
+  }, [chatList.length]);
 
   const getCurrentLocation = async () => {
     // if(!Location.hasServicesEnabledAsync()){
-        await Location.requestForegroundPermissionsAsync()
+    await Location.requestForegroundPermissionsAsync();
     // }
-    console.log('address',await Location.geocodeAsync('1600 Pennsylvania Ave NW, Washington, DC 20006'))
-    const {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync()
-    const getCurrentLocation = {latitude,longitude}
-    console.log('get',getCurrentLocation)
-    dispatch(setOrigin(getCurrentLocation))
-}
-
-
-
+    console.log(
+      "address",
+      await Location.geocodeAsync(
+        "1600 Pennsylvania Ave NW, Washington, DC 20006"
+      )
+    );
+    const {
+      coords: { latitude, longitude },
+    } = await Location.getCurrentPositionAsync();
+    const getCurrentLocation = { latitude, longitude };
+    console.log("get", getCurrentLocation);
+    dispatch(setOrigin(getCurrentLocation));
+  };
 
   function joinEventRoom(eventId) {
-    console.log('Home, joinEventRoom, eventId:', eventId);
-    history.push(`/chatroom/${eventId}`);
+    console.log("Home, joinEventRoom, eventId:", eventId);
+    navigation.navigate("Chatroom", { eventId });
     //Emit to join/create the room
-    socketio.emit('joinRoom', eventId);
+    socketio.emit("joinRoom", eventId);
   }
+  // console.log("chatList", chatList);
+  // console.log("displayList", displayList);
 
-
-
-  if (chatList.length === 0) {
+  if (!displayList) {
     return (
-      <View>
+      <View style={styles.container}>
         <Text>No messages</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Button
-        title="Find Nearby Events!"
-        onPress={() => history.push("/nearbyevents")}
-      />
-      <Button
-        title="Create An Event!"
-        onPress={() => history.push("/createevent")}
-      />
-      {chatList.map((event) => {
+    <FlatList
+      data={displayList}
+      style={{margin: 40}}
+      ItemSeparatorComponent={() => {
+        return <View style={{height: 1, backgroundColor: '#DDDDDF'}} />;
+      }}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({item}) => {
         return (
-          <TouchableHighlight
-            key={event.id}
-            onPress={() => joinEventRoom(event.id)}
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => joinEventRoom(item.id)}
             underlayColor="white"
+            style={{flexDirection: 'row', paddingVertical: 20}}
           >
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>{event.name}</Text>
-              <Text style={styles.buttonText}>{event.maxAttendees}</Text>
-              <Text style={styles.buttonText}>{event.location}</Text>
-              <Text style={styles.buttonText}>{event.description}</Text>
+            <View>
+              <Text style={{fontSize: 18}}>{item.name}</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         );
-      })}
-
-      <Button title="Logout" onPress={() => history.push("/")} />
-    </View>
+      }}
+    />
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
 });
 

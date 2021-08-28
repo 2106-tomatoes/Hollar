@@ -2,6 +2,7 @@ import React from 'react';
 import Main from './components/Main';
 import { Provider } from 'react-redux';
 import store from "./store"
+import { NavigationContainer } from '@react-navigation/native';
 
 
 class App extends React.Component {
@@ -9,7 +10,9 @@ class App extends React.Component {
     return (
       <>
         <Provider store={store} >
-          <Main />
+          <NavigationContainer>
+            <Main />
+          </NavigationContainer>
         </Provider>
       </>
     );

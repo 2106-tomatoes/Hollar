@@ -2,7 +2,7 @@ import axios from "axios";
 import { LOCALHOST8080, GOOGLE_MAPS_APIKEY } from "@env";
 
 const CREATE_EVENT = "CREATE_EVENT";
-const FIND_NEARBY_EVENT = "FIND_NEARBY_EVENT"
+const FIND_NEARBY_EVENT = "FIND_NEARBY_EVENT";
 
 // not needed for now, thunk pushes to home and renders all the events
 const createEvent = (event) => {
@@ -26,19 +26,24 @@ export const createEventThunk = (
   description,
   eventObjectType,
   user,
-  history
+  attendanceDate,
+  navigation
 ) => {
   return async (dispatch) => {
     try {
       const numberAttendees = parseInt(maxAttendees, 10);
-      const { data } = await axios.post(`${LOCALHOST8080}/api/events?user=${user.id}`, {
-        name,
-            maxAttendees:numberAttendees,
-            location,
-            description,
-            eventObjectType,
-      });
-      history.push("/home");
+      const { data } = await axios.post(
+        `${LOCALHOST8080}/api/events?user=${user.id}`,
+        {
+          name,
+          maxAttendees: numberAttendees,
+          location,
+          description,
+          eventObjectType,
+          attendanceDate,
+        }
+      );
+      navigation.navigate("Events");
     } catch (error) {
       console.log(error);
     }
@@ -48,10 +53,12 @@ export const createEventThunk = (
 export const findEventsThunk = (origin, radius = 20) => {
   return async (dispatch) => {
     try {
-      const { data: openEvents } = await axios.get(`${LOCALHOST8080}/api/events`)
+      const { data: openEvents } = await axios.get(
+        `${LOCALHOST8080}/api/events`
+      );
 
       //COMMENT OUT THIS LINE WHEN YOU WANT TO USE GOOGLE API!!!
-      dispatch(findEvent(openEvents))
+      dispatch(findEvent(openEvents));
 
       //UNCOMMENT TO USE GOOGLE API!!!!!!
 
@@ -90,25 +97,23 @@ export const findEventsThunk = (origin, radius = 20) => {
 
       // console.log("availableEvents", availableEvents)
 
-
       // dispatch(findEvent(availableEvents))
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-}
+  };
+};
 
 /**
  * REDUCER
  */
-const eventReducer =  (state = [], action) => {
+const eventReducer = (state = [], action) => {
   switch (action.type) {
     case FIND_NEARBY_EVENT:
-      return action.events
+      return action.events;
     default:
       return state;
   }
-}
+};
 
-export default eventReducer
-
+export default eventReducer;
