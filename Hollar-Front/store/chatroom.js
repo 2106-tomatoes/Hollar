@@ -5,6 +5,7 @@ import { LOCALHOST8080 } from "@env";
 //Actions
 const GET_CHAT = 'GET_CHAT';
 const SEND_CHAT = 'SEND_CHAT'
+const DISPLAY_USER_STATUS = 'DISPLAY_USER_STATUS';
 
 //Action creators
 export function getChat(messages) {
@@ -18,6 +19,13 @@ export function sendChat(msg) {
   return {
     type: SEND_CHAT,
     msg
+  }
+}
+
+export function displayUserStatus(status) {
+  return {
+    type: DISPLAY_USER_STATUS,
+    status
   }
 }
 
@@ -45,9 +53,10 @@ export const sendChatThunk = (eventId, chatPackage) => {
   };
 };
 
+
 const initialState = {
   messages: [],
-  //maybe a side thing
+  // userStatus: ''
 };
 
 export default function chatroomReducer(state = initialState, action) {
@@ -55,9 +64,10 @@ export default function chatroomReducer(state = initialState, action) {
     case GET_CHAT:
       return {...state, messages: action.messages}
     case SEND_CHAT:
-    // console.log("action.msg.messageContent", action.msg.messageContent)
-    // console.log("Return statement in reducer", {...state, messages: [...state.messages, action.msg.messageContent]})
       return {...state, messages: [...state.messages, action.msg]}
+    case DISPLAY_USER_STATUS: {
+      return {...state, messages: [...state.messages, action.status]}
+    }
     default:
       return state;
   }

@@ -20,6 +20,7 @@ const Home = (props) => {
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState([]);
   const user = useSelector((state) => state.user);
+  const username = user.username;
   const chatList = useSelector((state) => state.home.chatList);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -63,7 +64,7 @@ const Home = (props) => {
     console.log("Home, joinEventRoom, eventId:", eventId);
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
-    socketio.emit("joinRoom", eventId);
+    socketio.emit('joinRoom', { username, eventId });
   }
 
   const searchHandler = (searchInput) => {

@@ -5,12 +5,11 @@ import {
   View,
   Button,
   TouchableHighlight,
+  Pressable,
   TextInput,
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
-// import { io } from "socket.io-client";
-// import IP from "../env";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
@@ -20,6 +19,7 @@ const Chatroom = (props) => {
   const { history, getChat, message, user } = props;
   const navigation = useNavigation();
   const userId = user.id;
+  const username = user.username;
   const [input, setInput] = useState("");
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
@@ -31,7 +31,14 @@ const Chatroom = (props) => {
 
   useEffect(() => {
     getChat(eventId);
+
     navigation.setOptions({ headerTitle: eventTitle });
+
+    //ComponentWillUnmount and leave room
+    return function leaveEventRoom() {
+      socketio.emit('leaveRoom', { username, eventId });
+      console.log('Chatroom, after emitting leaveRoom');
+    }
   }, []);
 
   async function submitChatMessage(e) {
@@ -44,17 +51,38 @@ const Chatroom = (props) => {
     setInput("");
   }
 
-  // console.log('Chatroom, store state:', props.state);
+  function handleDirectMsg(id) {
+    console.log('long press, id:', id, typeof id);
+  }
+
+
 
   return (
     <View style={styles.container}>
-      {message.map((mes) => {
+      {message.map((msg) => {
         // console.log('mes',mes)
         return (
-          <View key={mes.id}>
-            <Text>{mes.user.username}:</Text>
-            <Text>{mes.messageContent}</Text>
+          
+          <View key={msg.id}>
+            <Pressable 
+              onLongPress={() => handleDirectMsg(msg.id)}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? 'rgb(210, 230, 255)'
+                    : 'white'
+                },
+                styles.wrapperCustom
+              ]}>
+              {({ pressed }) => (
+                <Text style={styles.text}>
+                  {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
+                </Text>
+              )}
+              {/* <Text>{msg.user.username}: {msg.messageContent}</Text> */}
+            </Pressable>
           </View>
+         
         );
       })}
 
@@ -87,9 +115,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     height: 20,
-    fontSize: 10,
+    fontSize: 14,
     paddingLeft: 20,
     paddingRight: 20,
+  },
+  text: {
+    fontSize: 14
+  },
+  wrapperCustom: {
+    borderRadius: 8,
+    padding: 6
   },
 });
 
