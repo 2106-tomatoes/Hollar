@@ -23,29 +23,50 @@ const init = async () => {
         console.log('user disconnected: ', socket.id);
       });
       
+      let joinedNum = 0;
+      let leaveNum = 0;
       //Listen for joinRoom to join the client to a room by eventId
-      socket.on('joinRoom', (eventId) => {
+      socket.on('joinRoom', (usernameAndEventId) => {
+        const eventId = usernameAndEventId.eventId;
+        const username = usernameAndEventId.username;
         socket.join(`eventRm${eventId}`);
+        console.log('socket.rooms:', socket.rooms);
+
+        io.to(`eventRm${eventId}`).emit('joinedRoom', {
+          id: `joined${++joinedNum}`,
+          user: {
+            username: `${username}`
+          },
+          messageContent: ` has joined the room`
+        });
+        console.log('socket, joinedNum:', joinedNum);
       });
 
       //Listen for chatMsg from client and emit chatMsg to room
       socket.on('chatMessage', (message) => {
         const eventId = message.eventId;
-        console.log('socket.rooms:', socket.rooms);
 
         //Emit chatMsg to clients in room
         io.to(`eventRm${eventId}`).emit('getMessage', message);
         
       })
 
-      //Listen for leaveRoom from client and leave the room for client
-      // socket.on('leaveRoom', (usernameAndEventId) => {
-      //   const eventId = usernameAndEventId.eventId;
-      //   const username = usernameAndEventId.username;
-      //   socket.leave(`eventRm${eventId}`);
-      //   console.log('socket.rooms:', socket.rooms);
-      //   io.to(`eventRm${eventId}`).emit('leaveRoom', `${username} has left the room`);
-      // })
+      // Listen for leaveRoom from client and leave the room for client
+      socket.on('leaveRoom', (usernameAndEventId) => {
+        const eventId = usernameAndEventId.eventId;
+        const username = usernameAndEventId.username;
+        socket.leave(`eventRm${eventId}`);
+        console.log('socket.rooms:', socket.rooms);
+
+        io.to(`eventRm${eventId}`).emit('leaveRoom', {
+          id: `leave${++leaveNum}`,
+          user: {
+            username: `${username}`
+          },
+          messageContent: ` has left the room`
+        });
+        console.log('socket, leaveNum:', leaveNum);
+      })
     });
     
   } catch (ex) {

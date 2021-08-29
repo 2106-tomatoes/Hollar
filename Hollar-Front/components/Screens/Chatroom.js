@@ -5,6 +5,7 @@ import {
   View,
   Button,
   TouchableHighlight,
+  Pressable,
   TextInput,
 } from "react-native";
 import { Link } from "react-router-native";
@@ -13,10 +14,10 @@ import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 import socketio from '../../socket';
 
 const Chatroom = (props) => {
-  const { history, getChat, message, user } = props 
+  const { history, getChat, messages, user } = props 
 
   const userId = user.id;
-  // const username = user.username;
+  const username = user.username;
   const [input, setInput] = useState("");
   const eventId = props.match.params.id
   const chatPackage = {
@@ -29,9 +30,10 @@ const Chatroom = (props) => {
     getChat(eventId);
 
     //ComponentWillUnmount and leave room
-    // return function leaveEventRoom() {
-    //   socketio.emit('leaveRoom', { username, eventId });
-    // }
+    return function leaveEventRoom() {
+      socketio.emit('leaveRoom', { username, eventId });
+      console.log('Chatroom, after emitting leaveRoom');
+    }
 
   }, []);
   
@@ -46,18 +48,36 @@ const Chatroom = (props) => {
     setInput("");
   }
 
+  function handleDirectMsg(id) {
+    console.log('long press, id:', id, typeof id);
+  }
 
-  // console.log('Chatroom, store state:', props.state);  
 
   return (
     <View style={styles.container}>
-      {message.map((mes) => {
-          // console.log('mes',mes)
+      {messages.map((msg) => {
         return (
-          <View key={mes.id}>
-            <Text>{mes.user.username}:</Text>
-            <Text>{mes.messageContent}</Text>
+          
+          <View key={msg.id}>
+            <Pressable 
+              onLongPress={() => handleDirectMsg(msg.id)}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? 'rgb(210, 230, 255)'
+                    : 'white'
+                },
+                styles.wrapperCustom
+              ]}>
+              {({ pressed }) => (
+                <Text style={styles.text}>
+                  {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
+                </Text>
+              )}
+              {/* <Text>{msg.user.username}: {msg.messageContent}</Text> */}
+            </Pressable>
           </View>
+         
         );
       })}
 
@@ -90,17 +110,23 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     height: 20,
-    fontSize: 10,
+    fontSize: 14,
     paddingLeft: 20,
     paddingRight: 20,
+  },
+  text: {
+    fontSize: 14
+  },
+  wrapperCustom: {
+    borderRadius: 8,
+    padding: 6
   },
 });
 
 const mapStateToProps = (state) => {
   return {
-    message: state.chatroom.messages,
-    user: state.user
-    // state: state
+    messages: state.chatroom.messages,
+    user: state.user,
   };
 };
 

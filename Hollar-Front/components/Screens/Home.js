@@ -14,6 +14,7 @@ import socketio from '../../socket';
 const Home = (props) => {
   const { history, chatList } = props;
   const user = useSelector((state) => state.user);
+  const username = user.username;
 
   useEffect(() => {
     props.getChatList(user.id);
@@ -26,7 +27,7 @@ const Home = (props) => {
     console.log('Home, joinEventRoom, eventId:', eventId);
     history.push(`/chatroom/${eventId}`);
     //Emit to join/create the room
-    socketio.emit('joinRoom', eventId);
+    socketio.emit('joinRoom', { username, eventId });
   }
 
 

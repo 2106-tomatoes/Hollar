@@ -7,11 +7,13 @@ const Message = require("./models/Message");
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
 Event.hasMany(Message);
 Message.belongsTo(Event);
 
 User.belongsToMany(Event, {through: 'Attendees'});
 Event.belongsToMany(User, {through: 'Attendees'});
+
 
 module.exports = {
   db,

@@ -20,8 +20,6 @@ export default class Routes extends React.Component {
 
   render() {
 
-    const socket = this.props.socket
-
     return (
       <NativeRouter>
         <View style={styles.container}>
@@ -32,7 +30,7 @@ export default class Routes extends React.Component {
             <Route exact path="/home" component={Home} />
             <Route exact path="/createevent" component={CreateEvent} />
             <Route exact path="/nearbyevents" component={NearbyEvent} />
-            <Route path="/chatroom/:id" render={({match})=><Chatroom socket={socket} match={match}/>} />
+            <Route path="/chatroom/:id" component={Chatroom} />
           </Switch>
         </View>
       </NativeRouter>

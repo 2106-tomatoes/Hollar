@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput } from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
-import { setUserThunk } from '../../store/user'
+import { setUserThunk } from '../../store/user';
+import { Button, Icon } from '@ui-kitten/components';
 
+const FacebookIcon = (props) => (
+  <Icon name='facebook' {...props} />
+);
 
 const Login = (props) => {
   const history = props.history;
@@ -41,7 +45,8 @@ const Login = (props) => {
         onChangeText={passwordHandler}
         value={password}
       />
-      <Button title="Login" onPress={handleSubmit} />
+      {/* <Button title="Login" onPress={handleSubmit} /> */}
+      <Button accessoryLeft={FacebookIcon} onPress={handleSubmit}>Login with Facebook</Button>
     </View>
   );
 };
