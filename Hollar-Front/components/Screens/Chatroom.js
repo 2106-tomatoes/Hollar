@@ -4,8 +4,8 @@ import {
   Text,
   View,
   Button,
-  TouchableHighlight,
   Pressable,
+  Modal,
   TextInput,
 } from "react-native";
 import { Link } from "react-router-native";
@@ -28,6 +28,8 @@ const Chatroom = (props) => {
     userId,
     eventId,
   };
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getChat(eventId);
@@ -53,12 +55,37 @@ const Chatroom = (props) => {
 
   function handleDirectMsg(id) {
     console.log('long press, id:', id, typeof id);
+    setModalVisible(true);
   }
 
 
 
   return (
     <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          console.log("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+            
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Go Back</Text>
+            </Pressable>
+          </View>
+        </View>
+
+      </Modal>
+
       {message.map((msg) => {
         // console.log('mes',mes)
         return (
@@ -66,14 +93,16 @@ const Chatroom = (props) => {
           <View key={msg.id}>
             <Pressable 
               onLongPress={() => handleDirectMsg(msg.id)}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: pressed
-                    ? 'rgb(210, 230, 255)'
-                    : 'white'
-                },
-                styles.wrapperCustom
-              ]}>
+              style={[styles.button, styles.buttonOpen]}
+            >
+              {/* // style={({ pressed }) => [
+              //   {
+              //     backgroundColor: pressed
+              //       ? 'rgb(210, 230, 255)'
+              //       : 'white'
+              //   },
+              //   styles.wrapperCustom
+              // ]}> */}
               {({ pressed }) => (
                 <Text style={styles.text}>
                   {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
@@ -126,6 +155,47 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 6
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
 });
 
 const mapStateToProps = (state) => {
