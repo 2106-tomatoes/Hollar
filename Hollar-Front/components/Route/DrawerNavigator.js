@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { StackActions } from '@react-navigation/native';
-import HomeNavigator from "./HomeNavigator";
 import NearbyEvents from "../Screens/NearbyEvents";
 import CreateEvent from "../Screens/CreateEvent";
 import Home from "../Screens/Home";
