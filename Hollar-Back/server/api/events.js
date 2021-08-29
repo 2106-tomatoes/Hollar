@@ -8,7 +8,6 @@ module.exports = router;
 
 router.get("/", async (req,res,next) => {
   try {
-    console.log("new Date(): ", new Date())
     let date_ob = new Date();
 
     // current date
@@ -22,7 +21,6 @@ router.get("/", async (req,res,next) => {
     let year = date_ob.getFullYear();
 
     // prints date in YYYY-MM-DD format
-    console.log(year + "-" + month + "-" + date);
     const dateFormat = year + "-" + month + "-" + date
 
     const events = await Event.findAll({
@@ -32,19 +30,18 @@ router.get("/", async (req,res,next) => {
         }
       }
     })
-    console.log("events", events)
     res.json (events);
   } catch (error) {
     next(error)
   }
 } )
 
-router.get("/:id", async (req,res,next) => {
+router.get("/:eventId", async (req,res,next) => {
   try {
     //console.log("userId in backend", req.params.id);
-    const user = await User.findByPk(req.params.id);
+    const event = await Event.findByPk(req.params.eventId)
 
-    res.send (await user.getEvents());
+    res.send (event);
   } catch (error) {
     //console.log('stuffs broke yo' + error);
     next(error)

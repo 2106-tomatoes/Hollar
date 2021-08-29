@@ -19,7 +19,7 @@ const createUser = (user) => {
   }
 }
 
-export const setUserThunk = (username, password, history) => {
+export const setUserThunk = (username, password, navigation) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get(`${LOCALHOST8080}/api/users/login`, {headers: {
@@ -27,10 +27,10 @@ export const setUserThunk = (username, password, history) => {
         password
       }})
       if (data === null) {
-        history.push('/login')
+        navigation.navigate("Login")
       } else {
         dispatch(setUser(data))
-        history.push('/home')
+        navigation.navigate("Drawer")
       }
     } catch (error) {
       console.log(error)
@@ -38,14 +38,14 @@ export const setUserThunk = (username, password, history) => {
   }
 }
 
-export const createUserThunk = (username, firstName, lastName, email, zipCode, city, state, password, phoneNumber, history) => {
+export const createUserThunk = (username, firstName, lastName, email, zipCode, city, state, password, phoneNumber, navigation) => {
   return async (dispatch) => {
     try {
       const numberZip = parseInt(zipCode, 10)
       const { data } = await axios.post(`${LOCALHOST8080}/api/users`, {username, firstName, lastName, email, zipCode: numberZip, city, state, password, phoneNumber})
       dispatch(createUser(data))
       console.log("data", data)
-      history.push('/home')
+      navigation.navigate("Drawer")
     } catch (error) {
       console.log(error)
     }

@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect, useDispatch } from "react-redux";
@@ -6,6 +7,8 @@ import { setUserThunk } from '../../store/user'
 
 const Login = (props) => {
   const history = props.history;
+  const navigation = useNavigation()
+
 
   const dispatch = useDispatch();
 
@@ -21,7 +24,7 @@ const Login = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    dispatch(setUserThunk(username, password, history));
+    dispatch(setUserThunk(username, password, navigation));
   };
 
   return (
@@ -42,6 +45,7 @@ const Login = (props) => {
         value={password}
       />
       <Button title="Login" onPress={handleSubmit} />
+      <Button title="Back" onPress={() => navigation.goBack()} />
     </View>
   );
 };
