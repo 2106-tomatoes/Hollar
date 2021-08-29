@@ -12,20 +12,22 @@ import CreateEvent from "../Screens/CreateEvent";
 import NearbyEvent from "../Screens/NearbyEvents";
 import DrawerNavigator from "./DrawerNavigator";
 
-const LoginNavigator = () => {
+const SinglePageNavigator = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-      <Stack.Navigator initialRouteName="StartPage" screenOptions={{headerShown: false}}>
+      <Stack.Navigator initialRouteName="StartPage" screenOptions={{headerShown: false, gestureEnabled: true}}>
         <Stack.Screen name="StartPage" component={StartUp} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignUp} />
+        <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: false}} />
         <Stack.Screen name="Drawer" component={DrawerNavigator}  options={{gestureEnabled: false}} />
+
       </Stack.Navigator>
   );
 };
 
-export default LoginNavigator;
+export default SinglePageNavigator;
 
 const styles = StyleSheet.create({});
 

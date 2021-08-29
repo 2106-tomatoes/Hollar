@@ -7,6 +7,7 @@ import {
   Button,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { getChatListThunk } from "../../store/home";
@@ -16,11 +17,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const Home = (props) => {
   const { history } = props;
-  const [displayList, setDisplayList] = useState([]);
+  const [search, setSearch] = useState("");
+  const [searchList, setSearchList] = useState([]);
   const user = useSelector((state) => state.user);
   const chatList = useSelector((state) => state.home.chatList);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  let displayList = [];
 
   useEffect(() => {
     navigation.addListener("focus", () => {
@@ -30,8 +33,13 @@ const Home = (props) => {
   }, []);
 
   useEffect(() => {
-    setDisplayList(chatList);
-  }, [chatList.length]);
+    if (search === "") return;
+
+    const searchEvents = chatList.filter((event) => {
+      return event.name.includes(search);
+    });
+    setSearchList(searchEvents);
+  }, [search]);
 
   const getCurrentLocation = async () => {
     // if(!Location.hasServicesEnabledAsync()){
@@ -51,14 +59,22 @@ const Home = (props) => {
     dispatch(setOrigin(getCurrentLocation));
   };
 
-  function joinEventRoom(eventId) {
+  function joinEventRoom(eventId, eventTitle) {
     console.log("Home, joinEventRoom, eventId:", eventId);
-    navigation.navigate("Chatroom", { eventId });
+    navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
     socketio.emit("joinRoom", eventId);
   }
-  // console.log("chatList", chatList);
-  // console.log("displayList", displayList);
+
+  const searchHandler = (searchInput) => {
+    setSearch(searchInput);
+  };
+
+  if (search === "") {
+    displayList = chatList;
+  } else {
+    displayList = searchList;
+  }
 
   if (!displayList) {
     return (
@@ -69,28 +85,39 @@ const Home = (props) => {
   }
 
   return (
-    <FlatList
-      data={displayList}
-      style={{margin: 40}}
-      ItemSeparatorComponent={() => {
-        return <View style={{height: 1, backgroundColor: '#DDDDDF'}} />;
-      }}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({item}) => {
-        return (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => joinEventRoom(item.id)}
-            underlayColor="white"
-            style={{flexDirection: 'row', paddingVertical: 20}}
-          >
-            <View>
-              <Text style={{fontSize: 18}}>{item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      }}
-    />
+    <>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.textInput}
+          autoCapitalize="none"
+          placeholder="Search Events"
+          onChangeText={searchHandler}
+          value={search}
+        />
+      </View>
+      <FlatList
+        data={displayList}
+        style={{ marginHorizontal: 40 }}
+        ItemSeparatorComponent={() => {
+          return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
+        }}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => joinEventRoom(item.id, item.name)}
+              underlayColor="white"
+              style={{ flexDirection: "row", paddingVertical: 20 }}
+            >
+              <View>
+                <Text style={{ fontSize: 18 }}>{item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -99,6 +126,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     // alignItems: "center",
     // justifyContent: "center",
+  },
+  inputContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
+    margin: 12,
+  },
+  textInput: {
+    backgroundColor: "#DDDDDE",
+    borderRadius: 9999,
+    height: 40,
+    width: 325,
+    margin: 12,
+    paddingHorizontal: 20,
   },
 });
 
