@@ -11,15 +11,18 @@ import {
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
-import socketio from '../../socket';
+import socketio from "../../socket";
+import { useNavigation } from "@react-navigation/native";
 
 const Chatroom = (props) => {
-  const { history, getChat, messages, user } = props 
-
+  // console.log("props in chatroom", props)
+  const { history, getChat, message, user } = props;
+  const navigation = useNavigation();
   const userId = user.id;
   const username = user.username;
   const [input, setInput] = useState("");
-  const eventId = props.match.params.id
+  const eventId = props.route.params.eventId;
+  const eventTitle = props.route.params.eventTitle;
   const chatPackage = {
     messageContent: input,
     userId,
@@ -29,22 +32,22 @@ const Chatroom = (props) => {
   useEffect(() => {
     getChat(eventId);
 
+    navigation.setOptions({ headerTitle: eventTitle });
+
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
       socketio.emit('leaveRoom', { username, eventId });
       console.log('Chatroom, after emitting leaveRoom');
     }
-
   }, []);
-  
+
   async function submitChatMessage(e) {
     e.preventDefault();
 
     const postResponse = await props.sendChat(eventId, chatPackage);
     // console.log('Chatroom, postResponse', postResponse);
-    socketio.emit('chatMessage', postResponse);
+    socketio.emit("chatMessage", postResponse);
     // console.log('Chatroom, emitted');
-
     setInput("");
   }
 
@@ -53,9 +56,11 @@ const Chatroom = (props) => {
   }
 
 
+
   return (
     <View style={styles.container}>
-      {messages.map((msg) => {
+      {message.map((msg) => {
+        // console.log('mes',mes)
         return (
           
           <View key={msg.id}>
@@ -91,9 +96,9 @@ const Chatroom = (props) => {
         maxLength={20}
       />
 
-      <Link to={"/home"}>
+      {/* <Link to={"/home"}>
         <Text>Back to Home</Text>
-      </Link>
+      </Link> */}
     </View>
   );
 };
@@ -125,15 +130,17 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    messages: state.chatroom.messages,
+    message: state.chatroom.messages,
     user: state.user,
+    // state: state
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getChat: (eventId) => dispatch(getChatThunk(eventId)),
-    sendChat: (eventId, chatPackage) => dispatch(sendChatThunk(eventId, chatPackage)),
+    sendChat: (eventId, chatPackage) =>
+      dispatch(sendChatThunk(eventId, chatPackage)),
   };
 };
 

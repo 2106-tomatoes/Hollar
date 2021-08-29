@@ -1,8 +1,9 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native"; //Button here
+import { StyleSheet, Text, View, TextInput, Button } from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
 import { setUserThunk } from '../../store/user';
-import { Button, Icon } from '@ui-kitten/components';
+// import { Button, Icon } from '@ui-kitten/components';
 
 const FacebookIcon = (props) => (
   <Icon name='facebook' {...props} />
@@ -10,6 +11,8 @@ const FacebookIcon = (props) => (
 
 const Login = (props) => {
   const history = props.history;
+  const navigation = useNavigation()
+
 
   const dispatch = useDispatch();
 
@@ -25,7 +28,7 @@ const Login = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    dispatch(setUserThunk(username, password, history));
+    dispatch(setUserThunk(username, password, navigation));
   };
 
   return (
@@ -45,8 +48,8 @@ const Login = (props) => {
         onChangeText={passwordHandler}
         value={password}
       />
-      {/* <Button title="Login" onPress={handleSubmit} /> */}
-      <Button accessoryLeft={FacebookIcon} onPress={handleSubmit}>Login with Facebook</Button>
+      <Button title="Login" onPress={handleSubmit} />
+      <Button title="Back" onPress={() => navigation.goBack()} />
     </View>
   );
 };

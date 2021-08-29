@@ -1,77 +1,156 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, Dimensions} from 'react-native'
-import * as Location from 'expo-location';
-import {setOrigin} from '../../store/origin'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import * as Location from "expo-location";
+import { setOrigin } from "../../store/origin";
+import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
+import { findEventsThunk } from "../../store/event";
 
 const NearbyEvents = () => {
-    const origin = useSelector(state => state.origin)
+  const origin = useSelector((state) => state.origin);
+  const events = useSelector((state) => state.events);
+  const [search, setSearch] = useState("");
+  const [searchEvents, setsearchEvents] = useState([]);
+  const dispatch = useDispatch();
+  let displayEvents = [];
 
-    const dispatch = useDispatch()
+  const searchHandler = (searchInput) => {
+    setSearch(searchInput);
+  };
 
-    
-    useEffect(() => {
-        //Uncomment getCurrentLocation() when not testing
-        // getCurrentLocation()
-        //comment out below after testing
-        dispatch(setOrigin({latitude:38.8977, longitude:-77.0365}))
-      }, []);
-
-  
-    const getCurrentLocation = async () => {
-        // if(!Location.hasServicesEnabledAsync()){
-            await Location.requestForegroundPermissionsAsync()
-        // }    
-        console.log('address',await Location.geocodeAsync('1600 Pennsylvania Ave NW, Washington, DC 20006'))
-        const {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync()
-        const getCurrentLocation = {latitude,longitude}
-        console.log('get',getCurrentLocation)
-        dispatch(setOrigin(getCurrentLocation))
-    } 
-
-
-    if (origin === null) {
-      return (
-        <View/>
-      )
-    } else {
-    
-      return (
-        <View style={styles.container}>
-          <MapView
-            style={{ flex: 1}}
-            mapType="mutedStandard"
-            initialRegion={{
-              latitude: origin.latitude,
-              longitude: origin.longitude,
-              latitudeDelta: 0.008,
-              longitudeDelta: 0.008,
-            }}
-          ></MapView>
-                <TextInput
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    placeholder="Search Hobbies"
-                    // onChangeText={passwordHandler}
-                    // value={password}
-                />
-        </View>
-    )
+  useEffect(() => {
+    if (origin) {
+      dispatch(findEventsThunk(origin));
     }
-}
+  }, [events.length]);
 
-export default NearbyEvents
+  useEffect(() => {
+    if (search === "") return;
 
-const width = Dimensions.get('window').width;
-console.log("in map", width)
+    const searchEvents = events.filter((event) => {
+      return event.name.includes(search) || event.description.includes(search);
+    });
+    setsearchEvents(searchEvents);
+  }, [search]);
+
+  if (search === "") {
+    displayEvents = events;
+  } else {
+    displayEvents = searchEvents;
+  }
+
+  if (origin === null || events === undefined) {
+    console.log("this componenet went the null/undefined");
+    return <View />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <MapView
+          style={{ flex: 1 }}
+          mapType="mutedStandard"
+          initialRegion={{
+            latitude: origin.latitude,
+            longitude: origin.longitude,
+            latitudeDelta: 0.003,
+            longitudeDelta: 0.003,
+          }}
+        >
+          {origin !== null && (
+            <Marker
+              coordinate={{
+                latitude: origin.latitude,
+                longitude: origin.longitude,
+              }}
+              title="Current Location"
+              identifier="current"
+              pinColor="black"
+            />
+          )}
+        </MapView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            autoCapitalize="none"
+            placeholder="Search Events"
+            onChangeText={searchHandler}
+            value={search}
+          />
+        </View>
+        <FlatList
+        data={displayEvents}
+        style={{ flex: 1 }}
+        keyExtractor={item=>item.id.toString()}
+        ItemSeparatorComponent={() => {
+          return <View style={{height: 1, backgroundColor: '#DDDDDF'}} />;
+        }}
+        renderItem={({item}) => {
+          return (
+            <TouchableOpacity
+            // onPress={() => {}}
+            style={{ margin: 15 }}
+          >
+            <Text>{item.name}</Text>
+            <Text>{item.location}</Text>
+            <Text>{item.maxAttendees}</Text>
+            <Text>{item.attendanceDate}</Text>
+          </TouchableOpacity>
+          )
+        }}
+        />
+        {/* <View style={{ flex: 4 }}>
+          {displayEvents.map((event) => {
+            return (
+              <TouchableOpacity
+                // onPress={() => {}}
+                key={event.id}
+                style={{ margin: 15 }}
+              >
+                <Text>{event.name}</Text>
+                <Text>{event.location}</Text>
+                <Text>{event.maxAttendees}</Text>
+                <Text>{event.attendanceDate}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View> */}
+      </View>
+    );
+  }
+};
+
+export default NearbyEvents;
+
+const width = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   container: {
-    flex:1,
- 
-    width:width
+    flex: 1,
+    width: width,
+  },
+  inputContainer: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
+    margin: 12,
+    // height: "30%",
   },
   textInput: {
-    flex: 1
-  }
-})
+    backgroundColor: "#DDDDDE",
+    borderRadius: 9999,
+    height: 40,
+    width: 300,
+    margin: 12,
+    // borderWidth: 1,
+    paddingHorizontal: 20,
+  },
+});
