@@ -20,7 +20,7 @@ const SinglePageNavigator = () => {
         <Stack.Screen name="StartPage" component={StartUp} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignUp} />
-        <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: false}} />
+        <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
         <Stack.Screen name="Drawer" component={DrawerNavigator}  options={{gestureEnabled: false}} />
 
       </Stack.Navigator>
