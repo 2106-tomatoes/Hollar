@@ -14,6 +14,7 @@ import { setOrigin } from "../../store/origin";
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
 import { findEventsThunk } from "../../store/event";
+import { useNavigation } from "@react-navigation/native";
 
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
@@ -22,6 +23,7 @@ const NearbyEvents = () => {
   const [searchEvents, setsearchEvents] = useState([]);
   const dispatch = useDispatch();
   let displayEvents = [];
+  const navigation = useNavigation();
 
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
@@ -97,6 +99,7 @@ const NearbyEvents = () => {
             <TouchableOpacity
             // onPress={() => {}}
             style={{ margin: 15 }}
+            onPress={()=>navigation.navigate("SingleEvent", { eventId:item.id, eventTitle:item.name })}
           >
             <Text>{item.name}</Text>
             <Text>{item.location}</Text>

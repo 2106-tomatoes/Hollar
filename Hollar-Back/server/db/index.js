@@ -3,6 +3,8 @@ const db = require("./db");
 const User = require("./models/User");
 const Event = require("./models/Event");
 const Message = require("./models/Message");
+
+
 //associations could go here!
 
 User.hasMany(Message);
@@ -19,5 +21,6 @@ module.exports = {
     User,
     Event,
     Message,
+
   },
 };

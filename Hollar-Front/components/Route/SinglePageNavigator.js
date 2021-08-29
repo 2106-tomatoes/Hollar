@@ -11,6 +11,7 @@ import StartUp from "../Screens/StartUp";
 import CreateEvent from "../Screens/CreateEvent";
 import NearbyEvent from "../Screens/NearbyEvents";
 import DrawerNavigator from "./DrawerNavigator";
+import SingleEvent from "../Screens/SingleEvent"
 
 const SinglePageNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -20,8 +21,9 @@ const SinglePageNavigator = () => {
         <Stack.Screen name="StartPage" component={StartUp} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignUp} />
-        <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: false}} />
+        <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
         <Stack.Screen name="Drawer" component={DrawerNavigator}  options={{gestureEnabled: false}} />
+        <Stack.Screen name="SingleEvent" component={SingleEvent} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
 
       </Stack.Navigator>
   );

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { models: { User }} = require('../db')
+const { models: { User, Event}} = require('../db')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -43,19 +43,9 @@ router.get("/:userId/events", async (req,res,next) => {
   }
 } )
 
-// router.get('/:id', async (req, res, next) => {
-//   try {
-//     const users = await User.findAll({
-//       // explicitly select only the id and username fields - even though
-//       // users' passwords are encrypted, it won't help if we just
-//       // send everything to anyone who asks!
-//       attributes: ['id', 'username']
-//     })
-//     res.json(users)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
+
+
+
 
 router.post('/', async (req,res,next) => {
   try {
@@ -66,3 +56,26 @@ router.post('/', async (req,res,next) => {
     next(error)
   }
 })
+
+router.post("/:userId/events/:eventId", async (req,res,next) => {
+  try {
+    //console.log("userId in backend", req.params.id);
+    const event = await Event.findByPk(req.params.eventId);
+   
+    await event.addUser(req.params.userId)
+     const newEvent = await Event.findOne({
+      where:{
+        id:req.params.eventId
+      },
+      include:{
+        model:User
+      }
+    });
+    
+    res.send(newEvent)
+   
+  } catch (error) {
+    //console.log('stuffs broke yo' + error);
+    next(error)
+  }
+} )
