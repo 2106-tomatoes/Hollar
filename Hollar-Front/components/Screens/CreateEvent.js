@@ -40,6 +40,7 @@ const CreateEvent = (props) => {
     setEventObjectType(eventObjectTypeInput);
   };
   const attendanceDateHandler = (attendanceDateInput) => {
+  
     setAttendanceDate(attendanceDateInput);
   };
 
@@ -51,18 +52,22 @@ const CreateEvent = (props) => {
         maxAttendees,
         location,
         description,
-        eventObjectType,
         user,
         attendanceDate,
         navigation
       )
     );
+    setName("");
+    setmaxAttendees("");
+    setlocation("");
+    setDescription("");
+    setAttendanceDate("");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Create Event</Text>
-      <View style={{flex: 20}}>
+      <View style={{ flex: 20 }}>
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Name:</Text>
           <TextInput
@@ -99,7 +104,7 @@ const CreateEvent = (props) => {
             value={description}
           />
         </View>
-        <View style={styles.inputView}>
+        {/* <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Event Type:</Text>
           <TextInput
             autoCapitalize="none"
@@ -107,7 +112,7 @@ const CreateEvent = (props) => {
             onChangeText={eventObjectTypeHandler}
             value={eventObjectType}
           />
-        </View>
+        </View> */}
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Attendance Date:</Text>
           <TextInput
@@ -118,8 +123,8 @@ const CreateEvent = (props) => {
           />
         </View>
       </View>
-      <View style={{marginTop: 15}}>
-        <Button title="Create Event"  onPress={handleSubmit} />
+      <View style={{ marginTop: 15 }}>
+        <Button title="Create Event" onPress={handleSubmit} />
       </View>
     </View>
   );
@@ -133,17 +138,16 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     alignItems: "center",
     margin: 15,
-    marginBottom: 50
+    marginBottom: 50,
   },
   header: {
     fontSize: 24,
-    margin: 25,
     flex: 1,
   },
   inputHeader: {
     fontSize: 18,
     flex: 1,
-    alignItems: 'center'
+    alignItems: "center",
   },
   textInput: {
     flex: 1,
@@ -155,7 +159,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   inputView: {
-    margin: 10,
     flex: 1,
   },
 });

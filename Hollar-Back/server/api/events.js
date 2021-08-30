@@ -1,13 +1,15 @@
 const router = require("express").Router();
 const { Op } = require("sequelize");
+
 const {
-  models: { User , Event },
+  models: { User , Event, Attendees },
 
 } = require("../db");
 module.exports = router;
 
 router.get("/", async (req,res,next) => {
   try {
+    console.log("new Date(): ", new Date())
     let date_ob = new Date();
 
     // current date
@@ -21,6 +23,7 @@ router.get("/", async (req,res,next) => {
     let year = date_ob.getFullYear();
 
     // prints date in YYYY-MM-DD format
+    console.log(year + "-" + month + "-" + date);
     const dateFormat = year + "-" + month + "-" + date
 
     const events = await Event.findAll({
@@ -30,6 +33,7 @@ router.get("/", async (req,res,next) => {
         }
       }
     })
+    console.log("events", events)
     res.json (events);
   } catch (error) {
     next(error)
@@ -39,7 +43,15 @@ router.get("/", async (req,res,next) => {
 router.get("/:eventId", async (req,res,next) => {
   try {
     //console.log("userId in backend", req.params.id);
-    const event = await Event.findByPk(req.params.eventId)
+    const event = await Event.findOne({
+      where:{
+        id:req.params.eventId
+      },
+      include:{
+        model:User
+      }
+    });
+    
 
     res.send (event);
   } catch (error) {
@@ -49,12 +61,16 @@ router.get("/:eventId", async (req,res,next) => {
 } )
 
 router.post("/", async (req,res,next) => {
-  try {
+  try { 
+       console.log('req.body',req.body)
     const newEvent = await Event.create(req.body)
+
     await newEvent.addUser(req.query.user)
     res.json (newEvent);
   } catch (error) {
     next(error)
   }
 } )
+
+
 

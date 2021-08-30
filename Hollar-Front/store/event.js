@@ -24,13 +24,13 @@ export const createEventThunk = (
   maxAttendees,
   location,
   description,
-  eventObjectType,
   user,
   attendanceDate,
   navigation
 ) => {
   return async (dispatch) => {
     try {
+
       const numberAttendees = parseInt(maxAttendees, 10);
       const { data } = await axios.post(
         `${LOCALHOST8080}/api/events?user=${user.id}`,
@@ -39,7 +39,7 @@ export const createEventThunk = (
           maxAttendees: numberAttendees,
           location,
           description,
-          eventObjectType,
+          eventObjectType:'event',
           attendanceDate,
         }
       );
