@@ -14,9 +14,9 @@ import { getChatThunk, sendChatThunk } from "../../store/chatroom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
 
-const Chatroom = (props) => {
+const DirectMsgsRoom = (props) => {
   // console.log("props in chatroom", props)
-  const { history, getChat, message, user } = props;
+  const { getChat, message, user } = props;
   const navigation = useNavigation();
   const userId = user.id;
   const username = user.username;
@@ -29,8 +29,6 @@ const Chatroom = (props) => {
     eventId,
   };
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currMsg, setCurrMsg] = useState(null);
 
   useEffect(() => {
     getChat(eventId);
@@ -40,7 +38,6 @@ const Chatroom = (props) => {
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
       socketio.emit('leaveRoom', { username, eventId });
-      // console.log('Chatroom, after emitting leaveRoom');
     }
   }, []);
 
@@ -54,87 +51,19 @@ const Chatroom = (props) => {
     setInput("");
   }
 
-  function handleDirectMsg(user) {
-    console.log('handleDirectMsg, id:', user.id, typeof user.id);
-    const selectedUserToDm = currMsg.user;
-
-    setModalVisible(!modalVisible);
-    //Create DM event and pass in new DM eventId to DirectMsgsRoom
-
-    const eventId = 5; //A fixed eventId for now...
-    const eventTitle = "Direct Messages";
-    navigation.navigate("DirectMsgsRoom", { eventId, eventTitle });
-  }
-
-  function setUpModalThenDisplay(msg) {
-    setCurrMsg(msg);
-    setModalVisible(true);
-  }
-
+  console.log('DirectMsgsRoom, eventId:', eventId);
 
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          console.log("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              {currMsg === null ? '' : currMsg.user.username}{'\n'}
-              {currMsg === null ? '' : currMsg.user.state}
-            </Text>
-
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => handleDirectMsg(user)}
-            >
-              <Text style={styles.textStyle}>Send direct message</Text>
-            </Pressable>
-
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Go Back</Text>
-            </Pressable>
-          </View>
-        </View>
-
-      </Modal>
-
-      {message.map((msg) => {
+      <Text>DirectMsgsRoom</Text>
+      {/* {message.map((msg) => {
         return (
-          
           <View key={msg.id}>
-            <Pressable 
-              onLongPress={() => setUpModalThenDisplay(msg)}
-              style={[styles.button, styles.buttonOpen]}
-            >
-              {/* // style={({ pressed }) => [
-              //   {
-              //     backgroundColor: pressed
-              //       ? 'rgb(210, 230, 255)'
-              //       : 'white'
-              //   },
-              //   styles.wrapperCustom
-              // ]}> */}
-              {({ pressed }) => (
-                <Text style={styles.text}>
-                  {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
-                </Text>
-              )}
-              {/* <Text>{msg.user.username}: {msg.messageContent}</Text> */}
-            </Pressable>
+            <Text>{msg.user.username}: {msg.messageContent}</Text>
           </View>
          
         );
-      })}
+      })} */}
 
       <TextInput
         style={styles.textInput}
@@ -146,9 +75,6 @@ const Chatroom = (props) => {
         maxLength={20}
       />
 
-      {/* <Link to={"/home"}>
-        <Text>Back to Home</Text>
-      </Link> */}
     </View>
   );
 };
@@ -235,4 +161,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chatroom);
+export default connect(mapStateToProps, mapDispatchToProps)(DirectMsgsRoom);

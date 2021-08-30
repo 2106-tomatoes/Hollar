@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "../Screens/LoginScreen";
 import Home from "../Screens/Home";
 import Chatroom from "../Screens/Chatroom";
+import DirectMsgsRoom from "../Screens/DirectMsgsRoom";
 import SignUp from "../Screens/SignUp";
 import StartUp from "../Screens/StartUp";
 import CreateEvent from "../Screens/CreateEvent";
@@ -20,6 +21,7 @@ const SinglePageNavigator = () => {
         <Stack.Screen name="StartPage" component={StartUp} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignUp} />
+        <Stack.Screen name="DirectMsgsRoom" component={DirectMsgsRoom} />
         <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
         <Stack.Screen name="Drawer" component={DrawerNavigator}  options={{gestureEnabled: false}} />
 
