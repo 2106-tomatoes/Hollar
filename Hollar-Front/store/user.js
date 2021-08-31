@@ -3,6 +3,7 @@ import {LOCALHOST8080} from "@env"
 
 const SET_USER = 'SET_USER'
 const CREATE_USER = 'CREATE_USER'
+console.log('local',LOCALHOST8080)
 
 
 const setUser = (user) => {

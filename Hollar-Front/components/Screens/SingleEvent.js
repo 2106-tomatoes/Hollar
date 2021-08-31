@@ -11,6 +11,7 @@ import {
   FlatList
 } from "react-native";
 import { sendRSVPThunk } from "../../store/SingleEvent";
+import socketio from "../../socket";
 
 // import { io } from "socket.io-client";
 // import IP from "../env";
@@ -23,6 +24,7 @@ const SingleEvent = (props) => {
   const eventTitle = props.route.params.eventTitle;
   const singleEvent = useSelector((state) => state.singleEvent);
   const user = useSelector((state) => state.user);
+  const username = user.username;
   // const [disableButton, setDisableButton] = useState("false")
 
   const dispatch = useDispatch();
@@ -49,6 +51,14 @@ const SingleEvent = (props) => {
     disableButton=true;
   }
 
+  function joinEventRoom(eventId, eventTitle) {
+    console.log("Home, joinEventRoom, eventId:", eventId);
+    navigation.navigate("Chatroom", { eventId, eventTitle });
+    //Emit to join/create the room
+    socketio.emit('joinRoom', { username, eventId });
+  }
+
+
 
 
   return (
@@ -61,7 +71,7 @@ const SingleEvent = (props) => {
         Attendees: {attendanceNumber}/{maxAttendees}
       </Text>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Chatroom", { eventId, name })}
+        onPress={() => joinEventRoom(eventId, name )}
         underlayColor="white"
         style={{ flexDirection: "row", paddingVertical: 20 }}
       >

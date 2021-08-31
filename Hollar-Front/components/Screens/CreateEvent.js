@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createEventThunk } from "../../store/event";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { GOOGLE_MAPS_APIKEY } from "@env";
+
 
 const CreateEvent = (props) => {
   const dispatch = useDispatch();
@@ -20,8 +23,9 @@ const CreateEvent = (props) => {
   const [name, setName] = useState("");
   const [maxAttendees, setmaxAttendees] = useState("");
   const [location, setlocation] = useState("");
+  const [latitude, setlatitude] = useState("")
+  const [longitude, setlongitude] = useState("")
   const [description, setDescription] = useState("");
-  const [eventObjectType, setEventObjectType] = useState("");
   const [attendanceDate, setAttendanceDate] = useState("");
 
   const nameHandler = (nameInput) => {
@@ -36,9 +40,6 @@ const CreateEvent = (props) => {
   const descriptionHandler = (descriptionInput) => {
     setDescription(descriptionInput);
   };
-  const eventObjectTypeHandler = (eventObjectTypeInput) => {
-    setEventObjectType(eventObjectTypeInput);
-  };
   const attendanceDateHandler = (attendanceDateInput) => {
   
     setAttendanceDate(attendanceDateInput);
@@ -46,11 +47,14 @@ const CreateEvent = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
+    
     dispatch(
       createEventThunk(
         name,
         maxAttendees,
         location,
+        latitude,
+        longitude,
         description,
         user,
         attendanceDate,
@@ -60,6 +64,8 @@ const CreateEvent = (props) => {
     setName("");
     setmaxAttendees("");
     setlocation("");
+    setlatitude("")
+    setlongitude("")
     setDescription("");
     setAttendanceDate("");
   };
@@ -72,6 +78,7 @@ const CreateEvent = (props) => {
           <Text style={styles.inputHeader}>Name:</Text>
           <TextInput
             autoCapitalize="none"
+            placeholder="Name of Event"
             style={styles.textInput}
             onChangeText={nameHandler}
             value={name}
@@ -80,13 +87,15 @@ const CreateEvent = (props) => {
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Max Attendees Count:</Text>
           <TextInput
+            placeholder="Enter Max Attendees"
             autoCapitalize="none"
+            placeholder="Maximum Attendees"
             style={styles.textInput}
             onChangeText={maxAttendeesHandler}
             value={maxAttendees}
           />
         </View>
-        <View style={styles.inputView}>
+        {/* <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Location:</Text>
           <TextInput
             autoCapitalize="none"
@@ -94,11 +103,37 @@ const CreateEvent = (props) => {
             onChangeText={locationHandler}
             value={location}
           />
+        </View> */}
+        <View style={styles.inputView}>
+          <Text>Location:</Text>
+          <GooglePlacesAutocomplete
+              placeholder="Enter Location"
+              styles={styles.textInput}
+              nearbyPlacesAPI="GooglePlacesSearch"
+              debounce={500}
+              enablePoweredByContainer={false}
+              fetchDetails={true}
+              minLength={2}
+              returnKeyType={"search"}
+              query={{
+                key: GOOGLE_MAPS_APIKEY,
+                language: "en",
+              }}
+              onPress={(data, details = null) => {
+                    console.log("details.geometry.location", details.geometry.location)
+                    setlatitude(details.geometry.location.lat)
+                    setlongitude(details.geometry.location.lng)
+                    console.log("data.description", data.description)
+                    setlocation(data.description)
+                  }
+              }
+          />
         </View>
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Description:</Text>
           <TextInput
             autoCapitalize="none"
+            placeholder="Enter Description"
             style={styles.textInput}
             onChangeText={descriptionHandler}
             value={description}
@@ -116,6 +151,7 @@ const CreateEvent = (props) => {
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Attendance Date:</Text>
           <TextInput
+            placeholder="Enter Attendance Date"
             autoCapitalize="none"
             style={styles.textInput}
             onChangeText={attendanceDateHandler}
