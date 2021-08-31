@@ -47,6 +47,7 @@ const Login = (props) => {
         autoCapitalize="none"
         onChangeText={passwordHandler}
         value={password}
+        secureTextEntry={true}
       />
       <Button title="Login" onPress={handleSubmit} />
       <Button title="Back" onPress={() => navigation.goBack()} />
