@@ -1,10 +1,11 @@
+var mode = process.env.NODE_ENV || "development";
 module.exports = {
   entry: ["./server/index.js"],
   output: {
     path: __dirname,
     filename: "./public/bundle.js",
   },
-  devtool: mode === "production" ? false : "source-map",
+  devtool: mode === "development" ? "source-map" : false,
   module: {
     rules: [
       {
