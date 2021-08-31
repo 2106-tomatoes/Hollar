@@ -1,0 +1,1 @@
+web: JWT=shh nodemon server -e html,js,scss --ignore public --ignore client
