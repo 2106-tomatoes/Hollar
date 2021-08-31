@@ -56,6 +56,8 @@ export const createEventThunk = (
 
 export const findEventsThunk = (origin, radius = 20) => {
   return async (dispatch) => {
+    console.log('radius', radius)
+    
     try {
       const { data: openEvents } = await axios.get(
         `${LOCALHOST8080}/api/events`
@@ -99,7 +101,7 @@ export const findEventsThunk = (origin, radius = 20) => {
       //   }
       // }
 
-      // console.log("availableEvents", availableEvents)
+
 
       // dispatch(findEvent(availableEvents))
     } catch (error) {
