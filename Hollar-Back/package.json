@@ -16,7 +16,7 @@
     "test:dev": "npm run test -- --watch",
     "test:dev:models": "npm run test:dev -- --grep=model",
     "test:dev:routes": "npm run test:dev -- --grep=route",
-    "heroku-postbuild": "webpack --mode=development"
+    "heroku-postbuild": "webpack"
   },
   "author": "Fullstack Academy of Code",
   "license": "MIT",
