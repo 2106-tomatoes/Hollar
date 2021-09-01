@@ -80,7 +80,7 @@ const Home = (props) => {
   if (!displayList) {
     return (
       <View style={styles.container}>
-        <Text>No messages</Text>
+        <Text>RSVP to Nearby Events</Text>
       </View>
     );
   }

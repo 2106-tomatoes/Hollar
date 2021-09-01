@@ -7,6 +7,9 @@ import {
   TouchableHighlight,
   Pressable,
   TextInput,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
@@ -36,9 +39,9 @@ const Chatroom = (props) => {
 
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
-      socketio.emit('leaveRoom', { username, eventId });
-      console.log('Chatroom, after emitting leaveRoom');
-    }
+      socketio.emit("leaveRoom", { username, eventId });
+      console.log("Chatroom, after emitting leaveRoom");
+    };
   }, []);
 
   async function submitChatMessage(e) {
@@ -52,54 +55,68 @@ const Chatroom = (props) => {
   }
 
   function handleDirectMsg(id) {
-    console.log('long press, id:', id, typeof id);
+    console.log("long press, id:", id, typeof id);
   }
 
-
-
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+  >
     <View style={styles.container}>
-      {message.map((msg) => {
-        // console.log('mes',mes)
+      <View style={{flex: 10}}>
+        <FlatList
+        data={message}
+        keyExtractor={(item)=>item.id.toString()}
+        renderItem={({item})=>{
+          return (
+            <View key={item.id}>
+                  <Text style={styles.text}>
+                    {item.user.username}: {item.messageContent}
+                  </Text>
+            </View>
+          );
+        }}
+        />
+      </View>
+      {/* {message.map((msg) => {
         return (
-          
           <View key={msg.id}>
-            <Pressable 
+            <Pressable
               onLongPress={() => handleDirectMsg(msg.id)}
               style={({ pressed }) => [
                 {
-                  backgroundColor: pressed
-                    ? 'rgb(210, 230, 255)'
-                    : 'white'
+                  backgroundColor: pressed ? "rgb(210, 230, 255)" : "white",
                 },
-                styles.wrapperCustom
-              ]}>
+                styles.wrapperCustom,
+              ]}
+            >
               {({ pressed }) => (
                 <Text style={styles.text}>
-                  {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
+                  {pressed ? msg.user.username : msg.user.username}:{" "}
+                  {msg.messageContent}
                 </Text>
               )}
-              {/* <Text>{msg.user.username}: {msg.messageContent}</Text> */}
+              <Text>
+                {msg.user.username}: {msg.messageContent}
+              </Text>
             </Pressable>
           </View>
-         
         );
-      })}
-
-      <TextInput
-        style={styles.textInput}
-        value={input}
-        onChangeText={(chatMessage) => {
-          setInput(chatMessage);
-        }}
-        onSubmitEditing={submitChatMessage}
-        maxLength={20}
-      />
-
-      {/* <Link to={"/home"}>
-        <Text>Back to Home</Text>
-      </Link> */}
+      })} */}
+      <View style={{flex: 3}}>
+        <TextInput
+          style={styles.textInput}
+          value={input}
+          onChangeText={(chatMessage) => {
+            setInput(chatMessage);
+          }}
+          onSubmitEditing={submitChatMessage}
+          maxLength={20}
+        />
+      </View>
     </View>
+  </KeyboardAvoidingView>
   );
 };
 
@@ -120,11 +137,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   text: {
-    fontSize: 14
+    fontSize: 14,
   },
   wrapperCustom: {
     borderRadius: 8,
-    padding: 6
+    padding: 6,
   },
 });
 

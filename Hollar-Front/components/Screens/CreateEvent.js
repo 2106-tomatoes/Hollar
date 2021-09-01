@@ -41,13 +41,13 @@ const CreateEvent = (props) => {
     setDescription(descriptionInput);
   };
   const attendanceDateHandler = (attendanceDateInput) => {
-  
+
     setAttendanceDate(attendanceDateInput);
   };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    
+
     dispatch(
       createEventThunk(
         name,
@@ -151,7 +151,7 @@ const CreateEvent = (props) => {
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Attendance Date:</Text>
           <TextInput
-            placeholder="Enter Attendance Date"
+            placeholder="YYYY-MM-DD  e.g. 2021-09-04"
             autoCapitalize="none"
             style={styles.textInput}
             onChangeText={attendanceDateHandler}
@@ -196,5 +196,9 @@ const styles = StyleSheet.create({
   },
   inputView: {
     flex: 1,
+  },
+  textInputContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 0,
   },
 });
