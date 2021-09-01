@@ -38,7 +38,7 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     if (origin) {
-      dispatch(findEventsThunk(origin,selectedValue));
+      dispatch(findEventsThunk(origin, selectedValue));
     }
   }, [events.length]);
 
@@ -52,8 +52,8 @@ const NearbyEvents = () => {
   }, [search]);
   function handleRefresh() {
     setRefreshing(true);
-    console.log('this is refreshing')
-    dispatch(findEventsThunk(origin,selectedValue));
+    console.log("this is refreshing");
+    dispatch(findEventsThunk(origin, selectedValue));
     setRefreshing(false);
   }
 
@@ -67,7 +67,6 @@ const NearbyEvents = () => {
     console.log("this componenet went the null/undefined");
     return <View />;
   } else {
-
     return (
       // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
       <View style={styles.container}>
@@ -117,14 +116,14 @@ const NearbyEvents = () => {
             onChangeText={searchHandler}
             value={search}
           />
-        </View>  
+        </View>
         <View style={styles.radiusButtonContainer}>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}>Set Radius</Text>
-        </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.textStyle}>Set Radius</Text>
+          </Pressable>
         </View>
         <FlatList
           data={displayEvents}
@@ -167,7 +166,7 @@ const NearbyEvents = () => {
             <View style={styles.modalView}>
               <Picker
                 selectedValue={selectedValue}
-                style={{height: 200, width: 100 }}
+                style={{ height: 200, width: 100 }}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedValue(itemValue)
                 }
@@ -179,18 +178,21 @@ const NearbyEvents = () => {
                 <Picker.Item label="50" value="50" />
               </Picker>
               <Pressable
-                style={[styles.button, styles.buttonClose, {height: 35, width: 100}]}
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
                 onPress={() => {
-                  setModalVisible(!modalVisible)
-                  dispatch(findEventsThunk(origin, Number(selectedValue)))
+                  setModalVisible(!modalVisible);
+                  dispatch(findEventsThunk(origin, Number(selectedValue)));
                 }}
               >
-                <Text style={{textAlign: 'center'}}>Set Radius</Text>
+                <Text style={{ textAlign: "center" }}>Set Radius</Text>
               </Pressable>
             </View>
           </View>
         </Modal>
-      
       </View>
     );
   }
@@ -229,11 +231,10 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
-
     marginHorizontal: 50,
     backgroundColor: "white",
     borderRadius: 20,
- 
+
     paddingHorizontal: 75,
     alignItems: "center",
     shadowColor: "#000",
@@ -247,22 +248,19 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    marginBottom:10,
+    marginBottom: 10,
     padding: 5,
     elevation: 2,
-    width:100,
-    alignItems:'center',
-
+    width: 100,
+    alignItems: "center",
   },
   buttonOpen: {
-    backgroundColor: "#32CD32",
-
+    backgroundColor: "#E4572E",
   },
   buttonClose: {
-    backgroundColor: "#32CD32",
-
+    backgroundColor: "#E4572E",
   },
-  radiusButtonContainer:{
-    alignItems:'center'
-  }
+  radiusButtonContainer: {
+    alignItems: "center",
+  },
 });
