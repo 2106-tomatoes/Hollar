@@ -11,18 +11,21 @@ import {
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
 import { getChatThunk, sendChatThunk } from "../../store/chatroom";
+import { createDmEventThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
 
 const Chatroom = (props) => {
   // console.log("props in chatroom", props)
-  const { history, getChat, message, user } = props;
+  const { getChat, createDmEvent, message, user } = props;
   const navigation = useNavigation();
   const userId = user.id;
   const username = user.username;
   const [input, setInput] = useState("");
+  //Navigation params
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
+  
   const chatPackage = {
     messageContent: input,
     userId,
@@ -54,16 +57,33 @@ const Chatroom = (props) => {
     setInput("");
   }
 
-  function handleDirectMsg(user) {
+  async function handleDirectMsg(user) {
+    //Have to also check if pressing on a status msg or the user itself
     console.log('handleDirectMsg, id:', user.id, typeof user.id);
-    const selectedUserToDm = currMsg.user;
+    const userToDm = currMsg.user;
+    const today = new Date().toLocaleDateString(); //need to change this?
+    const dmEventDetails = {
+      user,
+      userToDm,
+      name: `DM ${user.username} to ${userToDm.username}`,
+      maxAttendees: 2,
+      location: 'DM',
+      description: 'DM',
+      eventObjectType: 'dm',
+      attendanceDate: today
+    }
 
     setModalVisible(!modalVisible);
-    //Create DM event and pass in new DM eventId to DirectMsgsRoom
+    //Create DM event and pass in new DM event id and title to DirectMsgsRoom
+    const dmEventInfo = await createDmEvent(dmEventDetails);
+    const { dmEventId } = dmEventInfo;
 
-    const eventId = 5; //A fixed eventId for now...
-    const eventTitle = "Direct Messages";
-    navigation.navigate("DirectMsgsRoom", { eventId, eventTitle });
+    //Change the dmEventTitle here
+    const dmEventTitle = `To ${userToDm.username}`;
+    socketio.emit('joinDmRoom', { username, dmEventId });
+    navigation.navigate("DirectMsgsRoom", { dmEventId, dmEventTitle });
+    
+    // socketio.emit('joinRoom', { username, dmEventId });
   }
 
   function setUpModalThenDisplay(msg) {
@@ -71,6 +91,9 @@ const Chatroom = (props) => {
     setModalVisible(true);
   }
 
+  // console.log('Chatroom, stateChatroom:', props.stateChatroom);
+  // console.log('Chatroom, stateDmRoom:', props.stateDmRoom);
+  // console.log('Chatroom, state:', props.state);
 
   return (
     <View style={styles.container}>
@@ -223,15 +246,18 @@ const mapStateToProps = (state) => {
   return {
     message: state.chatroom.messages,
     user: state.user,
-    // state: state
+    // stateDmRoom: state.dmRoom,
+    // stateChatroom: state.chatroom,
+    // state: state,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getChat: (eventId) => dispatch(getChatThunk(eventId)),
-    sendChat: (eventId, chatPackage) =>
+    sendChat: (eventId, chatPackage) => 
       dispatch(sendChatThunk(eventId, chatPackage)),
+    createDmEvent: (dmEventDetails) => dispatch(createDmEventThunk(dmEventDetails)),
   };
 };
 

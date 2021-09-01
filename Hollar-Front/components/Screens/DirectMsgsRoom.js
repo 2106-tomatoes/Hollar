@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
-import { getChatThunk, sendChatThunk } from "../../store/chatroom";
+import { getDmChatThunk, sendDmChatThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
 
@@ -21,49 +21,51 @@ const DirectMsgsRoom = (props) => {
   const userId = user.id;
   const username = user.username;
   const [input, setInput] = useState("");
-  const eventId = props.route.params.eventId;
-  const eventTitle = props.route.params.eventTitle;
+  //Navigation params
+  const dmEventId = props.route.params.dmEventId;
+  const dmEventTitle = props.route.params.dmEventTitle;
+
   const chatPackage = {
     messageContent: input,
     userId,
-    eventId,
+    eventId: dmEventId,
   };
 
 
   useEffect(() => {
-    getChat(eventId);
+    getChat(dmEventId);
 
-    navigation.setOptions({ headerTitle: eventTitle });
+    navigation.setOptions({ headerTitle: dmEventTitle });
 
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
-      socketio.emit('leaveRoom', { username, eventId });
+      socketio.emit('leaveDmRoom', { username, dmEventId });
     }
   }, []);
 
   async function submitChatMessage(e) {
     e.preventDefault();
 
-    const postResponse = await props.sendChat(eventId, chatPackage);
+    const postResponse = await props.sendChat(dmEventId, chatPackage);
     // console.log('Chatroom, postResponse', postResponse);
-    socketio.emit("chatMessage", postResponse);
+    socketio.emit("dmMessage", postResponse); //can't be chatMessage
     // console.log('Chatroom, emitted');
     setInput("");
   }
 
-  console.log('DirectMsgsRoom, eventId:', eventId);
+  // console.log('DirectMsgsRoom, stateChatroom:', props.stateChatroom);
+  // console.log('DirectMsgsRoom, stateDmRoom:', props.stateDmRoom);
 
   return (
     <View style={styles.container}>
-      <Text>DirectMsgsRoom</Text>
-      {/* {message.map((msg) => {
+      {message.map((msg) => {
         return (
           <View key={msg.id}>
             <Text>{msg.user.username}: {msg.messageContent}</Text>
           </View>
          
         );
-      })} */}
+      })}
 
       <TextInput
         style={styles.textInput}
@@ -147,17 +149,18 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    message: state.chatroom.messages,
+    message: state.dmRoom.messages,
     user: state.user,
-    // state: state
+    // stateDmRoom: state.dmRoom,
+    // stateChatroom: state.chatroom
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getChat: (eventId) => dispatch(getChatThunk(eventId)),
-    sendChat: (eventId, chatPackage) =>
-      dispatch(sendChatThunk(eventId, chatPackage)),
+    getChat: (dmEventId) => dispatch(getDmChatThunk(dmEventId)),
+    sendChat: (dmEventId, chatPackage) =>
+      dispatch(sendDmChatThunk(dmEventId, chatPackage)),
   };
 };
 

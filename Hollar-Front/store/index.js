@@ -5,9 +5,8 @@ import chatroomReducer from "./chatroom";
 import userReducer from './user'
 import eventsReducer from './event'
 import homeReducer from './home';
-
 import originReducer from './origin'
-
+import dmRoomReducer from './directMsgsRoom';
 
 
 const rootReducer = combineReducers({
@@ -15,7 +14,8 @@ const rootReducer = combineReducers({
   home: homeReducer,
   user: userReducer,
   events: eventsReducer,
-  origin: originReducer
+  origin: originReducer,
+  dmRoom: dmRoomReducer,
 });
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(rootReducer, middleware);
