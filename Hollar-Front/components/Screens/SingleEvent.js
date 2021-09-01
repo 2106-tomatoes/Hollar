@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
   TextInput,
   TouchableOpacity,
-  FlatList
+  FlatList,
 } from "react-native";
 import { sendRSVPThunk } from "../../store/SingleEvent";
 import socketio from "../../socket";
@@ -34,32 +34,28 @@ const SingleEvent = (props) => {
   const attendanceNumber = singleEvent.users ? singleEvent.users.length : 0;
   const userList = singleEvent.users ? singleEvent.users : [];
 
-
   useEffect(() => {
     dispatch(getSingleEventThunk(eventId));
-    navigation.setOptions({headerTitle:eventTitle})
+    navigation.setOptions({ headerTitle: eventTitle });
   }, []);
 
-  let disableButton = false
-  userList.forEach((attendee)=>{
-    if(attendee.id===user.id){
-      console.log('this is working!')
-      disableButton=true;
+  let disableButton = false;
+  userList.forEach((attendee) => {
+    if (attendee.id === user.id) {
+      console.log("this is working!");
+      disableButton = true;
     }
-  })
-  if(maxAttendees<=attendanceNumber){
-    disableButton=true;
+  });
+  if (maxAttendees <= attendanceNumber) {
+    disableButton = true;
   }
 
   function joinEventRoom(eventId, eventTitle) {
     console.log("Home, joinEventRoom, eventId:", eventId);
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
-    socketio.emit('joinRoom', { username, eventId });
+    socketio.emit("joinRoom", { username, eventId });
   }
-
-
-
 
   return (
     <View style={styles.container}>
@@ -70,36 +66,43 @@ const SingleEvent = (props) => {
       <Text>
         Attendees: {attendanceNumber}/{maxAttendees}
       </Text>
-      <TouchableOpacity
-        onPress={() => joinEventRoom(eventId, name )}
-        underlayColor="white"
-        style={{ flexDirection: "row", paddingVertical: 20 }}
-      >
-        <Text>Join Chatroom</Text>
-      </TouchableOpacity>
-      <Button title="RSVP" disabled={disableButton} onPress={()=>dispatch(sendRSVPThunk(eventId,user.id))}>
-      </Button>
+      <View style={styles.objectContainer}>
+        <View style={styles.buttonContainer}>
+          <Button
+            color="#E4572E"
+            title="Join Chatroom"
+            onPress={() => joinEventRoom(eventId, name)}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            color="#669BBC"
+            title="RSVP"
+            disabled={disableButton}
+            onPress={() => dispatch(sendRSVPThunk(eventId, user.id))}
+          ></Button>
+        </View>
+      </View>
       <Text>Attendees:</Text>
       <FlatList
         data={userList}
         style={{ flex: 1 }}
-        keyExtractor={item=>item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => {
-          return <View style={{height: 1, backgroundColor: '#DDDDDF'}} />;
+          return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
         }}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <TouchableOpacity
-            // onPress={() => {}}
-            style={{ margin: 15 }}
-            // onPress={()=>navigation.navigate("SingleEvent", { eventId:item.id })}
-          >
-            <Text>{item.username}</Text>
-
-          </TouchableOpacity>
-          )
+              // onPress={() => {}}
+              style={{ margin: 15 }}
+              // onPress={()=>navigation.navigate("SingleEvent", { eventId:item.id })}
+            >
+              <Text>{item.username}</Text>
+            </TouchableOpacity>
+          );
         }}
-        />
+      />
     </View>
   );
 };
@@ -110,7 +113,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    
   },
   textInput: {
     borderColor: "#CCCCCC",
@@ -120,6 +122,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     paddingLeft: 20,
     paddingRight: 20,
+  },
+  buttonContainer: {
+    margin: 10,
+  },
+  objectContainer: {
+    flexDirection: "row",
   },
 });
 
