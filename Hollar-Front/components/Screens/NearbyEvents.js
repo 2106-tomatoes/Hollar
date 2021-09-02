@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
   ScrollView,
   Modal,
   Pressable,
+  Button
 } from "react-native";
 import * as Location from "expo-location";
 import { setOrigin } from "../../store/origin";
@@ -31,15 +32,18 @@ const NearbyEvents = () => {
   const dispatch = useDispatch();
   let displayEvents = [];
   const navigation = useNavigation();
+  const mapRef = useRef()
 
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
   };
 
   useEffect(() => {
-    if (origin) {
-      dispatch(findEventsThunk(origin, selectedValue));
-    }
+    navigation.addListener("focus", () => {
+      if (origin) {
+        dispatch(findEventsThunk(origin, selectedValue));
+      }
+    });
   }, [events.length]);
 
   useEffect(() => {
@@ -50,6 +54,8 @@ const NearbyEvents = () => {
     });
     setsearchEvents(searchEvents);
   }, [search]);
+  
+  
   function handleRefresh() {
     setRefreshing(true);
     console.log("this is refreshing");
@@ -72,6 +78,7 @@ const NearbyEvents = () => {
       <View style={styles.container}>
         <MapView
           style={{ flex: 1 }}
+          ref={mapRef}
           mapType="mutedStandard"
           initialRegion={{
             latitude: origin.latitude,
@@ -103,6 +110,9 @@ const NearbyEvents = () => {
                   title={marker.name}
                   description={marker.description}
                   pinColor="red"
+                  onPress={() => {
+                    setSearch(marker.name)
+                  }}
                 />
               );
             })}
@@ -114,8 +124,15 @@ const NearbyEvents = () => {
             autoCapitalize="none"
             placeholder="Search Events"
             onChangeText={searchHandler}
-            value={search}
-          />
+            value={search}/>
+          
+          {search!==""&&   <TouchableOpacity
+            style={styles.closeButtonParent}
+            onPress={() => setSearch("")}
+          >
+            <Text>X</Text>
+              
+          </TouchableOpacity>}
         </View>
         <View style={styles.radiusButtonContainer}>
           <Pressable
@@ -125,6 +142,9 @@ const NearbyEvents = () => {
             <Text style={styles.textStyle}>Set Radius</Text>
           </Pressable>
         </View>
+        <Button title="Center Self" onPress={async () => {
+          mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
+        }}/>
         <FlatList
           data={displayEvents}
           style={{ flex: 1 }}
@@ -209,6 +229,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     // flex: 1,
+    flexDirection: 'row',
     justifyContent: "center",
     alignItems: "center",
     height: 40,
@@ -223,6 +244,7 @@ const styles = StyleSheet.create({
     margin: 12,
     // borderWidth: 1,
     paddingHorizontal: 20,
+    
   },
   centeredView: {
     flex: 1,
@@ -262,5 +284,15 @@ const styles = StyleSheet.create({
   },
   radiusButtonContainer: {
     alignItems: "center",
+  },
+  closeButtonParent: {
+    justifyContent: "center",
+    alignItems: "center",
+    left: -35,
+    zIndex: 10
+  },
+  closeButton: {
+    height: 16,
+    width: 16,
   },
 });
