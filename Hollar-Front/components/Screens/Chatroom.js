@@ -10,6 +10,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  Dimensions
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
@@ -24,6 +25,7 @@ const Chatroom = (props) => {
   const userId = user.id;
   const username = user.username;
   const [input, setInput] = useState("");
+  const [textHeight,setTextHeight] = useState(0)
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
   const chatPackage = {
@@ -106,19 +108,27 @@ const Chatroom = (props) => {
       })} */}
       <View style={{flex: 3}}>
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, {height: Math.max(15,textHeight)}]}
           value={input}
           onChangeText={(chatMessage) => {
             setInput(chatMessage);
           }}
           onSubmitEditing={submitChatMessage}
-          maxLength={20}
+          multiline={true}
+          maxLength={255}
+          
+          onContentSizeChange={(event) => {
+            console.log("event in onContentSizeChange", event.nativeEvent.contentSize)
+            setTextHeight(event.nativeEvent.contentSize.height )
+        }}
         />
       </View>
     </View>
   </KeyboardAvoidingView>
   );
 };
+
+const width = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   container: {
@@ -135,6 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingLeft: 20,
     paddingRight: 20,
+    width: width
   },
   text: {
     fontSize: 14,

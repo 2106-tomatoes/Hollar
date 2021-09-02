@@ -9,8 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Modal,
+  Pressable
 } from "react-native";
 import { sendRSVPThunk } from "../../store/SingleEvent";
+import { deleteEventThunk} from "../../store/event"
 import socketio from "../../socket";
 
 // import { io } from "socket.io-client";
@@ -18,12 +21,15 @@ import socketio from "../../socket";
 
 import { useNavigation } from "@react-navigation/native";
 import { getSingleEventThunk } from "../../store/SingleEvent";
+import { sin } from "react-native-reanimated";
 
 const SingleEvent = (props) => {
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
   const singleEvent = useSelector((state) => state.singleEvent);
   const user = useSelector((state) => state.user);
+  const [modalVisible, setModalVisible] = useState(false);
+  let host = false
   const username = user.username;
   // const [disableButton, setDisableButton] = useState("false")
 
@@ -40,6 +46,9 @@ const SingleEvent = (props) => {
   }, []);
 
   let disableButton = false;
+  if(user.id===singleEvent.hostId){
+    host=true
+  }
   userList.forEach((attendee) => {
     if (attendee.id === user.id) {
       console.log("this is working!");
@@ -49,6 +58,7 @@ const SingleEvent = (props) => {
   if (maxAttendees <= attendanceNumber) {
     disableButton = true;
   }
+
 
   function joinEventRoom(eventId, eventTitle) {
     console.log("Home, joinEventRoom, eventId:", eventId);
@@ -103,6 +113,61 @@ const SingleEvent = (props) => {
           );
         }}
       />
+      {host&&<View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={[styles.centeredView, {backgroundColor: '#DDDDDE'}]}>
+            <View style={styles.modalView}>
+            <Text style={{textAlign:'center', paddingBottom:5}}>Are You Sure You Want to Delete This Event?</Text>
+            <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  dispatch(deleteEventThunk(eventId, navigation))
+                
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Delete</Text>
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        <Button
+      title="Delete Event"
+      onPress={() => setModalVisible(true)}
+      />
+      {/* <Button
+      title="Delete Event"
+      onPress={() => dispatch(deleteEventThunk(eventId, navigation))}
+      /> */}
+      <Button
+      title="Edit Event"
+      onPress={()=> navigation.navigate("EditEvent", {singleEvent})}
+      />
+      </View>
+      }
     </View>
   );
 };
@@ -128,6 +193,42 @@ const styles = StyleSheet.create({
   },
   objectContainer: {
     flexDirection: "row",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    marginHorizontal: 50,
+    backgroundColor: "white",
+    borderRadius: 20,
+
+    paddingHorizontal: 75,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    marginBottom: 10,
+    padding: 5,
+    elevation: 2,
+    width: 100,
+    alignItems: "center",
+  },
+  buttonOpen: {
+    backgroundColor: "#E4572E",
+  },
+  buttonClose: {
+    backgroundColor: "#E4572E",
   },
 });
 
