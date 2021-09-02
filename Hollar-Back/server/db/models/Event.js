@@ -32,7 +32,7 @@ const Event = db.define("event", {
     type: Sequelize.DATEONLY,
     allowNull:false
 
-  }
+  },
 });
 
 module.exports = Event;

@@ -65,12 +65,12 @@ const Chatroom = (props) => {
     const dmEventDetails = {
       user,
       userToDm,
-      name: `DM ${user.username} to ${userToDm.username}`,
+      name: `${user.username} to ${userToDm.username}`,
       maxAttendees: 2,
       location: 'DM',
       description: 'DM',
       eventObjectType: 'dm',
-      attendanceDate: today
+      attendanceDate: today,
     }
 
     setModalVisible(!modalVisible);
@@ -82,8 +82,6 @@ const Chatroom = (props) => {
     const dmEventTitle = `To ${userToDm.username}`;
     socketio.emit('joinDmRoom', { username, dmEventId });
     navigation.navigate("DirectMsgsRoom", { dmEventId, dmEventTitle });
-    
-    // socketio.emit('joinRoom', { username, dmEventId });
   }
 
   function setUpModalThenDisplay(msg) {

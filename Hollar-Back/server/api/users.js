@@ -37,9 +37,27 @@ router.get("/login", async (req, res, next) => {
 router.get("/:userId/events", async (req, res, next) => {
   try {
     //console.log("userId in backend", req.params.id);
-    const user = await User.findByPk(req.params.userId);
+    // const user = await User.findByPk(req.params.userId);
 
-    res.send(await user.getEvents());
+    // res.send(await user.getEvents());
+
+    const userId = req.params.userId;
+    const nonDmEvents = await Event.findAll({
+      where: {
+        eventObjectType: {
+          [Op.or] : ['event', 'group']
+        }
+      },
+      include: {
+        model: User,
+        where: {
+          id: userId
+        }
+      }
+    });
+
+    res.send(nonDmEvents);
+
   } catch (error) {
     //console.log('stuffs broke yo' + error);
     next(error);
@@ -53,7 +71,7 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
   // console.log('users api, req.body:', req.body);
   // console.log('users api, userToDmId:', userToDmId);
 
-  //Delete the two user properties so we can use dmEventDetails for event creation 
+  //Clean up the two user properties so we can use dmEventDetails for event creation 
   delete req.body.dmEventDetails.user;
   delete req.body.dmEventDetails.userToDm;
   // console.log('req.body.dmEventDetails after delete:', req.body.dmEventDetails);
@@ -77,10 +95,9 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
     let dmEvent = events.find((event) => event.users.length === 2);
     console.log('users api, dmEvent:', dmEvent);
     if(dmEvent) {
-      res.send(dmEvent); //Send the existing dm event
+      res.send(dmEvent);
     } else {
       const newDmEvent = await Event.create(req.body.dmEventDetails);
-      //Associate the two users to the new dm event
       await newDmEvent.addUser([userId, userToDmId]);
       res.send(newDmEvent);
     }
@@ -91,65 +108,29 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
   }
 });
 
-// router.get("/:userId/events/directMsg", async (req, res, next) => {
-//   const userId = req.params.userId;
+router.get("/:userId/events/directMsg", async (req, res, next) => {
+  const userId = req.params.userId;
 
-//   try {
-//     //console.log("userId in backend", req.params.id);
-//     const events = await Event.findAll({
-//       // where: { eventObjectType: "dm" },
-//       // include: {
-//       //   model: Attendees,
-//       //   where: {
-//       //     id: req.params.userId,
-//       //   },
-//       // },
-//       where: {
-//         eventObjectType: 'group' //change back to dm later
-//       },
-//       include: {
-//         model: User,
-//         where: {
-//           id: {
-//             [Op.or]: [userId, 2]
-//           }
-//         }
-//       }
-//     });
+  try {
+    const dmEvents = await Event.findAll({
+      where: {
+        eventObjectType: 'dm'
+      },
+      include: {
+        model: User,
+        where: {
+          id: userId
+        }
+      }
+      
+    });
 
-    
-//     // let dmExists = false;
-//     // let dmEvent;
-//     // for(let i = 0; i < events.length; i++) {
-//     //   if(events[i].eventObjectType === "dm") {
-//     //     console.log("dm exists");
-//     //     dmExists = true;
-//     //     dmEvent = events[i];
-//     //   }
-//     // }
-
-//     // if(!dmExists) {
-//     //   //Create dm event
-//     // }
-//     console.log('users api, events:', events);
-//     let dmEvent = events.find((event) => event.users.length === 2);
-//     // console.log('users api, dmEvent:', dmEvent);
-//     if(dmEvent) {
-//       res.send(dmEvent); //Send the existing dm event
-//     } else {
-//       const newDmEvent = await Event.create(req.body)
-//       //Associate the two users to the new dm event
-//       //await newEvent.addUser([user1, user2])
-//       res.send(newDmEvent);
-//     }
-
-
-    
-//   } catch (error) {
-//     //console.log('stuffs broke yo' + error);
-//     next(error);
-//   }
-// });
+    res.send(dmEvents);
+  } catch (error) {
+    //console.log('stuffs broke yo' + error);
+    next(error);
+  }
+});
 
 // router.get('/:id', async (req, res, next) => {
 //   try {

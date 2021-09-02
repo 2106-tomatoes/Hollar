@@ -35,10 +35,11 @@ export const getDmChatThunk = (eventId) => {
 
   return async (dispatch) => {
     try {
+      console.log('getDmChatThunk, eventId:', eventId);
       const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
       dispatch(getDmChat(response.data))
     } catch (error) {
-      console.log('e',error);
+      console.log('getDmChatThunk:', error);
     }
   };
 };
@@ -49,7 +50,7 @@ export const sendDmChatThunk = (eventId, chatPackage) => {
       const response = await axios.post(`${LOCALHOST8080}/api/chatroom/${eventId}`, chatPackage);
       return response.data;
     } catch (error) {
-      console.log('e',error);
+      console.log('sendDmChatThunk:', error);
     }
   };
 };
