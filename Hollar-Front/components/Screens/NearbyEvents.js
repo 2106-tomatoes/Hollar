@@ -21,6 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { withRouter } from "react-router";
 
+
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
   const events = useSelector((state) => state.events);
@@ -29,6 +30,7 @@ const NearbyEvents = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState("20");
+
   const dispatch = useDispatch();
   let displayEvents = [];
   const navigation = useNavigation();
@@ -58,7 +60,6 @@ const NearbyEvents = () => {
   
   function handleRefresh() {
     setRefreshing(true);
-    console.log("this is refreshing");
     dispatch(findEventsThunk(origin, selectedValue));
     setRefreshing(false);
   }
@@ -70,9 +71,10 @@ const NearbyEvents = () => {
   }
 
   if (origin === null || events === undefined) {
-    console.log("this componenet went the null/undefined");
+
     return <View />;
   } else {
+    console.log('search',events)
     return (
       // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
       <View style={styles.container}>
@@ -126,13 +128,15 @@ const NearbyEvents = () => {
             onChangeText={searchHandler}
             value={search}/>
           
-          {search!==""&&   <TouchableOpacity
+          {search!==""&&   <Pressable
             style={styles.closeButtonParent}
+            placeholder="X"
             onPress={() => setSearch("")}
           >
-            <Text>X</Text>
+          <Text style={styles.closeButton}>X</Text>
+       
               
-          </TouchableOpacity>}
+          </Pressable>}
         </View>
         <View style={styles.radiusButtonContainer}>
           <Pressable
@@ -155,6 +159,7 @@ const NearbyEvents = () => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           renderItem={({ item }) => {
+       
             return (
               <TouchableOpacity
                 // onPress={() => {}}
@@ -166,10 +171,10 @@ const NearbyEvents = () => {
                   })
                 }
               >
-                <Text>{item.name}</Text>
-                <Text>{item.location}</Text>
-                <Text>{item.maxAttendees}</Text>
-                <Text>{item.attendanceDate}</Text>
+                <Text>Event: {item.name}</Text>
+                <Text>Location: {item.location}</Text>
+                <Text>Attendance: {item.users.length}/{item.maxAttendees}</Text>
+                <Text>Event Date: {item.attendanceDate}</Text>
               </TouchableOpacity>
             );
           }}
@@ -194,6 +199,7 @@ const NearbyEvents = () => {
                 <Picker.Item label="1" value="1" />
                 <Picker.Item label="5" value="5" />
                 <Picker.Item label="10" value="10" />
+                <Picker.Item label="20" value="20" />
                 <Picker.Item label="25" value="25" />
                 <Picker.Item label="50" value="50" />
               </Picker>
@@ -227,20 +233,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
   },
-  inputContainer: {
-    // flex: 1,
-    flexDirection: 'row',
-    justifyContent: "center",
-    alignItems: "center",
-    height: 40,
-    margin: 12,
-    // height: "30%",
-  },
+ 
   textInput: {
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
     height: 40,
-    width: 300,
+    width: 320,
     margin: 12,
     // borderWidth: 1,
     paddingHorizontal: 20,
@@ -284,6 +282,15 @@ const styles = StyleSheet.create({
   },
   radiusButtonContainer: {
     alignItems: "center",
+  }, 
+  inputContainer: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: 40,
+    margin: 12,
+    // height: "30%",
   },
   closeButtonParent: {
     justifyContent: "center",
@@ -292,7 +299,7 @@ const styles = StyleSheet.create({
     zIndex: 10
   },
   closeButton: {
-    height: 16,
-    width: 16,
+    height: 15,
+    width: 10,
   },
 });

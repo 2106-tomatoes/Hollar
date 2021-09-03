@@ -32,6 +32,13 @@ const Event = db.define("event", {
     type: Sequelize.DATEONLY,
     allowNull:false
 
+  },
+  hostId:{
+    type: Sequelize.INTEGER,
+    allowNull:false
+  },
+  time:{
+    type: Sequelize.STRING
   }
 });
 
