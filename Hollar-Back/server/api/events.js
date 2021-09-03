@@ -30,7 +30,11 @@ router.get("/", async (req,res,next) => {
       where: {
         attendanceDate: {
           [Op.gte]: dateFormat
-        }
+        },
+        eventObjectType: 'event'
+      },
+      include:{
+        model:User
       }
     })
   
@@ -62,7 +66,7 @@ router.get("/:eventId", async (req,res,next) => {
 
 router.post("/", async (req,res,next) => {
   try { 
-       console.log('req.body',req.body)
+   
     const newEvent = await Event.create(req.body)
 
     await newEvent.addUser(req.query.user)
@@ -71,6 +75,27 @@ router.post("/", async (req,res,next) => {
     next(error)
   }
 } )
+
+router.put("/:eventId", async (req,res,next) => {
+  try {
+    console.log("req.body", req.body)
+    const event = await Event.findByPk(req.params.eventId)
+    await event.update(req.body)
+    res.json(event)
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.delete("/:eventId", async (req,res,next) =>{
+  try {
+    const event = await Event.findByPk(req.params.eventId)
+    await event.destroy()
+    res.json(event)
+  } catch (error) {
+    next(error)
+  }
+})
 
 
 

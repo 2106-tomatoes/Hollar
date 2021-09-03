@@ -11,6 +11,7 @@ import StartUp from "../Screens/StartUp"
 import CreateEvent from "../Screens/CreateEvent"
 import NearbyEvent from "../Screens/NearbyEvents"
 
+
 export default class Routes extends React.Component {
     constructor(props) {
       super(props);

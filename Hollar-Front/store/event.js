@@ -3,6 +3,7 @@ import { LOCALHOST8080, GOOGLE_MAPS_APIKEY } from "@env";
 
 const CREATE_EVENT = "CREATE_EVENT";
 const FIND_NEARBY_EVENT = "FIND_NEARBY_EVENT";
+const DELETE_EVENT = 'DELETE_EVENT'
 
 // not needed for now, thunk pushes to home and renders all the events
 const createEvent = (event) => {
@@ -19,6 +20,13 @@ const findEvent = (events) => {
   };
 };
 
+const deleteEvent = (event) => {
+  return {
+    type: DELETE_EVENT,
+    event
+  }
+}
+
 export const createEventThunk = (
   name,
   maxAttendees,
@@ -28,11 +36,11 @@ export const createEventThunk = (
   description,
   user,
   attendanceDate,
+
   navigation
 ) => {
   return async (dispatch) => {
     try {
-
       const numberAttendees = parseInt(maxAttendees, 10);
       const { data } = await axios.post(
         `${LOCALHOST8080}/api/events?user=${user.id}`,
@@ -45,6 +53,8 @@ export const createEventThunk = (
           description,
           eventObjectType:'event',
           attendanceDate,
+          hostId: user.id,
+   
         }
       );
       navigation.navigate("Events");
@@ -78,7 +88,7 @@ export const findEventsThunk = (origin, radius = 20) => {
       // latLng.forEach((coords) => {
       //   return combineLatLng.push(`${coords.lat},${coords.lng}`)
       // })
-      // // console.log('combineLatLng final', combineLatLng.join('|'))
+      // console.log('combineLatLng final', combineLatLng.join('|'))
 
       // const config = {
       //   method: 'get',
@@ -109,6 +119,21 @@ export const findEventsThunk = (origin, radius = 20) => {
     }
   };
 };
+
+export const deleteEventThunk = (eventId, navigation) => {
+  return async (dispatch) => {
+    try {
+      const {data:deletedEvent} = axios.delete(`${LOCALHOST8080}/api/events/${eventId}`)
+      dispatch(deleteEvent(deletedEvent))
+      navigation.goBack()
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+}
+
+
 
 /**
  * REDUCER

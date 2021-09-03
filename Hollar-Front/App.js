@@ -16,7 +16,7 @@ class App extends React.Component {
         <Provider store={store} >
           <NavigationContainer>
             <IconRegistry icons={EvaIconsPack} />
-            <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+            <ApplicationProvider {...eva} theme={eva.light} >
               <Main />
             </ApplicationProvider>
           </NavigationContainer>

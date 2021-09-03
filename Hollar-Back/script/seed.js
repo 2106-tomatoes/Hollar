@@ -95,27 +95,30 @@ async function seed() {
       eventObjectType: "event",
       latitude: 38.8895,
       longitude: -77.0353,
-      attendanceDate: "2021-08-30"
+      attendanceDate: "2021-08-30",
+      hostId: 1,
     }),
     Event.create({
       name: "tennis",
       maxAttendees: 2,
       location: "600 h st ne, washington, dc 20002, usa",
       description: "play a game with me",
-      eventObjectType: "group",
+      eventObjectType: "event",
       latitude: 38.9002,
       longitude: -76.9975,
-      attendanceDate: "2021-09-27"
+      attendanceDate: "2021-09-27",
+      hostId: 2
     }),
     Event.create({
       name: "actual golf",
       maxAttendees: 25,
       location: "2 Lincoln Memorial Cir NW Washington, DC 20037",
       description: "windmills are not allowed",
-      eventObjectType: "group",
+      eventObjectType: "event",
       latitude: 38.904237,
       longitude: -77.052129,
-      attendanceDate: "2021-09-28"
+      attendanceDate: "2021-09-28",
+      hostId: 3
     }),
     Event.create({
       name: "hockey",
@@ -125,7 +128,8 @@ async function seed() {
       eventObjectType: "event",
       latitude: 40.7812,
       longitude: -73.9665,
-      attendanceDate: "2021-09-28"
+      attendanceDate: "2021-09-28",
+      hostId: 4
     }),
     Event.create({
       name: "eating",
@@ -135,7 +139,8 @@ async function seed() {
       eventObjectType: "event",
       latitude: 38.883896,
       longitude: -77.02535,
-      attendanceDate: "2021-09-29"
+      attendanceDate: "2021-09-29",
+      hostId: 5
     }),
     Event.create({
       name: "You can't see me",
@@ -145,7 +150,8 @@ async function seed() {
       eventObjectType: "event",
       latitude: 38.8895,
       longitude: -77.0353,
-      attendanceDate: "2021-08-24"
+      attendanceDate: "2021-08-24",
+      hostId: 6
     }),
   ]);
   // Create Message
@@ -192,7 +198,7 @@ async function seed() {
   
   await user1.addEvents([2,3])
   await user2.addEvents([1,2])
-  await user3.addEvents([3,4])
+  await user3.addEvents([3,4,2])
   await user4.addEvents([2,4])
   await user5.addEvents([2,3])
   await user6.addEvents([1,4])
