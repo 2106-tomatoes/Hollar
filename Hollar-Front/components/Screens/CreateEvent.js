@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  Pressable,
+  Pressable
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createEventThunk } from "../../store/event";
@@ -84,7 +84,6 @@ const CreateEvent = (props) => {
         description,
         user,
         attendanceDate,
-     
         navigation
       )
     );
@@ -98,145 +97,145 @@ const CreateEvent = (props) => {
   };
 
   return (
-    <View style={styles.container}>
-        <Text style={styles.header}>Create Event</Text>
-        <View style={{ flex: 20 }}>
-          <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Name:</Text>
-            <TextInput
-              autoCapitalize="none"
-              placeholder="Name of Event"
-              style={styles.textInput}
-              onChangeText={nameHandler}
-              value={name}
-            />
-          </View>
-          <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Max Attendees Count:</Text>
-            <TextInput
-              placeholder="Enter Max Attendees"
-              autoCapitalize="none"
-              placeholder="Maximum Attendees"
-              style={styles.textInput}
-              onChangeText={maxAttendeesHandler}
-              value={maxAttendees}
-            />
-          </View>
-          {/* <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Location:</Text>
-          <TextInput
-            autoCapitalize="none"
-            style={styles.textInput}
-            onChangeText={locationHandler}
-            value={location}
-          />
-        </View> */}
-          <View style={styles.inputView}>
-            <Text>Location:</Text>
-            <GooglePlacesAutocomplete
-              placeholder="Enter Location"
-              styles={styles.textInput}
-              nearbyPlacesAPI="GooglePlacesSearch"
-              debounce={500}
-              enablePoweredByContainer={false}
-              fetchDetails={true}
-              minLength={2}
-              returnKeyType={"search"}
-              query={{
-                key: GOOGLE_MAPS_APIKEY,
-                language: "en",
-              }}
-              onPress={(data, details = null) => {
-                console.log(
-                  "details.geometry.location",
-                  details.geometry.location
-                );
-                setlatitude(details.geometry.location.lat);
-                setlongitude(details.geometry.location.lng);
-                console.log("data.description", data.description);
-                setlocation(data.description);
-              }}
-            />
-          </View>
-          <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Description:</Text>
-            <TextInput
-              autoCapitalize="none"
-              placeholder="Enter Description"
-              style={styles.textInput}
-              onChangeText={descriptionHandler}
-              value={description}
-            />
-          </View>
-
-          <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Attendance Date:</Text>
-            <View style={styles.attendanceContainer}>
+      <View style={styles.container}>
+          <Text style={styles.header}>Create Event</Text>
+          <View style={{ flex: 20 }}>
+            <View style={styles.inputView}>
+              <Text style={styles.inputHeader}>Name:</Text>
               <TextInput
-                placeholder={`${attendanceDate}`}
-                editable={false}
                 autoCapitalize="none"
-                style={styles.attendanceTextInput}
-                onChangeText={attendanceDateHandler}
-                value={attendanceDate}
+                placeholder="Name of Event"
+                style={styles.textInput}
+                onChangeText={nameHandler}
+                value={name}
               />
-              <TouchableOpacity
-                style={styles.calenderButton}
-                onPress={() => setModalVisible(true)}
-              >
-                <Image
-                  source={require("../../assets/calendar.png")}
-                  style={styles.calendarImage}
-                />
-              </TouchableOpacity>
             </View>
-            {/* code below is for timer */}
-            {/* <View style={styles.inputView}>
-              <Text style={styles.inputHeader}>Time:</Text>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={time}
-                mode="time"
-                is24Hour={true}
-                display="default"
-                onChange={onChange}
+            <View style={styles.inputView}>
+              <Text style={styles.inputHeader}>Max Attendees Count:</Text>
+              <TextInput
+                placeholder="Enter Max Attendees"
+                autoCapitalize="none"
+                placeholder="Maximum Attendees"
+                style={styles.textInput}
+                onChangeText={maxAttendeesHandler}
+                value={maxAttendees}
               />
-            </View> */}
+            </View>
+            {/* <View style={styles.inputView}>
+            <Text style={styles.inputHeader}>Location:</Text>
+            <TextInput
+              autoCapitalize="none"
+              style={styles.textInput}
+              onChangeText={locationHandler}
+              value={location}
+            />
+          </View> */}
+            <View style={styles.inputView}>
+              <Text>Location:</Text>
+              <GooglePlacesAutocomplete
+                placeholder="Enter Location"
+                styles={styles.textInput}
+                nearbyPlacesAPI="GooglePlacesSearch"
+                debounce={500}
+                enablePoweredByContainer={false}
+                fetchDetails={true}
+                minLength={2}
+                returnKeyType={"search"}
+                query={{
+                  key: GOOGLE_MAPS_APIKEY,
+                  language: "en",
+                }}
+                onPress={(data, details = null) => {
+                  console.log(
+                    "details.geometry.location",
+                    details.geometry.location
+                  );
+                  setlatitude(details.geometry.location.lat);
+                  setlongitude(details.geometry.location.lng);
+                  console.log("data.description", data.description);
+                  setlocation(data.description);
+                }}
+              />
+            </View>
+            <View style={styles.inputView}>
+              <Text style={styles.inputHeader}>Description:</Text>
+              <TextInput
+                autoCapitalize="none"
+                placeholder="Enter Description"
+                style={styles.textInput}
+                onChangeText={descriptionHandler}
+                value={description}
+              />
+            </View>
+
+            <View style={styles.inputView}>
+              <Text style={styles.inputHeader}>Attendance Date:</Text>
+              <View style={styles.attendanceContainer}>
+                <TextInput
+                  placeholder={`${attendanceDate}`}
+                  editable={false}
+                  autoCapitalize="none"
+                  style={styles.attendanceTextInput}
+                  onChangeText={attendanceDateHandler}
+                  value={attendanceDate}
+                />
+                <TouchableOpacity
+                  style={styles.calenderButton}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImage}
+                  />
+                </TouchableOpacity>
+              </View>
+              {/* code below is for timer */}
+              {/* <View style={styles.inputView}>
+                <Text style={styles.inputHeader}>Time:</Text>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={time}
+                  mode="time"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              </View> */}
+            </View>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <CalendarPicker onDateChange={DateChange} />
+                  <Pressable
+                    style={[
+                      styles.button,
+                      styles.buttonClose,
+                      { height: 35, width: 100 },
+                    ]}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={{ textAlign: "center" }}>Confirm</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
           </View>
 
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <CalendarPicker onDateChange={DateChange} />
-                <Pressable
-                  style={[
-                    styles.button,
-                    styles.buttonClose,
-                    { height: 35, width: 100 },
-                  ]}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }}>Confirm</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
-        </View>
-
-        <View style={{ marginTop: 15 }}>
-          <Button title="Create Event" onPress={handleSubmit} />
-        </View>
-
-    </View>
+          <View style={{ marginTop: 15 }}>
+            <Button title="Create Event" onPress={handleSubmit} />
+          </View>
+      </View>
+    
   );
 };
 
