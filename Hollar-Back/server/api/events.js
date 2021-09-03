@@ -30,7 +30,8 @@ router.get("/", async (req,res,next) => {
       where: {
         attendanceDate: {
           [Op.gte]: dateFormat
-        }
+        },
+        eventObjectType: 'event'
       },
       include:{
         model:User
