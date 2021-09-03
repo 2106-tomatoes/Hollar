@@ -7,6 +7,10 @@ import {
   Pressable,
   Modal,
   TextInput,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
@@ -21,7 +25,9 @@ const Chatroom = (props) => {
   const navigation = useNavigation();
   const userId = user.id;
   const username = user.username;
+
   const [input, setInput] = useState("");
+  const [textHeight,setTextHeight] = useState(0);
   //Navigation params
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
@@ -58,8 +64,6 @@ const Chatroom = (props) => {
   }
 
   async function handleDirectMsg(user) {
-    //Have to also check if pressing on a status msg or the user itself
-    console.log('handleDirectMsg, id:', user.id, typeof user.id);
     const userToDm = currMsg.user;
     const today = new Date().toLocaleDateString(); //need to change this?
     const dmEventDetails = {
@@ -78,101 +82,111 @@ const Chatroom = (props) => {
     const dmEventInfo = await createDmEvent(dmEventDetails);
     const { dmEventId } = dmEventInfo;
 
-    //Change the dmEventTitle here
     const dmEventTitle = `To ${userToDm.username}`;
     socketio.emit('joinDmRoom', { username, dmEventId });
     navigation.navigate("DirectMsgsRoom", { dmEventId, dmEventTitle });
   }
 
   function setUpModalThenDisplay(msg) {
+    //When longPressing self or status msg, do nothing
+    if(msg.user.username === user.username) {
+      return;
+    } else if(typeof msg.id === 'string') {
+      return;
+    }
+
     setCurrMsg(msg);
     setModalVisible(true);
   }
 
-  // console.log('Chatroom, stateChatroom:', props.stateChatroom);
-  // console.log('Chatroom, stateDmRoom:', props.stateDmRoom);
-  // console.log('Chatroom, state:', props.state);
+  // function setUpMessages(message) {
+
+  // }
+
 
   return (
-    <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          console.log("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              {currMsg === null ? '' : currMsg.user.username}{'\n'}
-              {currMsg === null ? '' : currMsg.user.state}
-            </Text>
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+    >
+      <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            console.log("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                {currMsg === null ? '' : currMsg.user.username}{'\n'}
+                {currMsg === null ? '' : currMsg.user.state}
+              </Text>
 
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => handleDirectMsg(user)}
-            >
-              <Text style={styles.textStyle}>Send direct message</Text>
-            </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => handleDirectMsg(user)}
+              >
+                <Text style={styles.textStyle}>Send direct message</Text>
+              </Pressable>
 
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Go Back</Text>
-            </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Go Back</Text>
+              </Pressable>
+            </View>
           </View>
+        </Modal>
+
+        <View style={{flex: 10}}>
+          <FlatList
+            data={message}
+            keyExtractor={(item)=>item.id.toString()}
+            renderItem={({item})=>{
+              return (
+                <View key={item.id}>
+                  <Pressable 
+                    onLongPress={() => setUpModalThenDisplay(item)}
+                    style={[styles.button, styles.buttonOpen]}
+                  > 
+                    <Text style={styles.text}>
+                      {item.user.username}: {item.messageContent}
+                    </Text>
+                  </Pressable>
+                </View>
+              );
+            }}
+          />
         </View>
 
-      </Modal>
-
-      {message.map((msg) => {
-        return (
-          
-          <View key={msg.id}>
-            <Pressable 
-              onLongPress={() => setUpModalThenDisplay(msg)}
-              style={[styles.button, styles.buttonOpen]}
-            >
-              {/* // style={({ pressed }) => [
-              //   {
-              //     backgroundColor: pressed
-              //       ? 'rgb(210, 230, 255)'
-              //       : 'white'
-              //   },
-              //   styles.wrapperCustom
-              // ]}> */}
-              {({ pressed }) => (
-                <Text style={styles.text}>
-                  {pressed ? msg.user.username : msg.user.username}: {msg.messageContent}
-                </Text>
-              )}
-              {/* <Text>{msg.user.username}: {msg.messageContent}</Text> */}
-            </Pressable>
-          </View>
-         
-        );
-      })}
-
-      <TextInput
-        style={styles.textInput}
-        value={input}
-        onChangeText={(chatMessage) => {
-          setInput(chatMessage);
-        }}
-        onSubmitEditing={submitChatMessage}
-        maxLength={20}
-      />
-
-      {/* <Link to={"/home"}>
-        <Text>Back to Home</Text>
-      </Link> */}
-    </View>
+        <View style={{flex: 3}}>
+          <TextInput
+            style={[styles.textInput, {height: Math.max(15,textHeight)}]}
+            value={input}
+            onChangeText={(chatMessage) => {
+              setInput(chatMessage);
+            }}
+            onSubmitEditing={submitChatMessage}
+            multiline={true}
+            maxLength={255}
+            
+            onContentSizeChange={(event) => {
+              console.log("event in onContentSizeChange", event.nativeEvent.contentSize)
+              setTextHeight(event.nativeEvent.contentSize.height )
+          }}
+          />
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
+
+const width = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   container: {
@@ -189,6 +203,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingLeft: 20,
     paddingRight: 20,
+    width: width
   },
   text: {
     fontSize: 14
@@ -244,9 +259,6 @@ const mapStateToProps = (state) => {
   return {
     message: state.chatroom.messages,
     user: state.user,
-    // stateDmRoom: state.dmRoom,
-    // stateChatroom: state.chatroom,
-    // state: state,
   };
 };
 
