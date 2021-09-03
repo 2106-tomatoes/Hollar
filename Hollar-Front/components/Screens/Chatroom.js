@@ -108,7 +108,7 @@ const Chatroom = (props) => {
       })} */}
       <View style={{flex: 3}}>
         <TextInput
-          style={[styles.textInput, {height: Math.max(15,textHeight)}]}
+          style={[styles.textInput, {height: Math.max(40,textHeight)}]}
           value={input}
           onChangeText={(chatMessage) => {
             setInput(chatMessage);
@@ -138,15 +138,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textInput: {
-    borderColor: "#CCCCCC",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    height: 20,
-    fontSize: 14,
-    paddingLeft: 20,
-    paddingRight: 20,
-    width: width
-  },
+        borderColor: "#CCCCCC",
+        borderWidth: 2,
+        borderRadius: 3,
+        height: 40,
+        fontSize: 18,
+        paddingLeft: 10,
+        paddingRight: 80,
+        paddingTop: 10,
+        paddingBottom: 10,
+        margin: 5,
+        textAlign: "left",
+        width:width
+      },
   text: {
     fontSize: 14,
   },
