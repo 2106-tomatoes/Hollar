@@ -2,8 +2,10 @@ const router = require("express").Router();
 const {
   models: { User, Event },
 } = require("../db");
+
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op;
+
 module.exports = router;
 
 router.get("/", async (req, res, next) => {
@@ -31,6 +33,7 @@ router.get("/login", async (req, res, next) => {
     res.json(user);
   } catch (err) {
     next(err);
+
   }
 });
 
@@ -67,6 +70,12 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
   //Clean up the two user properties so we can use dmEventDetails for event creation 
   delete req.body.dmEventDetails.user;
   delete req.body.dmEventDetails.userToDm;
+
+
+//   }
+// });
+
+// router.get("/:userId/events", async (req, res, next) => {
 
   try {
     const events = await Event.findAll({
@@ -113,26 +122,14 @@ router.get("/:userId/events/directMsg", async (req, res, next) => {
       
     });
 
+
     res.send(dmEvents);
+
   } catch (error) {
     //console.log('stuffs broke yo' + error);
     next(error);
   }
 });
-
-// router.get('/:id', async (req, res, next) => {
-//   try {
-//     const users = await User.findAll({
-//       // explicitly select only the id and username fields - even though
-//       // users' passwords are encrypted, it won't help if we just
-//       // send everything to anyone who asks!
-//       attributes: ['id', 'username']
-//     })
-//     res.json(users)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
 
 router.post("/", async (req, res, next) => {
   try {
@@ -140,6 +137,31 @@ router.post("/", async (req, res, next) => {
     console.log("newUser", newUser);
     res.json(newUser);
   } catch (error) {
+    next(error);
+  }
+});
+
+
+
+router.post("/:userId/events/:eventId", async (req, res, next) => {
+  try {
+    //console.log("userId in backend", req.params.id);
+    const event = await Event.findByPk(req.params.eventId);
+
+    await event.addUser(req.params.userId);
+    const newEvent = await Event.findOne({
+      where: {
+        id: req.params.eventId,
+      },
+      include: {
+        model: User,
+      },
+    });
+
+    res.send(newEvent);
+  } catch (error) {
+    //console.log('stuffs broke yo' + error);
+
     next(error);
   }
 });

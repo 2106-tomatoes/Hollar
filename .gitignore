@@ -21,3 +21,4 @@ Hollar-Front/*.orig.*
 Hollar-Front/web-build/
 Hollar-Front/.env
 .DS_Store
+.env

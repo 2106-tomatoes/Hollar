@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,18 +7,22 @@ import {
   TextInput,
   Button,
   ScrollView,
+  Modal,
+  Pressable
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { createEventThunk } from "../../store/event";
+import {editEventThunk} from "../../store/SingleEvent"
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_MAPS_APIKEY } from "@env";
 
 
-const CreateEvent = (props) => {
+const EditEvent = (props) => {
   const dispatch = useDispatch();
-  const history = props.history;
   const user = useSelector((state) => state.user);
   const navigation = useNavigation();
+  const singleEvent = props.route.params.singleEvent;
+  const ref = useRef()
+  
 
   const [name, setName] = useState("");
   const [maxAttendees, setmaxAttendees] = useState("");
@@ -27,6 +31,20 @@ const CreateEvent = (props) => {
   const [longitude, setlongitude] = useState("")
   const [description, setDescription] = useState("");
   const [attendanceDate, setAttendanceDate] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  
+  console.log(`singleEvent`, singleEvent)
+  useEffect(()=> {
+    setName(singleEvent.name)
+    setmaxAttendees(singleEvent.maxAttendees.toString())
+    setlocation(singleEvent.location)
+    setlatitude(singleEvent.latitude)
+    setlongitude(singleEvent.longitude)
+    setDescription(singleEvent.description)
+    setAttendanceDate(singleEvent.attendanceDate)
+    ref.current.setAddressText(singleEvent.location)
+  }, [])
+
 
   const nameHandler = (nameInput) => {
     setName(nameInput);
@@ -45,20 +63,21 @@ const CreateEvent = (props) => {
     setAttendanceDate(attendanceDateInput);
   };
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
+  const handleSubmit = () => {
 
-    dispatch(
-      createEventThunk(
+    const obj = {
         name,
-        maxAttendees,
+        maxAttendees:Number(maxAttendees),
         location,
         latitude,
         longitude,
         description,
         user,
         attendanceDate,
-        navigation,
+    }
+    dispatch(
+      editEventThunk(singleEvent.id,
+        obj,navigation
       )
     );
     setName("");
@@ -72,7 +91,7 @@ const CreateEvent = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Create Event</Text>
+      <Text style={styles.header}>Edit Event</Text>
       <View style={{ flex: 20 }}>
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Name:</Text>
@@ -107,6 +126,7 @@ const CreateEvent = (props) => {
         <View style={styles.inputView}>
           <Text>Location:</Text>
           <GooglePlacesAutocomplete
+              ref={ref}
               placeholder="Enter Location"
               styles={styles.textInput}
               nearbyPlacesAPI="GooglePlacesSearch"
@@ -160,13 +180,55 @@ const CreateEvent = (props) => {
         </View>
       </View>
       <View style={{ marginTop: 15 }}>
-        <Button title="Create Event" onPress={handleSubmit} />
+        <Button title="Edit Event" onPress={()=>setModalVisible(true)} />
       </View>
+        <View>
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={[styles.centeredView, {backgroundColor: '#DDDDDE'}]}>
+            <View style={styles.modalView}>
+            <Text style={{textAlign:'center', paddingBottom:5}}>Are You Sure You Want to Edit This Event?</Text>
+            <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  dispatch(handleSubmit)
+                
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Confirm</Text>
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+       </View>
     </View>
   );
 };
 
-export default CreateEvent;
+export default EditEvent;
 
 const styles = StyleSheet.create({
   container: {
@@ -200,5 +262,47 @@ const styles = StyleSheet.create({
   textInputContainer: {
     paddingHorizontal: 20,
     paddingBottom: 0,
+  },
+  buttonContainer: {
+    margin: 10,
+  },
+  objectContainer: {
+    flexDirection: "row",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    marginHorizontal: 50,
+    backgroundColor: "white",
+    borderRadius: 20,
+
+    paddingHorizontal: 75,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    marginBottom: 10,
+    padding: 5,
+    elevation: 2,
+    width: 100,
+    alignItems: "center",
+  },
+  buttonOpen: {
+    backgroundColor: "#E4572E",
+  },
+  buttonClose: {
+    backgroundColor: "#E4572E",
   },
 });

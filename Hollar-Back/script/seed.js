@@ -105,7 +105,7 @@ async function seed() {
       eventObjectType: "group",
       latitude: 38.9002,
       longitude: -76.9975,
-      attendanceDate: "2021-08-27"
+      attendanceDate: "2021-09-27"
     }),
     Event.create({
       name: "actual golf",
@@ -115,7 +115,7 @@ async function seed() {
       eventObjectType: "group",
       latitude: 38.904237,
       longitude: -77.052129,
-      attendanceDate: "2021-08-28"
+      attendanceDate: "2021-09-28"
     }),
     Event.create({
       name: "hockey",
@@ -125,7 +125,7 @@ async function seed() {
       eventObjectType: "event",
       latitude: 40.7812,
       longitude: -73.9665,
-      attendanceDate: "2021-08-28"
+      attendanceDate: "2021-09-28"
     }),
     Event.create({
       name: "eating",
@@ -135,7 +135,7 @@ async function seed() {
       eventObjectType: "event",
       latitude: 38.883896,
       longitude: -77.02535,
-      attendanceDate: "2021-08-29"
+      attendanceDate: "2021-09-29"
     }),
     Event.create({
       name: "You can't see me",

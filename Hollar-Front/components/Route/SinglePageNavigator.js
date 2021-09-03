@@ -12,6 +12,8 @@ import StartUp from "../Screens/StartUp";
 import CreateEvent from "../Screens/CreateEvent";
 import NearbyEvent from "../Screens/NearbyEvents";
 import DrawerNavigator from "./DrawerNavigator";
+import SingleEvent from "../Screens/SingleEvent"
+import EditEvent from "../Screens/EditEvent"
 
 const SinglePageNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -24,7 +26,8 @@ const SinglePageNavigator = () => {
         <Stack.Screen name="DirectMsgsRoom" component={DirectMsgsRoom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}}/>
         <Stack.Screen name="Chatroom" component={Chatroom} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
         <Stack.Screen name="Drawer" component={DrawerNavigator}  options={{gestureEnabled: false}} />
-
+        <Stack.Screen name="SingleEvent" component={SingleEvent} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
+        <Stack.Screen name="EditEvent" component={EditEvent} options={{gestureEnabled: true, headerShown: true, headerBackVisible: true, headerBackTitleVisible: false}} />
       </Stack.Navigator>
   );
 };

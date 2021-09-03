@@ -1,24 +1,21 @@
+var mode = process.env.NODE_ENV || "development";
 module.exports = {
-  entry: [
-    './client/index.js'
-  ],
+  entry: ["./server/index.js"],
   output: {
     path: __dirname,
-    filename: './public/bundle.js'
+    filename: "./public/bundle.js",
   },
-  devtool: 'source-map',
+  devtool: mode === "development" ? "source-map" : false,
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         options: {
-          presets: [
-            '@babel/preset-react'
-          ]
-        }
-      }
-    ]
-  }
-}
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
+  },
+};

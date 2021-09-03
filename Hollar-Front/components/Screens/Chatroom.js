@@ -27,8 +27,10 @@ const Chatroom = (props) => {
   const username = user.username;
 
   const [input, setInput] = useState("");
+
   const [textHeight,setTextHeight] = useState(0);
   //Navigation params
+
   const eventId = props.route.params.eventId;
   const eventTitle = props.route.params.eventTitle;
   
@@ -48,8 +50,10 @@ const Chatroom = (props) => {
 
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
+
       socketio.emit('leaveRoom', { username, eventId });
     }
+
   }, []);
 
   async function submitChatMessage(e) {
@@ -59,6 +63,7 @@ const Chatroom = (props) => {
     socketio.emit("chatMessage", postResponse);
     setInput("");
   }
+
 
   async function handleDirectMsg(user) {
     const userToDm = currMsg.user;
@@ -97,10 +102,12 @@ const Chatroom = (props) => {
   }
 
 
+
   return (
     <KeyboardAvoidingView
     behavior={Platform.OS === "ios" ? "padding" : "height"}
     style={styles.container}
+
     >
       <View style={styles.container}>
         <Modal
@@ -176,6 +183,7 @@ const Chatroom = (props) => {
         </View>
       </View>
     </KeyboardAvoidingView>
+
   );
 };
 
@@ -199,11 +207,11 @@ const styles = StyleSheet.create({
     width: width
   },
   text: {
-    fontSize: 14
+    fontSize: 14,
   },
   wrapperCustom: {
     borderRadius: 8,
-    padding: 6
+    padding: 6,
   },
   centeredView: {
     flex: 1,
