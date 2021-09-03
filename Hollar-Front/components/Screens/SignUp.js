@@ -1,13 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { createUserThunk } from "../../store/user";
 
 const SignUp = (props) => {
   const dispatch = useDispatch();
   const history = props.history;
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -67,72 +74,86 @@ const SignUp = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text>Sign Up</Text>
-      <Text>username:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={usernameHandler}
-        value={username}
-      />
-      <Text>First Name:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={firstNameHandler}
-        value={firstName}
-      />
-      <Text>Last Name:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={lastNameHandler}
-        value={lastName}
-      />
-      <Text>Email:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={emailHandler}
-        value={email}
-      />
-      <Text>Zipcode:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={zipcodeHandler}
-        value={zipCode}
-      />
-      <Text>City:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={cityHandler}
-        value={city}
-      />
-      <Text>State:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={stateHandler}
-        value={state}
-      />
-      <Text>password:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={passwordHandler}
-        value={password}
-      />
-      <Text>Phone Number:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={phoneNumberHandler}
-        value={phoneNumber}
-      />
-      <Button title="Sign Up" onPress={handleSubmit} />
-      <Button title="Back" onPress={() => navigation.goBack()} />
+      <Text style={styles.headerText}>Sign Up</Text>
+      <View>
+        <TextInput
+          autoCapitalize="none"
+          placeholder="Username"
+          style={styles.textInput}
+          onChangeText={usernameHandler}
+          value={username}
+        />
+        <TextInput
+          placeholder="First Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={firstNameHandler}
+          value={firstName}
+        />
+        <TextInput
+          placeholder="Last Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={lastNameHandler}
+          value={lastName}
+        />
+        <TextInput
+          placeholder="Email"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={emailHandler}
+          value={email}
+        />
+        <TextInput
+          placeholder="Zipcode"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={zipcodeHandler}
+          value={zipCode}
+        />
+        <TextInput
+          placeholder="City"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={cityHandler}
+          value={city}
+        />
+        <TextInput
+          placeholder="State"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={stateHandler}
+          value={state}
+        />
+        <TextInput
+          placeholder="Password"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={passwordHandler}
+          value={password}
+        />
+        <TextInput
+          placeholder="Phone Number"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={phoneNumberHandler}
+          value={phoneNumber}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -187,11 +208,49 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: "#CCCCCC",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    height: 20,
-    fontSize: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    paddingLeft: 80,
+    paddingRight: 80,
+    paddingTop: 10,
+    paddingBottom: 10,
+    margin: 5,
+    textAlign: "center",
+  },
+
+  buttonContainer: {
+    // margin: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+  },
+  logo: {
+    height: 300,
+    width: 300,
+  },
+  button: {
+    alignItems: "center",
+    margin: 10,
+    padding: 10,
+    borderRadius: 3,
+    color: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    backgroundColor: "#669BBC",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 15,
+  },
+  headerText: {
+    fontSize: 45,
   },
 });

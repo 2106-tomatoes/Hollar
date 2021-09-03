@@ -1,7 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Text, View, Button, Image } from "react-native";
-
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+// import styles from "../styling/main.js";
 export default function StartUp(props) {
   const history = props.history;
   const navigation = useNavigation();
@@ -13,24 +20,25 @@ export default function StartUp(props) {
           style={styles.logo}
         />
         <View style={styles.buttonContainer}>
-          <Button
-            title="Login"
-            color="#669BBC"
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => navigation.navigate("Login")}
-          />
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.buttonContainer}>
-          <Button
-            title="Sign Up"
-            color="#669BBC"
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => navigation.navigate("Signup")}
-          />
+          >
+            <Text style={styles.buttonText}>Signup</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -40,12 +48,29 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 5,
-    // filter: drop - shadow("30px 10px 4px #4444dd"),
   },
   logo: {
     height: 300,
     width: 300,
-    // margin: 15,
-    // padding: 15,
+  },
+  button: {
+    alignItems: "center",
+    margin: 10,
+    padding: 10,
+    borderRadius: 3,
+    color: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    backgroundColor: "#669BBC",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 15,
   },
 });
