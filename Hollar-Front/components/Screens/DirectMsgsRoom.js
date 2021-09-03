@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
+  //Button,
   Pressable,
   Modal,
   TextInput,
@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { getDmChatThunk, sendDmChatThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
+
 
 const DirectMsgsRoom = (props) => {
   // console.log("props in chatroom", props)
@@ -31,6 +32,7 @@ const DirectMsgsRoom = (props) => {
     eventId: dmEventId,
   };
 
+  
 
   useEffect(() => {
     getChat(dmEventId);
@@ -57,6 +59,7 @@ const DirectMsgsRoom = (props) => {
   // console.log('DirectMsgsRoom, stateDmRoom:', props.stateDmRoom);
 
   return (
+    
     <View style={styles.container}>
       {message.map((msg) => {
         return (
@@ -104,48 +107,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 6
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center"
-  }
 });
+
+
 
 const mapStateToProps = (state) => {
   return {

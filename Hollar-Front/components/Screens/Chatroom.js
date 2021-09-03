@@ -49,23 +49,20 @@ const Chatroom = (props) => {
     //ComponentWillUnmount and leave room
     return function leaveEventRoom() {
       socketio.emit('leaveRoom', { username, eventId });
-      // console.log('Chatroom, after emitting leaveRoom');
     }
   }, []);
 
   async function submitChatMessage(e) {
     e.preventDefault();
-
+    
     const postResponse = await props.sendChat(eventId, chatPackage);
-    // console.log('Chatroom, postResponse', postResponse);
     socketio.emit("chatMessage", postResponse);
-    // console.log('Chatroom, emitted');
     setInput("");
   }
 
   async function handleDirectMsg(user) {
     const userToDm = currMsg.user;
-    const today = new Date().toLocaleDateString(); //need to change this?
+    const today = new Date().toISOString().split('T')[0];
     const dmEventDetails = {
       user,
       userToDm,
@@ -98,10 +95,6 @@ const Chatroom = (props) => {
     setCurrMsg(msg);
     setModalVisible(true);
   }
-
-  // function setUpMessages(message) {
-
-  // }
 
 
   return (

@@ -4,7 +4,7 @@ import {
   FlatList,
   Text,
   View,
-  Button,
+  //Button,
   TouchableOpacity,
   ScrollView,
   TextInput,
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 });
+
 
 const mapStateToProps = (state) => {
   return {

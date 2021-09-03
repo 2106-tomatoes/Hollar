@@ -36,11 +36,6 @@ router.get("/login", async (req, res, next) => {
 
 router.get("/:userId/events", async (req, res, next) => {
   try {
-    //console.log("userId in backend", req.params.id);
-    // const user = await User.findByPk(req.params.userId);
-
-    // res.send(await user.getEvents());
-
     const userId = req.params.userId;
     const nonDmEvents = await Event.findAll({
       where: {
@@ -68,18 +63,15 @@ router.get("/:userId/events", async (req, res, next) => {
 router.post("/:userId/events/directMsg", async (req, res, next) => {
   const userId = req.params.userId;
   const { userToDm: { id: userToDmId } } = req.body.dmEventDetails;
-  // console.log('users api, req.body:', req.body);
-  // console.log('users api, userToDmId:', userToDmId);
 
   //Clean up the two user properties so we can use dmEventDetails for event creation 
   delete req.body.dmEventDetails.user;
   delete req.body.dmEventDetails.userToDm;
-  // console.log('req.body.dmEventDetails after delete:', req.body.dmEventDetails);
 
   try {
     const events = await Event.findAll({
       where: {
-        eventObjectType: 'dm' //change back to dm later
+        eventObjectType: 'dm'
       },
       include: {
         model: User,
@@ -91,9 +83,7 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
       }
     });
 
-    // console.log('users api, events:', events);
     let dmEvent = events.find((event) => event.users.length === 2);
-    console.log('users api, dmEvent:', dmEvent);
     if(dmEvent) {
       res.send(dmEvent);
     } else {
@@ -101,9 +91,7 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
       await newDmEvent.addUser([userId, userToDmId]);
       res.send(newDmEvent);
     }
-    // res.send(events);
   } catch (error) {
-    //console.log('stuffs broke yo' + error);
     next(error);
   }
 });
