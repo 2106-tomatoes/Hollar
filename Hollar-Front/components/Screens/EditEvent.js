@@ -8,12 +8,16 @@ import {
   Button,
   ScrollView,
   Modal,
-  Pressable
+  Pressable,
+  TouchableOpacity,
+  Image
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {editEventThunk} from "../../store/SingleEvent"
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_MAPS_APIKEY } from "@env";
+import CalendarPicker from "react-native-calendar-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 
 const EditEvent = (props) => {
@@ -22,6 +26,7 @@ const EditEvent = (props) => {
   const navigation = useNavigation();
   const singleEvent = props.route.params.singleEvent;
   const ref = useRef()
+  const currentDate = new Date();
   
 
   const [name, setName] = useState("");
@@ -32,8 +37,16 @@ const EditEvent = (props) => {
   const [description, setDescription] = useState("");
   const [attendanceDate, setAttendanceDate] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  
-  console.log(`singleEvent`, singleEvent)
+  const [calModalVisible, setCalModalVisible] = useState(false);
+  const [time, setTime] = useState(currentDate);
+
+
+  const onChange = (event, selectedTime) => {
+    console.log("selected", selectedTime.toLocaleTimeString());
+    setTime(selectedTime)
+  };
+
+
   useEffect(()=> {
     setName(singleEvent.name)
     setmaxAttendees(singleEvent.maxAttendees.toString())
@@ -61,6 +74,13 @@ const EditEvent = (props) => {
   const attendanceDateHandler = (attendanceDateInput) => {
 
     setAttendanceDate(attendanceDateInput);
+  };
+
+  const DateChange = (date) => {
+
+    const newdate = date.toISOString().slice(0, 10);
+ 
+    setAttendanceDate(newdate);
   };
 
   const handleSubmit = () => {
@@ -91,6 +111,7 @@ const EditEvent = (props) => {
 
   return (
     <View style={styles.container}>
+     
       <Text style={styles.header}>Edit Event</Text>
       <View style={{ flex: 20 }}>
         <View style={styles.inputView}>
@@ -170,13 +191,37 @@ const EditEvent = (props) => {
         </View> */}
         <View style={styles.inputView}>
           <Text style={styles.inputHeader}>Attendance Date:</Text>
-          <TextInput
-            placeholder="YYYY-MM-DD  e.g. 2021-09-04"
-            autoCapitalize="none"
-            style={styles.textInput}
-            onChangeText={attendanceDateHandler}
-            value={attendanceDate}
-          />
+          <View style={styles.attendanceContainer}>
+            <TextInput
+              placeholder={`${attendanceDate}`}
+              editable={false}
+              autoCapitalize="none"
+              style={styles.attendanceTextInput}
+              onChangeText={attendanceDateHandler}
+              value={attendanceDate}
+            />
+            <TouchableOpacity
+              style={styles.calenderButton}
+              onPress={() => setCalModalVisible(true)}
+            >
+              <Image
+                source={require("../../assets/calendar.png")}
+                style={styles.calendarImage}
+              />
+            </TouchableOpacity>
+          </View>
+              {/* code below is for timer */}
+          {/* <View style={styles.inputView}>
+              <Text style={styles.inputHeader}>Time:</Text>
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={time}
+                mode="time"
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
+              />
+            </View> */}
         </View>
       </View>
       <View style={{ marginTop: 15 }}>
@@ -223,7 +268,35 @@ const EditEvent = (props) => {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={calModalVisible}
+          onRequestClose={() => {
+            setCalModalVisible(!calModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <CalendarPicker onDateChange={DateChange} />
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  setCalModalVisible(!calModalVisible);
+                
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Confirm</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
        </View>
+
     </View>
   );
 };
@@ -234,6 +307,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // backgroundColor: 'red',
+    flexDirection: "column",
     alignItems: "center",
     margin: 15,
     marginBottom: 50,
@@ -251,7 +325,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
-    height: 600,
+    height: 37,
     width: 300,
     margin: 12,
     paddingHorizontal: 20,
@@ -263,11 +337,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 0,
   },
-  buttonContainer: {
-    margin: 10,
-  },
-  objectContainer: {
-    flexDirection: "row",
+  calendarImage: {
+    width: 20,
+    height: 20,
+    resizeMode: "stretch",
   },
   centeredView: {
     flex: 1,
@@ -304,5 +377,23 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: "#E4572E",
+  },
+  attendanceContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  attendanceTextInput: {
+    backgroundColor: "#DDDDDE",
+    borderRadius: 9999,
+    height: 37,
+    width: 300,
+    margin: 12,
+    paddingHorizontal: 20,
+ 
+  },
+  calenderButton: {
+    right: 40,
+    top: 20,
   },
 });
