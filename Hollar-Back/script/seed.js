@@ -198,7 +198,7 @@ async function seed() {
   
   await user1.addEvents([2,3])
   await user2.addEvents([1,2])
-  await user3.addEvents([3,4])
+  await user3.addEvents([3,4,2])
   await user4.addEvents([2,4])
   await user5.addEvents([2,3])
   await user6.addEvents([1,4])

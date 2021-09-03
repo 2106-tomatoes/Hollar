@@ -33,6 +33,7 @@ const Event = db.define("event", {
     allowNull:false
 
   },
+
   hostId:{
     type: Sequelize.INTEGER,
     allowNull:false
