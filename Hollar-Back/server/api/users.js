@@ -145,7 +145,7 @@ router.post("/", async (req, res, next) => {
 
 router.post("/:userId/events/:eventId", async (req, res, next) => {
   try {
-    //console.log("userId in backend", req.params.id);
+    console.log('im making a post request?')
     const event = await Event.findByPk(req.params.eventId);
 
     await event.addUser(req.params.userId);
@@ -165,3 +165,27 @@ router.post("/:userId/events/:eventId", async (req, res, next) => {
     next(error);
   }
 });
+
+router.delete("/:userId/events/:eventId", async (req, res, next) => {
+  try {
+    //console.log("userId in backend", req.params.id);
+    const event = await Event.findByPk(req.params.eventId);
+
+    await event.removeUser(req.params.userId);
+    const newEvent = await Event.findOne({
+      where: {
+        id: req.params.eventId,
+      },
+      include: {
+        model: User,
+      },
+    });
+
+    res.send(newEvent);
+  } catch (error) {
+    //console.log('stuffs broke yo' + error);
+
+    next(error);
+  }
+});
+

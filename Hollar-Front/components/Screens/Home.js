@@ -8,12 +8,14 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Platform
 } from "react-native";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { getChatListThunk } from "../../store/home";
 import socketio from "../../socket";
 import { setOrigin } from "../../store/origin";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from 'expo-location';
 
 const Home = (props) => {
   const { history } = props;
@@ -22,6 +24,7 @@ const Home = (props) => {
   const user = useSelector((state) => state.user);
   const username = user.username;
   const chatList = useSelector((state) => state.home.chatList);
+  const demo = useSelector(state => state.demo)
   const dispatch = useDispatch();
   const navigation = useNavigation();
   let displayList = [];
@@ -29,9 +32,29 @@ const Home = (props) => {
   useEffect(() => {
     navigation.addListener("focus", () => {
       props.getChatList(user.id);
-      dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }));
+      // console.log("demo in Home useEffect", demo)
+      // if(demo===true){
+      //   console.log("demo is true set origin WH")
+      //   dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }));
+      // } else {
+      //   console.log("demo is false set current location")
+      //   getCurrentLocation()
+      // }
     });
   }, []);
+  useEffect(() => {
+    if(!demo){
+      console.log("demo is false set current location")
+      getCurrentLocation()
+    }
+    // if(demo===true){
+    //   // console.log("demo is true set origin WH")
+    //   // dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }));
+    // } else {
+    //   console.log("demo is false set current location")
+    //   getCurrentLocation()
+    // }
+  }, [demo])
 
   useEffect(() => {
     if (search === "") return;
@@ -43,25 +66,75 @@ const Home = (props) => {
   }, [search]);
 
   const getCurrentLocation = async () => {
-    // if(!Location.hasServicesEnabledAsync()){
-    await Location.requestForegroundPermissionsAsync();
+    //for IOS 
+    // let { status } = await Location.requestForegroundPermissionsAsync();
+    // if (status !== 'granted') {
+    //   console.log('Permission to access location was denied');
+    //   return;
     // }
-    console.log(
-      "address",
-      await Location.geocodeAsync(
-        "1600 Pennsylvania Ave NW, Washington, DC 20006"
-      )
-    );
-    const {
-      coords: { latitude, longitude },
-    } = await Location.getCurrentPositionAsync();
-    const getCurrentLocation = { latitude, longitude };
-    console.log("get", getCurrentLocation);
-    dispatch(setOrigin(getCurrentLocation));
+
+    // let {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync({});
+
+    // let location = {latitude,longitude}
+
+    // dispatch(setOrigin(location));
+
+    // for android
+
+
+
+    // console.log("Before Background Request")
+    // await Location.requestBackgroundPermissionsAsync();
+    // console.log("Before Foreground Request")
+    
+    // await Location.requestForegroundPermissionsAsync();
+    
+    // console.log("Before getCurrentPosition Request")
+    
+
+    // const {
+    //   coords: { latitude, longitude },
+    // } = await Location.getCurrentPositionAsync({})
+    
+    
+    
+
+    // const getCurrentLocation = { latitude, longitude };
+    // console.log("get", getCurrentLocation);
+    
+    
+    //Examples
+    // let { status } = await Location.requestForegroundPermissionsAsync();
+    // if (status !== 'granted') {
+    //   console.log('Permission to access location was denied');
+    //   return;
+    // }
+    let foreground = await Location.requestForegroundPermissionsAsync();
+
+    console.log("Past Foreground permission", foreground)
+    
+    if( Platform.OS === 'android') {
+      console.log('this is an android')
+      let {coords: {latitude, longitude}} = await Location.getLastKnownPositionAsync();
+      const androidLocation = { latitude, longitude}
+      console.log('Android Location', androidLocation);
+      dispatch(setOrigin(androidLocation));
+    } else if (Platform.OS === 'ios'){
+      console.log('this is apple')
+        let {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync({});
+        let iosLocation = {latitude,longitude}
+        console.log(`iosLocation`, iosLocation)
+        dispatch(setOrigin(iosLocation));
+    }
+    
+
+    
+    
+    
   };
 
   function joinEventRoom(eventId, eventTitle) {
-    console.log("Home, joinEventRoom, eventId:", eventId);
+  
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
     socketio.emit('joinRoom', { username, eventId });
@@ -70,6 +143,9 @@ const Home = (props) => {
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
   };
+  
+
+  
 
   if (search === "") {
     displayList = chatList;

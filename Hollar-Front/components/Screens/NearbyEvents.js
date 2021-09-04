@@ -25,6 +25,7 @@ import { withRouter } from "react-router";
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
   const events = useSelector((state) => state.events);
+  const demo = useSelector(state => state.demo)
   const [search, setSearch] = useState("");
   const [searchEvents, setsearchEvents] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,8 +43,11 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
+      console.log('use effect is working')
       if (origin) {
+        console.log('if statement is happening',origin)
         dispatch(findEventsThunk(origin, selectedValue));
+        mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
       }
     });
   }, [events.length]);
@@ -57,7 +61,11 @@ const NearbyEvents = () => {
     setsearchEvents(searchEvents);
   }, [search]);
   
+  // useEffect(() => {
+  //   mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
+  // }, [demo])
   
+
   function handleRefresh() {
     setRefreshing(true);
     dispatch(findEventsThunk(origin, selectedValue));
@@ -74,7 +82,8 @@ const NearbyEvents = () => {
 
     return <View />;
   } else {
-    console.log('search',events)
+    // console.log('search',events)
+    // console.log("origin in nearby events", origin)
     return (
       // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
       <View style={styles.container}>

@@ -66,54 +66,52 @@ export const createEventThunk = (
 
 export const findEventsThunk = (origin, radius = 20) => {
   return async (dispatch) => {
-    console.log('radius', radius)
+    // console.log('radius', radius)
     
     try {
       const { data: openEvents } = await axios.get(
         `${LOCALHOST8080}/api/events`
       );
-
+      
       //COMMENT OUT THIS LINE WHEN YOU WANT TO USE GOOGLE API!!!
-      dispatch(findEvent(openEvents));
+      // dispatch(findEvent(openEvents));
 
       //UNCOMMENT TO USE GOOGLE API!!!!!!
 
-      // const latLng = openEvents.map((event) => {
-      //   const lat = event.latitude
-      //   const lng = event.longitude
-      //   return {lat, lng}
-      // })
-      // const combineLatLng = []
+      const latLng = openEvents.map((event) => {
+        const lat = event.latitude
+        const lng = event.longitude
+        return {lat, lng}
+      })
+      const combineLatLng = []
 
-      // latLng.forEach((coords) => {
-      //   return combineLatLng.push(`${coords.lat},${coords.lng}`)
-      // })
+      latLng.forEach((coords) => {
+        return combineLatLng.push(`${coords.lat},${coords.lng}`)
+      })
       // console.log('combineLatLng final', combineLatLng.join('|'))
 
-      // const config = {
-      //   method: 'get',
-      //   url: `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.latitude+','+origin.longitude}&destinations=${combineLatLng.join('|')}&key=${GOOGLE_MAPS_APIKEY}`,
-      //   headers: { }
-      // };
-      // const { data } = await axios(config)
+      const config = {
+        method: 'get',
+        url: `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.latitude+','+origin.longitude}&destinations=${combineLatLng.join('|')}&key=${GOOGLE_MAPS_APIKEY}`,
+        headers: { }
+      };
+      const { data } = await axios(config)
       // console.log("data", data)
 
-      // const availableEvents = []
+      const availableEvents = []
 
-      // for (let i = 0; i < openEvents.length; i++) {
-      //   console.log("inisde for loop")
-      //   const poi = data.rows[0].elements[i]
-      //   console.log("poi is", poi)
-      //   const mileValue = 0.6214 * poi.distance.value / 1000
-      //   console.log("mileValue", mileValue)
-      //   if (mileValue <= radius) {
-      //     availableEvents.push(openEvents[i])
-      //   }
-      // }
+      for (let i = 0; i < openEvents.length; i++) {
+        // console.log("inisde for loop")
+        const poi = data.rows[0].elements[i]
+        // console.log("poi is", poi)
+        const mileValue = 0.6214 * poi.distance.value / 1000
+        // console.log("mileValue", mileValue)
+        if (mileValue <= radius) {
+          availableEvents.push(openEvents[i])
+        }
+      }
 
-
-
-      // dispatch(findEvent(availableEvents))
+      dispatch(findEvent(availableEvents))
     } catch (error) {
       console.log(error);
     }

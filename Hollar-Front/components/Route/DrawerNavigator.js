@@ -6,6 +6,7 @@ import NearbyEvents from "../Screens/NearbyEvents";
 import CreateEvent from "../Screens/CreateEvent";
 import Home from "../Screens/Home";
 import DirectMsgs from "../Screens/DirectMsgs";
+import DemoScreen from "../Screens/DemoScreen"
 
 const DrawerNavigator = ({ navigation }) => {
   const Drawer = createDrawerNavigator();
@@ -28,6 +29,7 @@ const DrawerNavigator = ({ navigation }) => {
       <Drawer.Screen name="Nearby Events" component={NearbyEvents} />
       <Drawer.Screen name="Create Event" component={CreateEvent} />
       <Drawer.Screen name="Direct Messages" component={DirectMsgs} />
+      <Drawer.Screen name="Demo" component={DemoScreen} />
     </Drawer.Navigator>
   );
 };

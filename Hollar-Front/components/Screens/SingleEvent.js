@@ -12,7 +12,7 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import { sendRSVPThunk } from "../../store/SingleEvent";
+import { sendRSVPThunk, removeRSVPThunk } from "../../store/SingleEvent";
 import { deleteEventThunk} from "../../store/event"
 import socketio from "../../socket";
 
@@ -49,19 +49,24 @@ const SingleEvent = (props) => {
   if(user.id===singleEvent.hostId){
     host=true
   }
-  userList.forEach((attendee) => {
-    if (attendee.id === user.id) {
-      console.log("this is working!");
-      disableButton = true;
-    }
-  });
+
   if (maxAttendees <= attendanceNumber) {
     disableButton = true;
   }
-
+  
+  function RSVPstatus(eId,uId){
+    for(let i=0; i<userList.length; i++){
+      if (userList[i].id === user.id) {
+       dispatch(removeRSVPThunk(eId, uId))
+       return
+      }
+    }
+ 
+    dispatch(sendRSVPThunk(eventId, user.id))
+  
+  }
 
   function joinEventRoom(eventId, eventTitle) {
-    console.log("Home, joinEventRoom, eventId:", eventId);
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
     socketio.emit("joinRoom", { username, eventId });
@@ -89,7 +94,7 @@ const SingleEvent = (props) => {
             color="#669BBC"
             title="RSVP"
             disabled={disableButton}
-            onPress={() => dispatch(sendRSVPThunk(eventId, user.id))}
+            onPress={() => RSVPstatus(eventId,user.id)}
           ></Button>
         </View>
       </View>
