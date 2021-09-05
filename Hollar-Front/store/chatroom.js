@@ -35,7 +35,27 @@ export const getChatThunk = (eventId) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
-      dispatch(getChat(response.data))
+      const messages = response.data;
+    
+      //Create gifted format msg
+      const giftedFormat = [];
+      for(let i = 0; i < messages.length; i++) {
+        // const dateTime = getDateTime(messages[i].createdAt);
+        giftedFormat.push({
+          _id: messages[i].id,
+          text: `${messages[i].messageContent}`,
+          createdAt: new Date(`${messages[i].createdAt}`),
+          user: {
+            _id: messages[i].user.id,
+            name: `${messages[i].user.username}`,
+            avatar: 'https://placeimg.com/140/140/any',
+          },
+          
+        });
+      }
+
+      dispatch(getChat(giftedFormat));
+      // dispatch(getChat(response.data));
     } catch (error) {
       console.log('e',error);
     }
