@@ -65,17 +65,11 @@ router.get("/:userId/events", async (req, res, next) => {
 // api/users/:userId/events/directMsg
 router.post("/:userId/events/directMsg", async (req, res, next) => {
   const userId = req.params.userId;
-  const { userToDm: { id: userToDmId } } = req.body.dmEventDetails;
+  const { userToDm: { _id: userToDmId } } = req.body.dmEventDetails;
 
   //Clean up the two user properties so we can use dmEventDetails for event creation 
   delete req.body.dmEventDetails.user;
   delete req.body.dmEventDetails.userToDm;
-
-
-//   }
-// });
-
-// router.get("/:userId/events", async (req, res, next) => {
 
   try {
     const events = await Event.findAll({
