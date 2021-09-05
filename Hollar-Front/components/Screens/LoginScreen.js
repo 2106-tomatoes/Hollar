@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Button } from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
 import { setUserThunk } from '../../store/user';
+
 // import { Button, Icon } from '@ui-kitten/components';
 
 const FacebookIcon = (props) => (

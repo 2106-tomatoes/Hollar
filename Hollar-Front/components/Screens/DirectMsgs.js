@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import { getDmChatListThunk } from "../../store/directMsgs";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Hideo } from 'react-native-textinput-effects';
 
 const DirectMsgs = (props) => {
   const { user, chatList, getChatList } = props;
@@ -64,10 +66,17 @@ const DirectMsgs = (props) => {
   return (
     <>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
+      <Hideo
+           iconClass={FontAwesomeIcon}
+           iconName={'search'}
+           iconColor={'white'}
+           // this is used as backgroundColor of icon container view.
+           iconBackgroundColor={'#f2a59d'}
+           inputStyle={{ color: '#f2a59d',backgroundColor: "#DDDDDE"}}
+           iconWidth={20}
+          style={{width:320}}
           autoCapitalize="none"
-          placeholder="Search Direct Messages"
+       
           onChangeText={searchHandler}
           value={search}
         />

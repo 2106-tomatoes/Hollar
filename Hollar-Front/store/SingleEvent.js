@@ -46,6 +46,17 @@ export const getSingleEventThunk = (eventId) => {
     }
   }
 
+  export const removeRSVPThunk = (eventId,userId) => {
+    return async (dispatch) => {
+      try { 
+        const {data: rsvp} = await axios.delete(`${LOCALHOST8080}/api/users/${userId}/events/${eventId}`); 
+        dispatch(getSingleEvent(rsvp))
+      } catch (e) {
+        console.log(`e`, e);
+      }
+    }
+  }
+
   export const editEventThunk = (eventId,obj, navigation) => {
     return async (dispatch) => {
       try {

@@ -11,6 +11,7 @@ import dmRoomReducer from './directMsgsRoom';
 import directMsgsReducer from './directMsgs';
 
 import singleEventReducer from './SingleEvent'
+import demoReducer from "./demo"
 
 
 
@@ -23,9 +24,8 @@ const rootReducer = combineReducers({
   origin: originReducer,
   dmRoom: dmRoomReducer,
   directMsgs: directMsgsReducer,
-
-  singleEvent: singleEventReducer
-
+  singleEvent: singleEventReducer,
+  demo: demoReducer
 });
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(rootReducer, middleware);

@@ -9,7 +9,7 @@ module.exports = router;
 
 router.get("/", async (req,res,next) => {
   try {
-
+    console.log('date',req.query.date)
     let date_ob = new Date();
 
     // current date
@@ -26,10 +26,11 @@ router.get("/", async (req,res,next) => {
 
     const dateFormat = year + "-" + month + "-" + date
 
+
     const events = await Event.findAll({
       where: {
         attendanceDate: {
-          [Op.gte]: dateFormat
+          [Op.gte]: req.query.date
         },
         eventObjectType: 'event'
       },

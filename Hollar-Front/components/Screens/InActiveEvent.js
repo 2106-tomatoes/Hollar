@@ -11,7 +11,7 @@ import {
   Platform
 } from "react-native";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { getChatListThunk } from "../../store/home";
+import { getChatListInActiveDateThunk } from "../../store/home";
 import socketio from "../../socket";
 import { setOrigin } from "../../store/origin";
 import { useNavigation } from "@react-navigation/native";
@@ -19,8 +19,8 @@ import * as Location from 'expo-location';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Hideo } from 'react-native-textinput-effects';
 
-const Home = (props) => {
-  const { history } = props;
+
+const InActiveEvent = (props) => {
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState([]);
   const user = useSelector((state) => state.user);
@@ -174,15 +174,15 @@ const Home = (props) => {
            // this is used as backgroundColor of icon container view.
            iconBackgroundColor={'#f2a59d'}
            inputStyle={{ color: '#f2a59d',backgroundColor: "#DDDDDE"}}
-           iconWidth={20}
-          style={{width:320}}
+           iconWidth={10}
+           style={{width:320}}
+           
           autoCapitalize="none"
        
           onChangeText={searchHandler}
           value={search}
         />
       </View>
-      {displayList.length<=0?<Text> No Events Here! Go to Nearby Events to get started!</Text>:
       <FlatList
         data={displayList}
         style={{ marginHorizontal: 40 }}
@@ -208,7 +208,7 @@ const Home = (props) => {
             </TouchableOpacity>
           );
         }}
-      />}
+      />
     </>
   );
 };
@@ -242,8 +242,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getChatList: (userId) => dispatch(getChatListThunk(userId)),
+    getChatList: (userId) => dispatch(getChatListInActiveDateThunk(userId)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(InActiveEvent);

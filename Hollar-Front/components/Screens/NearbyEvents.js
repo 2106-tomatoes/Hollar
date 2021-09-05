@@ -10,7 +10,8 @@ import {
   ScrollView,
   Modal,
   Pressable,
-  Button
+  Button,
+  Image
 } from "react-native";
 import * as Location from "expo-location";
 import { setOrigin } from "../../store/origin";
@@ -20,16 +21,24 @@ import { findEventsThunk, findEvent } from "../../store/event";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { withRouter } from "react-router";
+import CalendarPicker from "react-native-calendar-picker";
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Hideo } from 'react-native-textinput-effects';
+
 
 
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
   const events = useSelector((state) => state.events);
+  const demo = useSelector(state => state.demo)
   const [search, setSearch] = useState("");
   const [searchEvents, setsearchEvents] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [calmodalVisible, setCalModalVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState("20");
+  const currentDate = new Date();
+  const [newdate, setNewDate] = useState(currentDate.toISOString().slice(0,10))
 
   const dispatch = useDispatch();
   let displayEvents = [];
@@ -42,8 +51,11 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
+      console.log('use effect is working')
       if (origin) {
-        dispatch(findEventsThunk(origin, selectedValue));
+        console.log('if statement is happening',origin)
+        dispatch(findEventsThunk(origin, selectedValue, newdate));
+        mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
       }
     });
   }, [events.length]);
@@ -57,10 +69,21 @@ const NearbyEvents = () => {
     setsearchEvents(searchEvents);
   }, [search]);
   
-  
+  // useEffect(() => {
+  //   mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
+  // }, [demo])
+  const onDateConfirm = () => {
+    dispatch(findEventsThunk(origin,selectedValue,newdate))
+  }
+  const DateChange = (date) => {
+    const newdate = date.toISOString().slice(0, 10);
+
+    setNewDate(newdate);
+  };
+
   function handleRefresh() {
     setRefreshing(true);
-    dispatch(findEventsThunk(origin, selectedValue));
+    dispatch(findEventsThunk(origin, selectedValue, newdate));
     setRefreshing(false);
   }
 
@@ -74,7 +97,8 @@ const NearbyEvents = () => {
 
     return <View />;
   } else {
-    console.log('search',events)
+    // console.log('search',events)
+    // console.log("origin in nearby events", origin)
     return (
       // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
       <View style={styles.container}>
@@ -121,8 +145,14 @@ const NearbyEvents = () => {
         </MapView>
 
         <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
+          <Hideo
+            iconClass={FontAwesomeIcon}
+            iconName={'search'}
+            iconColor={'white'}
+            // this is used as backgroundColor of icon container view.
+            iconBackgroundColor={'#f2a59d'}
+            inputStyle={{ color: '#f2a59d',backgroundColor: "#DDDDDE"}}
+            iconWidth={20}
             autoCapitalize="none"
             placeholder="Search Events"
             onChangeText={searchHandler}
@@ -145,10 +175,20 @@ const NearbyEvents = () => {
           >
             <Text style={styles.textStyle}>Set Radius</Text>
           </Pressable>
-        </View>
+          <TouchableOpacity
+                  style={styles.calenderButton}
+                  onPress={() => setCalModalVisible(true)}
+                >
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImage}
+                  />
+                </TouchableOpacity>
+  
         <Button title="Center Self" onPress={async () => {
           mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
         }}/>
+        </View>
         <FlatList
           data={displayEvents}
           style={{ flex: 1 }}
@@ -174,7 +214,7 @@ const NearbyEvents = () => {
                 <Text>Event: {item.name}</Text>
                 <Text>Location: {item.location}</Text>
                 <Text>Attendance: {item.users.length}/{item.maxAttendees}</Text>
-                <Text>Event Date: {item.attendanceDate}</Text>
+                <Text>Event Date: {item.attendanceDate}   {item.time}</Text>
               </TouchableOpacity>
             );
           }}
@@ -211,7 +251,7 @@ const NearbyEvents = () => {
                 ]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  dispatch(findEventsThunk(origin, Number(selectedValue)));
+                  dispatch(findEventsThunk(origin, Number(selectedValue), newdate));
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Set Radius</Text>
@@ -219,6 +259,35 @@ const NearbyEvents = () => {
             </View>
           </View>
         </Modal>
+        <Modal
+              animationType="fade"
+              transparent={true}
+              visible={calmodalVisible}
+              onRequestClose={() => {
+                setCalModalVisible(!calmodalVisible);
+              }}
+            >
+              <View style={styles.centeredView}> 
+           
+                <View style={styles.modalView}>
+                   <Text>{newdate} </Text> 
+                  <CalendarPicker onDateChange={DateChange} />
+                  <Pressable
+                    style={[
+                      styles.button,
+                      styles.buttonClose,
+                      { height: 35, width: 100 },
+                    ]}
+                    onPress={() => {
+                      onDateConfirm()
+                      setCalModalVisible(!calmodalVisible);
+                    }}
+                  >
+                    <Text style={{ textAlign: "center" }}>Confirm</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
       </View>
     );
   }
@@ -282,6 +351,8 @@ const styles = StyleSheet.create({
   },
   radiusButtonContainer: {
     alignItems: "center",
+    flexDirection:'row',
+    justifyContent:'space-around'
   }, 
   inputContainer: {
     // flex: 1,
@@ -301,5 +372,10 @@ const styles = StyleSheet.create({
   closeButton: {
     height: 15,
     width: 10,
+  },
+  calendarImage: {
+    width: 20,
+    height: 20,
+    resizeMode: "stretch",
   },
 });

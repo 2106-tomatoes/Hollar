@@ -12,7 +12,7 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import { sendRSVPThunk } from "../../store/SingleEvent";
+import { sendRSVPThunk, removeRSVPThunk } from "../../store/SingleEvent";
 import { deleteEventThunk} from "../../store/event"
 import socketio from "../../socket";
 
@@ -29,12 +29,13 @@ const SingleEvent = (props) => {
   const singleEvent = useSelector((state) => state.singleEvent);
   const user = useSelector((state) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
+  let isRSVP=false
   let host = false
   const username = user.username;
   // const [disableButton, setDisableButton] = useState("false")
 
   const dispatch = useDispatch();
-  const { attendanceDate, maxAttendees, description, location, name } =
+  const { attendanceDate, maxAttendees, description, location, name,time } =
     singleEvent;
   const navigation = useNavigation();
   const attendanceNumber = singleEvent.users ? singleEvent.users.length : 0;
@@ -48,20 +49,35 @@ const SingleEvent = (props) => {
   let disableButton = false;
   if(user.id===singleEvent.hostId){
     host=true
+    disableButton=true;
   }
-  userList.forEach((attendee) => {
-    if (attendee.id === user.id) {
-      console.log("this is working!");
-      disableButton = true;
-    }
-  });
+
   if (maxAttendees <= attendanceNumber) {
     disableButton = true;
   }
+  
+  function RSVPstatus(eId,uId){
+    for(let i=0; i<userList.length; i++){
+      if (userList[i].id === user.id) {
+       dispatch(removeRSVPThunk(eId, uId))
+       isRSVP=false
+       return
+      }
+    }
+ 
+    dispatch(sendRSVPThunk(eventId, user.id))
 
+  
 
+  }
+  for(let i=0; i<userList.length; i++){
+    if (userList[i].id === user.id) {
+     isRSVP =true 
+   
+    }
+  }
+  
   function joinEventRoom(eventId, eventTitle) {
-    console.log("Home, joinEventRoom, eventId:", eventId);
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
     socketio.emit("joinRoom", { username, eventId });
@@ -73,6 +89,7 @@ const SingleEvent = (props) => {
       <Text>Location: {location}</Text>
       <Text>Description: {description}</Text>
       <Text>Date: {attendanceDate}</Text>
+      <Text>Time: {time}</Text>
       <Text>
         Attendees: {attendanceNumber}/{maxAttendees}
       </Text>
@@ -87,9 +104,9 @@ const SingleEvent = (props) => {
         <View style={styles.buttonContainer}>
           <Button
             color="#669BBC"
-            title="RSVP"
+            title={isRSVP==true?'UNRSVP':'RSVP'}
             disabled={disableButton}
-            onPress={() => dispatch(sendRSVPThunk(eventId, user.id))}
+            onPress={() => RSVPstatus(eventId,user.id)}
           ></Button>
         </View>
       </View>
