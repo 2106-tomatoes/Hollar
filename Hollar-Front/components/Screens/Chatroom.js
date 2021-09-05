@@ -110,7 +110,6 @@ const Chatroom = (props) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            console.log("Modal has been closed.");
             setModalVisible(!modalVisible);
           }}
         >
@@ -180,7 +179,7 @@ const Chatroom = (props) => {
             }}
           /> */}
 
-          
+
         <View style={{flex: 3, flexDirection:'row'}}>
           <TextInput
             style={[styles.textInput, {height: Math.max(15,textHeight)}]}
@@ -191,9 +190,8 @@ const Chatroom = (props) => {
             onSubmitEditing={submitChatMessage}
             multiline={true}
             maxLength={255}
-            
+
             onContentSizeChange={(event) => {
-              console.log("event in onContentSizeChange", event.nativeEvent.contentSize)
               setTextHeight(event.nativeEvent.contentSize.height )
 
           }}

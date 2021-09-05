@@ -13,7 +13,6 @@ export const setDemo = (demoStatus) => {
 export default demoReducer = (state = false, action) => {
   switch(action.type) {
     case SET_DEMO:
-      console.log(`action.demo in reducer`, action.demo)
       return action.demo
     default:
       return state

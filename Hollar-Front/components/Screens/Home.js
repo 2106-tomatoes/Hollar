@@ -46,7 +46,6 @@ const Home = (props) => {
   }, []);
   useEffect(() => {
     if(!demo){
-      console.log("demo is false set current location")
       getCurrentLocation()
     }
     // if(demo===true){
@@ -68,7 +67,7 @@ const Home = (props) => {
   }, [search]);
 
   const getCurrentLocation = async () => {
-    //for IOS 
+    //for IOS
     // let { status } = await Location.requestForegroundPermissionsAsync();
     // if (status !== 'granted') {
     //   console.log('Permission to access location was denied');
@@ -88,23 +87,23 @@ const Home = (props) => {
     // console.log("Before Background Request")
     // await Location.requestBackgroundPermissionsAsync();
     // console.log("Before Foreground Request")
-    
+
     // await Location.requestForegroundPermissionsAsync();
-    
+
     // console.log("Before getCurrentPosition Request")
-    
+
 
     // const {
     //   coords: { latitude, longitude },
     // } = await Location.getCurrentPositionAsync({})
-    
-    
-    
+
+
+
 
     // const getCurrentLocation = { latitude, longitude };
     // console.log("get", getCurrentLocation);
-    
-    
+
+
     //Examples
     // let { status } = await Location.requestForegroundPermissionsAsync();
     // if (status !== 'granted') {
@@ -113,30 +112,24 @@ const Home = (props) => {
     // }
     let foreground = await Location.requestForegroundPermissionsAsync();
 
-    console.log("Past Foreground permission", foreground)
-    
     if( Platform.OS === 'android') {
-      console.log('this is an android')
       let {coords: {latitude, longitude}} = await Location.getLastKnownPositionAsync();
       const androidLocation = { latitude, longitude}
-      console.log('Android Location', androidLocation);
       dispatch(setOrigin(androidLocation));
     } else if (Platform.OS === 'ios'){
-      console.log('this is apple')
         let {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync({});
         let iosLocation = {latitude,longitude}
-        console.log(`iosLocation`, iosLocation)
         dispatch(setOrigin(iosLocation));
     }
-    
 
-    
-    
-    
+
+
+
+
   };
 
   function joinEventRoom(eventId, eventTitle) {
-  
+
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
     socketio.emit('joinRoom', { username, eventId });
@@ -145,10 +138,10 @@ const Home = (props) => {
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
   };
-  
-  
 
-  
+
+
+
 
   if (search === "") {
     displayList = chatList;
@@ -177,7 +170,7 @@ const Home = (props) => {
            iconWidth={20}
           style={{width:320}}
           autoCapitalize="none"
-       
+
           onChangeText={searchHandler}
           value={search}
         />

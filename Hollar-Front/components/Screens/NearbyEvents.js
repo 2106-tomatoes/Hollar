@@ -51,9 +51,7 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
-      console.log('use effect is working')
       if (origin) {
-        console.log('if statement is happening',origin)
         dispatch(findEventsThunk(origin, selectedValue, newdate));
         mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
       }
@@ -68,7 +66,7 @@ const NearbyEvents = () => {
     });
     setsearchEvents(searchEvents);
   }, [search]);
-  
+
   // useEffect(() => {
   //   mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
   // }, [demo])
@@ -97,10 +95,7 @@ const NearbyEvents = () => {
 
     return <View />;
   } else {
-    // console.log('search',events)
-    // console.log("origin in nearby events", origin)
     return (
-      // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
       <View style={styles.container}>
         <MapView
           style={{ flex: 1 }}
@@ -157,15 +152,15 @@ const NearbyEvents = () => {
             placeholder="Search Events"
             onChangeText={searchHandler}
             value={search}/>
-          
+
           {search!==""&&   <Pressable
             style={styles.closeButtonParent}
             placeholder="X"
             onPress={() => setSearch("")}
           >
           <Text style={styles.closeButton}>X</Text>
-       
-              
+
+
           </Pressable>}
         </View>
         <View style={styles.radiusButtonContainer}>
@@ -184,7 +179,7 @@ const NearbyEvents = () => {
                     style={styles.calendarImage}
                   />
                 </TouchableOpacity>
-  
+
         <Button title="Center Self" onPress={async () => {
           mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
         }}/>
@@ -199,10 +194,9 @@ const NearbyEvents = () => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           renderItem={({ item }) => {
-       
+
             return (
               <TouchableOpacity
-                // onPress={() => {}}
                 style={{ margin: 15 }}
                 onPress={() =>
                   navigation.navigate("SingleEvent", {
@@ -267,10 +261,10 @@ const NearbyEvents = () => {
                 setCalModalVisible(!calmodalVisible);
               }}
             >
-              <View style={styles.centeredView}> 
-           
+              <View style={styles.centeredView}>
+
                 <View style={styles.modalView}>
-                   <Text>{newdate} </Text> 
+                   <Text>{newdate} </Text>
                   <CalendarPicker onDateChange={DateChange} />
                   <Pressable
                     style={[
@@ -302,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
   },
- 
+
   textInput: {
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
@@ -311,7 +305,7 @@ const styles = StyleSheet.create({
     margin: 12,
     // borderWidth: 1,
     paddingHorizontal: 20,
-    
+
   },
   centeredView: {
     flex: 1,
@@ -353,7 +347,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection:'row',
     justifyContent:'space-around'
-  }, 
+  },
   inputContainer: {
     // flex: 1,
     flexDirection: 'row',

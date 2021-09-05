@@ -3,6 +3,11 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 
+if (process.env.NODE_ENV !== 'production') {
+  console.log("Require dotenv")
+  require('dotenv').config();
+}
+
 
 // logging middleware
 app.use(morgan('dev'))
