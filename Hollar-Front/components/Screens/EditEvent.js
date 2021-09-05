@@ -10,54 +10,45 @@ import {
   Modal,
   Pressable,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {editEventThunk} from "../../store/SingleEvent"
+import { editEventThunk } from "../../store/SingleEvent";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import CalendarPicker from "react-native-calendar-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
-
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const EditEvent = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const navigation = useNavigation();
   const singleEvent = props.route.params.singleEvent;
-  const ref = useRef()
+  const ref = useRef();
   const currentDate = new Date();
-  
 
   const [name, setName] = useState("");
   const [maxAttendees, setmaxAttendees] = useState("");
   const [location, setlocation] = useState("");
-  const [latitude, setlatitude] = useState("")
-  const [longitude, setlongitude] = useState("")
+  const [latitude, setlatitude] = useState("");
+  const [longitude, setlongitude] = useState("");
   const [description, setDescription] = useState("");
   const [attendanceDate, setAttendanceDate] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [calModalVisible, setCalModalVisible] = useState(false);
   const [time, setTime] = useState(currentDate);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-
-  const onChange = (event, selectedTime) => {
-    console.log("selected", selectedTime.toLocaleTimeString());
-    setTime(selectedTime)
-  };
-
-
-  useEffect(()=> {
-    setName(singleEvent.name)
-    setmaxAttendees(singleEvent.maxAttendees.toString())
-    setlocation(singleEvent.location)
-    setlatitude(singleEvent.latitude)
-    setlongitude(singleEvent.longitude)
-    setDescription(singleEvent.description)
-    setAttendanceDate(singleEvent.attendanceDate)
-    ref.current.setAddressText(singleEvent.location)
-  }, [])
-
+  useEffect(() => {
+    setName(singleEvent.name);
+    setmaxAttendees(singleEvent.maxAttendees.toString());
+    setlocation(singleEvent.location);
+    setlatitude(singleEvent.latitude);
+    setlongitude(singleEvent.longitude);
+    setDescription(singleEvent.description);
+    setAttendanceDate(singleEvent.attendanceDate);
+    ref.current.setAddressText(singleEvent.location);
+  }, []);
 
   const nameHandler = (nameInput) => {
     setName(nameInput);
@@ -72,46 +63,59 @@ const EditEvent = (props) => {
     setDescription(descriptionInput);
   };
   const attendanceDateHandler = (attendanceDateInput) => {
-
     setAttendanceDate(attendanceDateInput);
   };
 
   const DateChange = (date) => {
-
     const newdate = date.toISOString().slice(0, 10);
- 
+
     setAttendanceDate(newdate);
   };
 
-  const handleSubmit = () => {
+  const onChange = (selectedTime) => {
+    // const newTime = selectedTime.toLocaleTimeString()
+    // console.log("selected", newTime);
 
+    setTime(selectedTime);
+    hideDatePicker();
+  };
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    console.warn("A date has been picked: ", date);
+    hideDatePicker();
+  };
+
+  const handleSubmit = () => {
     const obj = {
-        name,
-        maxAttendees:Number(maxAttendees),
-        location,
-        latitude,
-        longitude,
-        description,
-        user,
-        attendanceDate,
-    }
-    dispatch(
-      editEventThunk(singleEvent.id,
-        obj,navigation
-      )
-    );
+      name,
+      maxAttendees: Number(maxAttendees),
+      location,
+      latitude,
+      longitude,
+      description,
+      user,
+      time: time.toLocaleTimeString(),
+      attendanceDate,
+    };
+    dispatch(editEventThunk(singleEvent.id, obj, navigation));
     setName("");
     setmaxAttendees("");
     setlocation("");
-    setlatitude("")
-    setlongitude("")
+    setlatitude("");
+    setlongitude("");
     setDescription("");
     setAttendanceDate("");
   };
 
   return (
     <View style={styles.container}>
-     
       <Text style={styles.header}>Edit Event</Text>
       <View style={{ flex: 20 }}>
         <View style={styles.inputView}>
@@ -147,27 +151,29 @@ const EditEvent = (props) => {
         <View style={styles.inputView}>
           <Text>Location:</Text>
           <GooglePlacesAutocomplete
-              ref={ref}
-              placeholder="Enter Location"
-              styles={styles.textInput}
-              nearbyPlacesAPI="GooglePlacesSearch"
-              debounce={500}
-              enablePoweredByContainer={false}
-              fetchDetails={true}
-              minLength={2}
-              returnKeyType={"search"}
-              query={{
-                key: GOOGLE_MAPS_APIKEY,
-                language: "en",
-              }}
-              onPress={(data, details = null) => {
-                    console.log("details.geometry.location", details.geometry.location)
-                    setlatitude(details.geometry.location.lat)
-                    setlongitude(details.geometry.location.lng)
-                    console.log("data.description", data.description)
-                    setlocation(data.description)
-                  }
-              }
+            ref={ref}
+            placeholder="Enter Location"
+            styles={styles.textInput}
+            nearbyPlacesAPI="GooglePlacesSearch"
+            debounce={500}
+            enablePoweredByContainer={false}
+            fetchDetails={true}
+            minLength={2}
+            returnKeyType={"search"}
+            query={{
+              key: GOOGLE_MAPS_APIKEY,
+              language: "en",
+            }}
+            onPress={(data, details = null) => {
+              console.log(
+                "details.geometry.location",
+                details.geometry.location
+              );
+              setlatitude(details.geometry.location.lat);
+              setlongitude(details.geometry.location.lng);
+              console.log("data.description", data.description);
+              setlocation(data.description);
+            }}
           />
         </View>
         <View style={styles.inputView}>
@@ -210,7 +216,7 @@ const EditEvent = (props) => {
               />
             </TouchableOpacity>
           </View>
-              {/* code below is for timer */}
+          {/* code below is for timer */}
           {/* <View style={styles.inputView}>
               <Text style={styles.inputHeader}>Time:</Text>
               <DateTimePicker
@@ -223,12 +229,39 @@ const EditEvent = (props) => {
               />
             </View> */}
         </View>
+        <View style={styles.inputView}>
+          <Text style={styles.inputHeader}>Time:</Text>
+          <View style={styles.attendanceContainer}>
+            <TextInput
+              placeholder={`${time.toLocaleTimeString()}`}
+              editable={false}
+              autoCapitalize="none"
+              style={styles.attendanceTextInput}
+              value={time}
+            />
+            <TouchableOpacity
+              style={styles.calenderButton}
+              onPress={showDatePicker}
+            >
+              <Image
+                source={require("../../assets/clock_icon.png")}
+                style={styles.calendarImage}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="time"
+            onConfirm={onChange}
+            onCancel={hideDatePicker}
+          />
       </View>
       <View style={{ marginTop: 15 }}>
-        <Button title="Edit Event" onPress={()=>setModalVisible(true)} />
+        <Button title="Edit Event" onPress={() => setModalVisible(true)} />
       </View>
-        <View>
-      <Modal
+      <View>
+        <Modal
           animationType="fade"
           transparent={true}
           visible={modalVisible}
@@ -236,18 +269,19 @@ const EditEvent = (props) => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={[styles.centeredView, {backgroundColor: '#DDDDDE'}]}>
+          <View style={[styles.centeredView, { backgroundColor: "#DDDDDE" }]}>
             <View style={styles.modalView}>
-            <Text style={{textAlign:'center', paddingBottom:5}}>Are You Sure You Want to Edit This Event?</Text>
-            <Pressable
+              <Text style={{ textAlign: "center", paddingBottom: 5 }}>
+                Are You Sure You Want to Edit This Event?
+              </Text>
+              <Pressable
                 style={[
                   styles.button,
                   styles.buttonClose,
                   { height: 35, width: 100 },
                 ]}
                 onPress={() => {
-                  dispatch(handleSubmit)
-                
+                  dispatch(handleSubmit);
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Confirm</Text>
@@ -260,7 +294,6 @@ const EditEvent = (props) => {
                 ]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Cancel</Text>
@@ -276,6 +309,7 @@ const EditEvent = (props) => {
             setCalModalVisible(!calModalVisible);
           }}
         >
+          
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <CalendarPicker onDateChange={DateChange} />
@@ -287,7 +321,6 @@ const EditEvent = (props) => {
                 ]}
                 onPress={() => {
                   setCalModalVisible(!calModalVisible);
-                
                 }}
               >
                 <Text style={{ textAlign: "center" }}>Confirm</Text>
@@ -295,8 +328,7 @@ const EditEvent = (props) => {
             </View>
           </View>
         </Modal>
-       </View>
-
+      </View>
     </View>
   );
 };
@@ -390,7 +422,6 @@ const styles = StyleSheet.create({
     width: 300,
     margin: 12,
     paddingHorizontal: 20,
- 
   },
   calenderButton: {
     right: 40,

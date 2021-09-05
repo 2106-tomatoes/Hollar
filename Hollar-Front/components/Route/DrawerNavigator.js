@@ -7,6 +7,7 @@ import CreateEvent from "../Screens/CreateEvent";
 import Home from "../Screens/Home";
 import DirectMsgs from "../Screens/DirectMsgs";
 import DemoScreen from "../Screens/DemoScreen"
+import App from "./tabnavigation"
 
 const DrawerNavigator = ({ navigation }) => {
   const Drawer = createDrawerNavigator();
@@ -25,7 +26,8 @@ const DrawerNavigator = ({ navigation }) => {
 
   return (
     <Drawer.Navigator initialRouteName="Events" screenOptions={{drawerType: 'front', swipeEnabled: false, headerTitle: 'Hollar'}} drawerContent={(props) => <Logout {...props} />}>
-      <Drawer.Screen name="Events" component={Home} options={{}} />
+      <Drawer.Screen name="Events" component={App} independent={true} />
+      {/* <Drawer.Screen name="Events" component={Home} options={{}} /> */}
       <Drawer.Screen name="Nearby Events" component={NearbyEvents} />
       <Drawer.Screen name="Create Event" component={CreateEvent} />
       <Drawer.Screen name="Direct Messages" component={DirectMsgs} />

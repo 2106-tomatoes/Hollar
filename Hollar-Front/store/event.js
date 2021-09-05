@@ -36,7 +36,7 @@ export const createEventThunk = (
   description,
   user,
   attendanceDate,
-
+  time,
   navigation
 ) => {
   return async (dispatch) => {
@@ -53,6 +53,7 @@ export const createEventThunk = (
           description,
           eventObjectType:'event',
           attendanceDate,
+          time:time.toLocaleTimeString(),
           hostId: user.id,
    
         }
@@ -64,13 +65,13 @@ export const createEventThunk = (
   };
 };
 
-export const findEventsThunk = (origin, radius = 20) => {
+export const findEventsThunk = (origin, radius = 20, date) => {
   return async (dispatch) => {
     // console.log('radius', radius)
     
     try {
       const { data: openEvents } = await axios.get(
-        `${LOCALHOST8080}/api/events`
+        `${LOCALHOST8080}/api/events?date=${date}`
       );
       
       //COMMENT OUT THIS LINE WHEN YOU WANT TO USE GOOGLE API!!!

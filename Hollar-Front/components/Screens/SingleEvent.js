@@ -29,12 +29,13 @@ const SingleEvent = (props) => {
   const singleEvent = useSelector((state) => state.singleEvent);
   const user = useSelector((state) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
+  let isRSVP=false
   let host = false
   const username = user.username;
   // const [disableButton, setDisableButton] = useState("false")
 
   const dispatch = useDispatch();
-  const { attendanceDate, maxAttendees, description, location, name } =
+  const { attendanceDate, maxAttendees, description, location, name,time } =
     singleEvent;
   const navigation = useNavigation();
   const attendanceNumber = singleEvent.users ? singleEvent.users.length : 0;
@@ -48,6 +49,7 @@ const SingleEvent = (props) => {
   let disableButton = false;
   if(user.id===singleEvent.hostId){
     host=true
+    disableButton=true;
   }
 
   if (maxAttendees <= attendanceNumber) {
@@ -58,14 +60,23 @@ const SingleEvent = (props) => {
     for(let i=0; i<userList.length; i++){
       if (userList[i].id === user.id) {
        dispatch(removeRSVPThunk(eId, uId))
+       isRSVP=false
        return
       }
     }
  
     dispatch(sendRSVPThunk(eventId, user.id))
-  
-  }
 
+  
+
+  }
+  for(let i=0; i<userList.length; i++){
+    if (userList[i].id === user.id) {
+     isRSVP =true 
+   
+    }
+  }
+  
   function joinEventRoom(eventId, eventTitle) {
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
@@ -78,6 +89,7 @@ const SingleEvent = (props) => {
       <Text>Location: {location}</Text>
       <Text>Description: {description}</Text>
       <Text>Date: {attendanceDate}</Text>
+      <Text>Time: {time}</Text>
       <Text>
         Attendees: {attendanceNumber}/{maxAttendees}
       </Text>
@@ -92,7 +104,7 @@ const SingleEvent = (props) => {
         <View style={styles.buttonContainer}>
           <Button
             color="#669BBC"
-            title="RSVP"
+            title={isRSVP==true?'UNRSVP':'RSVP'}
             disabled={disableButton}
             onPress={() => RSVPstatus(eventId,user.id)}
           ></Button>
