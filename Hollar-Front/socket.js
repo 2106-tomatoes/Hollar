@@ -3,6 +3,7 @@ import { sendChat, displayUserStatus } from './store/chatroom'
 import { sendDmChat, displayDmUserStatus } from './store/directMsgsRoom' 
 import store from './store/index'
 import { IP_ADD } from "@env";
+import { getDateTime } from './reusableFuncs/reusableFunctions';
 
 const socketio = io(`${IP_ADD}`);
 
@@ -16,7 +17,17 @@ socketio.on('connect', () => {
 
   socketio.on('getDmMessage', (message) => {
     console.log('socket, getDmMessage dispatching message:', message);
-    store.dispatch(sendDmChat(message));
+    const currUser = store.getState().user;
+    const dateTime = getDateTime(message.createdAt);
+
+    //Create kitten format msg
+    const kittenFormat = {
+      attachment: null,
+      date: dateTime,
+      reply: (currUser.id === message.user.id ? true : false),
+      text: `${message.user.username}: ${message.messageContent}`
+    }
+    store.dispatch(sendDmChat(kittenFormat));
   })
 
   socketio.on('joinedRoom', (status) => {

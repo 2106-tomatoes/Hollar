@@ -1,5 +1,6 @@
 import axios from "axios";
 import { LOCALHOST8080 } from "@env";
+import { getDateTime } from "../reusableFuncs/reusableFunctions";
 
 
 //Actions
@@ -30,14 +31,31 @@ export function displayDmUserStatus(status) {
 }
 
 
+
 //Thunk creators
-export const getDmChatThunk = (eventId) => {
+export const getDmChatThunk = (eventId, userId) => {
 
   return async (dispatch) => {
     try {
       console.log('getDmChatThunk, eventId:', eventId);
       const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
-      dispatch(getDmChat(response.data))
+      const messages = response.data;
+    
+      //Create kitten format msg
+      const kittenFormat = [];
+      for(let i = 0; i < messages.length; i++) {
+        const dateTime = getDateTime(messages[i].createdAt);
+        kittenFormat.push({
+          attachment: null,
+          date: dateTime,
+          reply: (userId === messages[i].user.id ? true : false),
+          text: `${messages[i].user.username}: ${messages[i].messageContent}`
+        });
+      }
+
+      dispatch(getDmChat(kittenFormat));
+      // dispatch(getDmChat(response.data))
+      // return response.data;
     } catch (error) {
       console.log('getDmChatThunk:', error);
     }
