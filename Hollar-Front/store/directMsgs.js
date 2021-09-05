@@ -20,9 +20,9 @@ export const getDmChatListThunk = (userId, username) => {
       for(let i = 0; i < chatList.length; i++) {
         const dmUsernames = chatList[i].name.split(' to ');
         if(username === dmUsernames[0]) {
-          chatList[i].name = `From ${dmUsernames[1]}`;
+          chatList[i].name = `${dmUsernames[1]}`;
         } else {
-          chatList[i].name = `From ${dmUsernames[0]}`;
+          chatList[i].name = `${dmUsernames[0]}`;
         }
       }
 

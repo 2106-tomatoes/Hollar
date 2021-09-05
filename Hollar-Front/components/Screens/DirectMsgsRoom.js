@@ -3,21 +3,23 @@ import {
   StyleSheet,
   Text,
   View,
-  //Button,
+  // Button,
   Pressable,
   Modal,
   TextInput,
+  Platform,
 } from "react-native";
 import { Link } from "react-router-native";
 import { connect } from "react-redux";
 import { getDmChatThunk, sendDmChatThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
+import { GiftedChat } from 'react-native-gifted-chat';
 
 
 const DirectMsgsRoom = (props) => {
   // console.log("props in chatroom", props)
-  const { getChat, message, user } = props;
+  const { getChat, messages, user } = props;
   const navigation = useNavigation();
   const userId = user.id;
   const username = user.username;
@@ -32,11 +34,8 @@ const DirectMsgsRoom = (props) => {
     eventId: dmEventId,
   };
 
-  
-
   useEffect(() => {
-    getChat(dmEventId);
-
+    getChat(dmEventId, userId);
     navigation.setOptions({ headerTitle: dmEventTitle });
 
     //ComponentWillUnmount and leave room
@@ -45,75 +44,72 @@ const DirectMsgsRoom = (props) => {
     }
   }, []);
 
-  async function submitChatMessage(e) {
-    e.preventDefault();
+  async function submitChatMessage() {
+    // e.preventDefault();
 
     const postResponse = await props.sendChat(dmEventId, chatPackage);
-    // console.log('Chatroom, postResponse', postResponse);
     socketio.emit("dmMessage", postResponse); //can't be chatMessage
-    // console.log('Chatroom, emitted');
     setInput("");
   }
 
-  // console.log('DirectMsgsRoom, stateChatroom:', props.stateChatroom);
-  // console.log('DirectMsgsRoom, stateDmRoom:', props.stateDmRoom);
 
   return (
-    
-    <View style={styles.container}>
-      {message.map((msg) => {
-        return (
-          <View key={msg.id}>
-            <Text>{msg.user.username}: {msg.messageContent}</Text>
-          </View>
-         
-        );
-      })}
-
-      <TextInput
-        style={styles.textInput}
-        value={input}
-        onChangeText={(chatMessage) => {
-          setInput(chatMessage);
+    <View
+      style={styles.container}
+    >
+      <GiftedChat
+        messages={messages}
+        text={input}
+        onInputTextChanged={text => setInput(text)}
+        onSend={submitChatMessage}
+        placeholder={'Type a message...'}
+        user={{
+          _id: userId, //if this matches with msg.user._id then right side, if not then left side
         }}
-        onSubmitEditing={submitChatMessage}
-        maxLength={20}
+        inverted={false}
+        renderUsernameOnMessage={true}
+        showUserAvatar={true}
+        keyboardShouldPersistTaps={'never'}
       />
-
     </View>
   );
 };
 
+//gifted
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  textInput: {
-    borderColor: "#CCCCCC",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    height: 20,
-    fontSize: 14,
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
-  text: {
-    fontSize: 14
-  },
-  wrapperCustom: {
-    borderRadius: 8,
-    padding: 6
-  },
-});
+  container: { flex: 1 },
+})
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#fff",
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   textInput: {
+//     borderColor: "#CCCCCC",
+//     borderTopWidth: 1,
+//     borderBottomWidth: 1,
+//     height: 20,
+//     fontSize: 14,
+//     paddingLeft: 20,
+//     paddingRight: 20,
+//   },
+//   text: {
+//     fontSize: 14
+//   },
+//   wrapperCustom: {
+//     borderRadius: 8,
+//     padding: 6
+//   },
+// });
 
 
 
 const mapStateToProps = (state) => {
   return {
-    message: state.dmRoom.messages,
+    messages: state.dmRoom.messages,
     user: state.user,
     // stateDmRoom: state.dmRoom,
     // stateChatroom: state.chatroom
