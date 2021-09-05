@@ -33,7 +33,7 @@ export function displayDmUserStatus(status) {
 
 
 //Thunk creators
-export const getDmChatThunk = (eventId, userId) => {
+export const getDmChatThunk = (eventId) => {
 
   return async (dispatch) => {
     try {
@@ -41,19 +41,24 @@ export const getDmChatThunk = (eventId, userId) => {
       const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
       const messages = response.data;
     
-      //Create kitten format msg
-      const kittenFormat = [];
+      //Create gifted format msg
+      const giftedFormat = [];
       for(let i = 0; i < messages.length; i++) {
-        const dateTime = getDateTime(messages[i].createdAt);
-        kittenFormat.push({
-          attachment: null,
-          date: dateTime,
-          reply: (userId === messages[i].user.id ? true : false),
-          text: `${messages[i].user.username}: ${messages[i].messageContent}`
+        // const dateTime = getDateTime(messages[i].createdAt);
+        giftedFormat.push({
+          _id: messages[i].id,
+          text: `${messages[i].messageContent}`,
+          createdAt: new Date(`${messages[i].createdAt}`),
+          user: {
+            _id: messages[i].user.id,
+            name: `${messages[i].user.username}`,
+            avatar: 'https://placeimg.com/140/140/any',
+          },
+          
         });
       }
 
-      dispatch(getDmChat(kittenFormat));
+      dispatch(getDmChat(giftedFormat));
       // dispatch(getDmChat(response.data))
       // return response.data;
     } catch (error) {
@@ -79,7 +84,7 @@ export const createDmEventThunk = (dmEventDetails) => {
     const userId = dmEventDetails.user.id;
     try {
       const { data } = await axios.post(`${LOCALHOST8080}/api/users/${userId}/events/directMsg`, {dmEventDetails})
-      console.log('createDmEvent, data:', data);
+      console.log('createDmEventThunk, data:', data);
       const dmEventInfo = {
         dmEventId: data.id,
         // dmEventTitle: data.name

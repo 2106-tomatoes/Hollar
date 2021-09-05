@@ -46,7 +46,7 @@ const DirectMsgs = (props) => {
     let userToDm = eventTitle.split(' ')[1]; // "From otherUser"
     dmEventTitle = `To ${userToDm}`;
 
-    socketio.emit('joinRoom', { username: user.username, eventId });
+    socketio.emit('joinDmRoom', { username: user.name, dmEventId });
     navigation.navigate("DirectMsgsRoom", { dmEventId, dmEventTitle });
   }
 
