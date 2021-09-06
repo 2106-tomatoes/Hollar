@@ -94,7 +94,7 @@ const NearbyEvents = () => {
   }
 
   if (origin === null || events === undefined) {
-
+    
     return <View />;
   } else {
     // console.log('search',events)

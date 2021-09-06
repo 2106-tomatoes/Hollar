@@ -87,72 +87,178 @@ async function seed() {
 
   //Creating Events
   const events = await Promise.all([
-    Event.create({
+    //From The White House events (starting point)
+    //Distance here is straight line from starting point to ending point
+    // <= 1 mi 
+    Event.create({ // 0.4 mi
       name: "frisbee golf",
-      location: "2 15th St NW, Washington, DC 20024",
+      location: "1332 I St NW, Washington, DC 20005",
       maxAttendees: 5,
       description: "Let's play frisbee golf",
       eventObjectType: "event",
-      latitude: 38.8895,
-      longitude: -77.0353,
+      latitude: 38.90188451272879, 
+      longitude: -77.03105809545188,
       attendanceDate: "2021-08-30",
       hostId: 1,
     }),
-    Event.create({
-      name: "tennis",
-      maxAttendees: 2,
-      location: "600 h st ne, washington, dc 20002, usa",
-      description: "play a game with me",
+    Event.create({ // 0.74 mi
+      name: "Coffee and chat",
+      location: "1301 Connecticut Ave NW, Washington, DC 20036",
+      maxAttendees: 3,
+      description: "coffee n chat",
       eventObjectType: "event",
-      latitude: 38.9002,
-      longitude: -76.9975,
-      attendanceDate: "2021-09-27",
-      hostId: 2
+      latitude: 38.90780705175437, 
+      longitude: -77.04191910190258,
+      attendanceDate: "2021-09-24",
+      hostId: 6
     }),
-    Event.create({
-      name: "actual golf",
-      maxAttendees: 25,
-      location: "2 Lincoln Memorial Cir NW Washington, DC 20037",
-      description: "windmills are not allowed",
-      eventObjectType: "event",
-      latitude: 38.904237,
-      longitude: -77.052129,
-      attendanceDate: "2021-09-28",
-      hostId: 3
-    }),
-    Event.create({
-      name: "hockey",
-      location: "Central Park, New York, NY",
-      maxAttendees: 10,
-      description: "Let's play hockey",
-      eventObjectType: "event",
-      latitude: 40.7812,
-      longitude: -73.9665,
-      attendanceDate: "2021-09-28",
-      hostId: 4
-    }),
-    Event.create({
-      name: "eating",
-      location: "700 L'Enfant Plaza SW, Washington DC, DC 20024",
-      maxAttendees: 10,
-      description: "Let's play eating",
-      eventObjectType: "event",
-      latitude: 38.883896,
-      longitude: -77.02535,
-      attendanceDate: "2021-09-29",
-      hostId: 5
-    }),
-    Event.create({
+
+    // <= 5 mi
+    Event.create({ // 2.49 mim
       name: "You can't see me",
-      location: "2 15th St NW, Washington, DC 20024",
+      location: "3421 Center St NW, Washington, DC 20010",
       maxAttendees: 5,
       description: "Already Happened",
       eventObjectType: "event",
-      latitude: 38.8895,
-      longitude: -77.0353,
+      latitude: 38.93411017829687, 
+      longitude: -77.03562323043623,
       attendanceDate: "2021-08-24",
+      hostId: 2
+    }),
+    Event.create({ // 4.11 mi
+      name: "popeyes",
+      maxAttendees: 25,
+      location: "4241 N Pershing Dr, Arlington, VA 22203",
+      description: "windmills are not allowed",
+      eventObjectType: "event",
+      latitude: 38.87336556997618,  
+      longitude: -77.10630477306725,
+      attendanceDate: "2021-09-28",
+      hostId: 3
+    }),
+
+    // <= 10 mi
+    Event.create({ // 8.95 mi
+      name: "meetup",
+      location: "Walker Mill, MD",
+      maxAttendees: 10,
+      description: "today's meetup",
+      eventObjectType: "event",
+      latitude: 38.87573352605061, 
+      longitude: -76.87252346465331,
+      attendanceDate: "2021-09-29",
+      hostId: 5
+    }),
+    Event.create({ // 6.59 mi
+      name: "eat n chat",
+      location: "61st St NE, Washington, DC 20019",
+      maxAttendees: 10,
+      description: "relax and eat",
+      eventObjectType: "event",
+      latitude: 38.89494166991933,  
+      longitude: -76.91396895838082,
+      attendanceDate: "2021-09-29",
+      hostId: 5
+    }),
+
+    // <= 20 mi
+    Event.create({ // 16.70 mi
+      name: "golf",
+      location: "3151 Presidential Golf Dr #8957, Upper Marlboro, MD 20774",
+      maxAttendees: 10,
+      description: "golf party",
+      eventObjectType: "event",
+      latitude: 38.84656062573335,  
+      longitude: -76.73313442623434,
+      attendanceDate: "2021-09-29",
+      hostId: 4
+    }),
+    Event.create({ // 20.00 mi
+      name: "weekend trip",
+      location: "8566-8580 Foundry St, Savage, MD 20763",
+      maxAttendees: 4,
+      description: "meet here for trip",
+      eventObjectType: "event",
+      latitude: 39.135795049098654,  
+      longitude: -76.82484451733113,
+      attendanceDate: "2021-09-28",
+      hostId: 1
+    }),
+    
+    // <= 25 mi
+    Event.create({ // 23.25 mi
+      name: "meet and board games",
+      maxAttendees: 5,
+      location: "Town Center, Columbia, MD 21044",
+      description: "board games",
+      eventObjectType: "event",
+      latitude: 39.212987732696554, 
+      longitude: -76.88546244111267,
+      attendanceDate: "2021-08-27",
+      hostId: 2
+    }),
+    Event.create({ // 23.19 mi
+      name: "spa day",
+      maxAttendees: 2,
+      location: "10705 Charter Dr Suite 330, Columbia, MD 21044",
+      description: "spa",
+      eventObjectType: "event",
+      latitude: 39.21165580195858,
+      longitude: -76.8838869422089,
+      attendanceDate: "2021-09-27",
+      hostId: 3
+    }),
+    
+    // <= 50 mi
+    Event.create({ // 25.60 mi
+      name: "boat day",
+      maxAttendees: 3,
+      location: "10000 MD-108, Ellicott City, MD 21042",
+      description: "boat in lake",
+      eventObjectType: "event",
+      latitude: 39.241542832034725, 
+      longitude: -76.85873737725746,
+      attendanceDate: "2021-09-26",
+      hostId: 4
+    }),
+    Event.create({ // 35.95 mi
+      name: "baltimore zooo",
+      maxAttendees: 4,
+      location: "1 Safari Pl, Baltimore, MD 21217",
+      description: "zooo",
+      eventObjectType: "event",
+      latitude: 39.322677983613836,
+      longitude: -76.64980404840776,
+      attendanceDate: "2021-07-27",
+      hostId: 2
+    }),
+
+    // > 50 mi
+    Event.create({ // 62.78 mi
+      name: "chick fil a",
+      maxAttendees: 4,
+      location: "1001 Beards Hill Rd, Aberdeen, MD 21001",
+      description: "hungry?",
+      eventObjectType: "event",
+      latitude: 39.52254515164078,
+      longitude: -76.18520087304923,
+      attendanceDate: "2021-09-24",
       hostId: 6
     }),
+    
+
+    // // New York events
+    // Event.create({
+    //   name: "hockey",
+    //   location: "Central Park, New York, NY",
+    //   maxAttendees: 10,
+    //   description: "Let's play hockey",
+    //   eventObjectType: "event",
+    //   latitude: 40.7812,
+    //   longitude: -73.9665,
+    //   attendanceDate: "2021-09-28",
+    //   hostId: 4
+    // }),
   ]);
   // Create Message
   const messages = await Promise.all([

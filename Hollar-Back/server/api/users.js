@@ -185,6 +185,7 @@ router.post("/:userId/events/directMsg", async (req, res, next) => {
 
 router.get("/:userId/events/directMsg", async (req, res, next) => {
   const userId = req.params.userId;
+  console.log('users api, userId/events/directMsg, userId:', userId);
 
   try {
     const dmEvents = await Event.findAll({

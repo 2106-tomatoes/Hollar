@@ -43,12 +43,13 @@ const DirectMsgs = (props) => {
     console.log("DirectMsgs, joinEventRoom, eventId:", eventId);
     const dmEventId = eventId;
     
+    console.log('DirectMsgs, eventTtitle:', eventTitle);
     //Changing eventTitle, to match the opposite user
     let dmEventTitle = '';
-    let userToDm = eventTitle.split(' ')[1]; // "From otherUser"
+    let userToDm = eventTitle;
     dmEventTitle = `To ${userToDm}`;
 
-    socketio.emit('joinDmRoom', { username: user.name, dmEventId });
+    socketio.emit('joinDmRoom', { username: user.username, dmEventId });
     navigation.navigate("DirectMsgsRoom", { dmEventId, dmEventTitle });
   }
 
