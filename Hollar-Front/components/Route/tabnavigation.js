@@ -35,7 +35,10 @@ export default function App() {
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+   
       })}
+      
+
       >
         <Tab.Screen name="All Events" component={Home} />
         <Tab.Screen name="Up Coming" component={ActiveEvent} />

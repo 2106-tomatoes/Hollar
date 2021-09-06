@@ -11,7 +11,9 @@ import {
   Modal,
   Pressable,
   Button,
-  Image
+  Image,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import * as Location from "expo-location";
 import { setOrigin } from "../../store/origin";
@@ -22,15 +24,16 @@ import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { withRouter } from "react-router";
 import CalendarPicker from "react-native-calendar-picker";
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { Hideo } from 'react-native-textinput-effects';
-
-
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Hideo } from "react-native-textinput-effects";
+import Animated from "react-native-reanimated";
+import BottomSheet from "reanimated-bottom-sheet";
 
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
   const events = useSelector((state) => state.events);
-  const demo = useSelector(state => state.demo)
+  const demo = useSelector((state) => state.demo);
   const [search, setSearch] = useState("");
   const [searchEvents, setsearchEvents] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -38,12 +41,17 @@ const NearbyEvents = () => {
   const [calmodalVisible, setCalModalVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState("20");
   const currentDate = new Date();
-  const [newdate, setNewDate] = useState(currentDate.toISOString().slice(0,10))
+  const [newdate, setNewDate] = useState(
+    currentDate.toISOString().slice(0, 10)
+  );
+  const [keyboardStatus, setKeyboardStatus] = useState(undefined);
+
+  const phoneWidth = Dimensions.get("window").width;
 
   const dispatch = useDispatch();
   let displayEvents = [];
   const navigation = useNavigation();
-  const mapRef = useRef()
+  const mapRef = useRef();
 
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
@@ -51,11 +59,13 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
-      console.log('use effect is working')
+      console.log("use effect is working");
       if (origin) {
-        console.log('if statement is happening',origin)
+        console.log("if statement is happening", origin);
         dispatch(findEventsThunk(origin, selectedValue, newdate));
-        mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
+        mapRef.current.animateCamera({
+          center: { latitude: origin.latitude, longitude: origin.longitude },
+        });
       }
     });
   }, [events.length]);
@@ -68,13 +78,14 @@ const NearbyEvents = () => {
     });
     setsearchEvents(searchEvents);
   }, [search]);
-  
+
   // useEffect(() => {
   //   mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
   // }, [demo])
+
   const onDateConfirm = () => {
-    dispatch(findEventsThunk(origin,selectedValue,newdate))
-  }
+    dispatch(findEventsThunk(origin, selectedValue, newdate));
+  };
   const DateChange = (date) => {
     const newdate = date.toISOString().slice(0, 10);
 
@@ -93,15 +104,79 @@ const NearbyEvents = () => {
     displayEvents = searchEvents;
   }
 
-  if (origin === null || events === undefined) {
+  const renderContent = () => (
+    <View
+      style={{
+        backgroundColor: "white",
+        padding: 16,
+        height: 450,
+      }}
+    >
+      <View
+        style={{
+          borderBottomWidth: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Icon name="caret-down" size={20} style={{ bottom: 10 }}></Icon>
+      </View>
+      <FlatList
+        data={displayEvents}
+        style={{ flex: 1 }}
+        keyExtractor={(item) => item.id.toString()}
+        ItemSeparatorComponent={() => {
+          return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
+        }}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              // onPress={() => {}}
+              style={{ margin: 15 }}
+              onPress={() =>
+                mapRef.current.animateCamera({
+                  center: {
+                    latitude: item.latitude,
+                    longitude: item.longitude,
+                  },
+                })
+              }
+              onLongPress={() =>
+                navigation.navigate("SingleEvent", {
+                  eventId: item.id,
+                  eventTitle: item.name,
+                })
+              }
+            >
+              <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
+                {item.name.toUpperCase()}
+              </Text>
+              <Text>Location: {item.location}</Text>
+              <Text>
+                Attendance: {item.users.length}/{item.maxAttendees}
+              </Text>
+              <Text>
+                Event Date: {item.attendanceDate} {item.time}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
+    </View>
+  );
 
+  const sheetRef = React.useRef(null);
+
+  if (origin === null || events === undefined) {
     return <View />;
   } else {
     // console.log('search',events)
     // console.log("origin in nearby events", origin)
     return (
       // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container}>
         <MapView
           style={{ flex: 1 }}
           ref={mapRef}
@@ -133,11 +208,12 @@ const NearbyEvents = () => {
                     latitude: marker.latitude,
                     longitude: marker.longitude,
                   }}
-                  title={marker.name}
+                  title={marker.name.toUpperCase()}
                   description={marker.description}
                   pinColor="red"
                   onPress={() => {
-                    setSearch(marker.name)
+                    sheetRef.current.snapTo(0);
+                    setSearch(marker.name);
                   }}
                 />
               );
@@ -147,78 +223,64 @@ const NearbyEvents = () => {
         <View style={styles.inputContainer}>
           <Hideo
             iconClass={FontAwesomeIcon}
-            iconName={'search'}
-            iconColor={'white'}
+            iconName={"search"}
+            iconColor={"white"}
             // this is used as backgroundColor of icon container view.
-            iconBackgroundColor={'#f2a59d'}
-            inputStyle={{ color: '#f2a59d',backgroundColor: "#DDDDDE"}}
+            iconBackgroundColor={"#f2a59d"}
+            inputStyle={{ color: "#f2a59d", backgroundColor: "#DDDDDE" }}
             iconWidth={20}
             autoCapitalize="none"
             placeholder="Search Events"
             onChangeText={searchHandler}
-            value={search}/>
-          
-          {search!==""&&   <Pressable
-            style={styles.closeButtonParent}
-            placeholder="X"
-            onPress={() => setSearch("")}
-          >
-          <Text style={styles.closeButton}>X</Text>
-       
-              
-          </Pressable>}
+            value={search}
+          />
+
+          {search !== "" && (
+            <Pressable
+              style={styles.closeButtonParent}
+              placeholder="X"
+              onPress={() => setSearch("")}
+            >
+              <Text style={styles.closeButton}>X</Text>
+            </Pressable>
+          )}
         </View>
         <View style={styles.radiusButtonContainer}>
-          <Pressable
+          <TouchableOpacity
             style={[styles.button, styles.buttonOpen]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={styles.textStyle}>Set Radius</Text>
-          </Pressable>
+            <Text style={styles.textStyle}>{selectedValue} Miles</Text>
+          </TouchableOpacity>
           <TouchableOpacity
-                  style={styles.calenderButton}
-                  onPress={() => setCalModalVisible(true)}
-                >
-                  <Image
-                    source={require("../../assets/calendar.png")}
-                    style={styles.calendarImage}
-                  />
-                </TouchableOpacity>
-  
-        <Button title="Center Self" onPress={async () => {
-          mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
-        }}/>
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => setCalModalVisible(true)}
+          >
+            <Text style={styles.textStyle}>{newdate}</Text>
+          </TouchableOpacity>
         </View>
-        <FlatList
-          data={displayEvents}
-          style={{ flex: 1 }}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => {
-            return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
-          }}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          renderItem={({ item }) => {
-       
-            return (
-              <TouchableOpacity
-                // onPress={() => {}}
-                style={{ margin: 15 }}
-                onPress={() =>
-                  navigation.navigate("SingleEvent", {
-                    eventId: item.id,
-                    eventTitle: item.name,
-                  })
-                }
-              >
-                <Text>Event: {item.name}</Text>
-                <Text>Location: {item.location}</Text>
-                <Text>Attendance: {item.users.length}/{item.maxAttendees}</Text>
-                <Text>Event Date: {item.attendanceDate}   {item.time}</Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
+        <View
+          style={{ flex: 1, position: "absolute", top: 78, left: width - 40 }}
+        >
+          <TouchableOpacity style={{marginBottom:20}}
+            onPress={handleRefresh}>
+            
+            <Icon name="refresh" size={30} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={async () => {
+              mapRef.current.animateCamera({
+                center: {
+                  latitude: origin.latitude,
+                  longitude: origin.longitude,
+                },
+              });
+            }}
+          >
+            <Icon name="bullseye" size={30} />
+          </TouchableOpacity>
+        </View>
         <Modal
           animationType="fade"
           transparent={true}
@@ -243,7 +305,7 @@ const NearbyEvents = () => {
                 <Picker.Item label="25" value="25" />
                 <Picker.Item label="50" value="50" />
               </Picker>
-              <Pressable
+              <TouchableOpacity
                 style={[
                   styles.button,
                   styles.buttonClose,
@@ -251,58 +313,80 @@ const NearbyEvents = () => {
                 ]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  dispatch(findEventsThunk(origin, Number(selectedValue), newdate));
+                  dispatch(
+                    findEventsThunk(origin, Number(selectedValue), newdate)
+                  );
                 }}
               >
-                <Text style={{ textAlign: "center" }}>Set Radius</Text>
-              </Pressable>
+                <Text style={{ textAlign: "center", color: "white" }}>
+                  Set Radius
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
         <Modal
-              animationType="fade"
-              transparent={true}
-              visible={calmodalVisible}
-              onRequestClose={() => {
-                setCalModalVisible(!calmodalVisible);
-              }}
-            >
-              <View style={styles.centeredView}> 
-           
-                <View style={styles.modalView}>
-                   <Text>{newdate} </Text> 
-                  <CalendarPicker onDateChange={DateChange} />
-                  <Pressable
-                    style={[
-                      styles.button,
-                      styles.buttonClose,
-                      { height: 35, width: 100 },
-                    ]}
-                    onPress={() => {
-                      onDateConfirm()
-                      setCalModalVisible(!calmodalVisible);
-                    }}
-                  >
-                    <Text style={{ textAlign: "center" }}>Confirm</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </Modal>
-      </View>
+          animationType="fade"
+          transparent={true}
+          visible={calmodalVisible}
+          onRequestClose={() => {
+            setCalModalVisible(!calmodalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text>{newdate} </Text>
+              <CalendarPicker onDateChange={DateChange} />
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  styles.buttonClose,
+                  { height: 35, width: 100 },
+                ]}
+                onPress={() => {
+                  onDateConfirm();
+                  setCalModalVisible(!calmodalVisible);
+                }}
+              >
+                <Text style={{ textAlign: "center", color: "white" }}>
+                  Confirm
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        <View
+          style={{
+            backgroundColor: "papayawhip",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button title="Events" onPress={() => sheetRef.current.snapTo(0)} />
+        </View>
+
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[450, 300, 200, 100, 40]}
+          borderRadius={10}
+          renderContent={renderContent}
+          style={{ position: "absolute", zIndex: 3, elevation: 3 }}
+          enabledGestureInteraction={true}
+          enabledContentTapInteraction={false}
+        />
+      </KeyboardAvoidingView>
     );
   }
 };
-
-export default NearbyEvents;
-
 const width = Dimensions.get("window").width;
+export default NearbyEvents;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: width,
   },
- 
+
   textInput: {
     backgroundColor: "#DDDDDE",
     borderRadius: 9999,
@@ -311,10 +395,8 @@ const styles = StyleSheet.create({
     margin: 12,
     // borderWidth: 1,
     paddingHorizontal: 20,
-    
   },
   centeredView: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
@@ -344,30 +426,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonOpen: {
-    backgroundColor: "#E4572E",
+    backgroundColor: "#f2a59d",
+    marginHorizontal: 5,
   },
   buttonClose: {
     backgroundColor: "#E4572E",
   },
   radiusButtonContainer: {
+    position: "absolute",
+    top: 80,
+    left: 10,
     alignItems: "center",
-    flexDirection:'row',
-    justifyContent:'space-around'
-  }, 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    elevation: 1,
+    zIndex: 1,
+  },
   inputContainer: {
     // flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     height: 40,
     margin: 12,
+    position: "absolute",
+    width: width - 20,
+    top: 10,
     // height: "30%",
   },
   closeButtonParent: {
     justifyContent: "center",
     alignItems: "center",
     left: -35,
-    zIndex: 10
+    zIndex: 10,
   },
   closeButton: {
     height: 15,
@@ -377,5 +468,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     resizeMode: "stretch",
+  },
+  textStyle: {
+    color: "white",
   },
 });

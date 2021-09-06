@@ -46,6 +46,7 @@ const DirectMsgs = (props) => {
     //Changing eventTitle, to match the opposite user
     let dmEventTitle = '';
     let userToDm = eventTitle.split(' ')[1]; // "From otherUser"
+    console.log('userToDm')
     dmEventTitle = `To ${userToDm}`;
 
     socketio.emit('joinDmRoom', { username: user.name, dmEventId });
