@@ -10,7 +10,7 @@ export const setDemo = (demoStatus) => {
 }
 
 
-export default demoReducer = (state = false, action) => {
+const demoReducer = (state = false, action) => {
   switch(action.type) {
     case SET_DEMO:
       return action.demo
@@ -18,3 +18,5 @@ export default demoReducer = (state = false, action) => {
       return state
   }
 }
+
+export default demoReducer

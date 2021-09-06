@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { Op } = require("sequelize");
+const axios = require("axios")
 
 const {
   models: { User, Event, Attendees },
@@ -8,10 +9,10 @@ module.exports = router;
 
 router.get("/", async (req, res, next) => {
   try {
-    console.log(`req.headers.radius`, req.headers.radius);
-    console.log("date", req.query.date);
-    console.log("In events api");
     let radius = req.headers.radius;
+    let latitude = req.headers.latitude
+    let longitude = req.headers.longitude
+
 
     let date_ob = new Date();
 
@@ -41,42 +42,47 @@ router.get("/", async (req, res, next) => {
       },
     });
 
-    const latLng = openEvents.map((event) => {
-      const lat = event.latitude;
-      const lng = event.longitude;
-      return { lat, lng };
-    });
-    const combineLatLng = [];
+    //COMMENT THIS LINE OUT WHEN USING GOOGLE API!!!
+    res.json(openEvents)
 
-    latLng.forEach((coords) => {
-      return combineLatLng.push(`${coords.lat},${coords.lng}`);
-    });
-    console.log('combineLatLng final', combineLatLng.join('|'))
+    //UNCOMMENT TO USE GOOGLE API!!!
 
-    const config = {
-      method: "get",
-      url: `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${
-        origin.latitude + "," + origin.longitude
-      }&destinations=${combineLatLng.join("|")}&key=${GOOGLE_MAPS_APIKEY}`,
-      headers: {},
-    };
-    const { data } = await axios(config);
-    console.log("data", data)
+    // const latLng = openEvents.map((event) => {
+    //   const lat = event.latitude;
+    //   const lng = event.longitude;
+    //   return { lat, lng };
+    // });
+    // const combineLatLng = [];
 
-    const availableEvents = [];
+    // latLng.forEach((coords) => {
+    //   return combineLatLng.push(`${coords.lat},${coords.lng}`);
+    // });
+    // console.log('combineLatLng final', combineLatLng.join('|'))
 
-    for (let i = 0; i < openEvents.length; i++) {
-      console.log("inisde for loop")
-      const poi = data.rows[0].elements[i];
-      // console.log("poi is", poi)
-      const mileValue = (0.6214 * poi.distance.value) / 1000;
-      console.log("mileValue", mileValue)
-      if (mileValue <= radius) {
-        availableEvents.push(openEvents[i]);
-      }
-    }
+    // const config = {
+    //   method: "get",
+    //   url: `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${
+    //     latitude + "," + longitude
+    //   }&destinations=${combineLatLng.join("|")}&key=${process.env.GOOGLE_MAPS_APIKEY}`,
+    //   headers: {},
+    // };
+    // const { data } = await axios(config);
+    // console.log("data", data)
 
-    res.json(events);
+    // const availableEvents = [];
+
+    // for (let i = 0; i < openEvents.length; i++) {
+    //   // console.log("inisde for loop")
+    //   const poi = data.rows[0].elements[i];
+    //   // console.log("poi is", poi)
+    //   const mileValue = (0.6214 * poi.distance.value) / 1000;
+    //   // console.log("mileValue", mileValue)
+    //   if (mileValue <= radius) {
+    //     availableEvents.push(openEvents[i]);
+    //   }
+    // }
+
+    // res.json(availableEvents);
   } catch (error) {
     next(error);
   }
