@@ -47,10 +47,10 @@ const DemoScreen = (props) => {
   console.log(`demo in DemoScreen`, demo)
   return (
     <View>
-      <Text>For Demo Purposes, Pressing the Button Will Set You at Farragut Square Washington,DC to View All Pre-created Events</Text>
-      <Button title="Set to demo location" onPress={() => {
+      <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>For Demo Purposes, Pressing the Button Will Set You at Farragut Square Washington,DC to View All Pre-created Events</Text>
+      <Button title="Set to Demo Location" onPress={() => {
         if (!demo) {
-          console.log("demo screen if statment set origin to WH")
+
           dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }))
         }
         dispatch(setDemo(demo))
@@ -60,6 +60,7 @@ const DemoScreen = (props) => {
         //   dispatch(setDemo(demo))
         // }
         }}/>
+         <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>Please Hit the Center and Refresh Buttons in Nearby Events </Text>
     </View>
   )
 }
