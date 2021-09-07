@@ -60,7 +60,7 @@ const DemoScreen = (props) => {
         //   dispatch(setDemo(demo))
         // }
         }}/>
-         <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>Please Hit the Center and Refresh Buttons in Nearby Events</Text>
+         <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>Please Hit the Center and Refresh Buttons in Nearby Events </Text>
     </View>
   )
 }
