@@ -1,3 +1,4 @@
+Hollar-Back/.env
 Hollar-Back/node_modules
 Hollar-Back/public/bundle.js
 Hollar-Back/public/bundle.js.map
@@ -6,8 +7,6 @@ Hollar-Back/npm-debug.log
 Hollar-Back/yarn-error.log
 Hollar-Back/package-lock.json
 Hollar-Back/secrets.js
-
-
 
 Hollar-Front/node_modules
 Hollar-Front/.expo/

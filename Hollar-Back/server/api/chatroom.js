@@ -6,7 +6,7 @@ module.exports = router;
 
 router.get("/:id", async (req,res,next) => {
     try {
-      
+
       const messages = await Message.findAll({
           where: {
               eventId:req.params.id
@@ -16,7 +16,7 @@ router.get("/:id", async (req,res,next) => {
           }
       })
       res.send(messages)
-     
+
     } catch (error) {
       //console.log('stuffs broke yo' + error);
       next(error)
