@@ -5,7 +5,7 @@ import {
   View,
   TextInput,
   Dimensions,
-  FlatList,
+  // FlatList,
   TouchableOpacity,
   ScrollView,
   Modal,
@@ -29,6 +29,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Hideo } from "react-native-textinput-effects";
 import Animated from "react-native-reanimated";
 import BottomSheet from "reanimated-bottom-sheet";
+import { FlatList } from 'react-native-gesture-handler';
 
 const NearbyEvents = () => {
   const origin = useSelector((state) => state.origin);
@@ -371,7 +372,7 @@ const NearbyEvents = () => {
           borderRadius={10}
           renderContent={renderContent}
           style={{ position: "absolute", zIndex: 3, elevation: 3 }}
-          enabledGestureInteraction={true}
+          // enabledGestureInteraction={true}
           enabledContentTapInteraction={false}
         />
       </KeyboardAvoidingView>

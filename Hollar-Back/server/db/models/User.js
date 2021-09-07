@@ -25,23 +25,7 @@ const User = db.define("user", {
     unique: true,
     allowNull: false,
   },
-  zipCode: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  city: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  state: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
   password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  phoneNumber: {
     type: Sequelize.STRING,
     allowNull: false,
   },

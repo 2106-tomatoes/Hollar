@@ -48,7 +48,7 @@ const DirectMsgsRoom = (props) => {
     // e.preventDefault();
 
     const postResponse = await props.sendChat(dmEventId, chatPackage);
-    socketio.emit("dmMessage", postResponse); //can't be chatMessage
+    socketio.emit("dmMessage", postResponse);
     setInput("");
   }
 
@@ -68,7 +68,7 @@ const DirectMsgsRoom = (props) => {
         }}
         inverted={false}
         renderUsernameOnMessage={true}
-        showUserAvatar={true}
+        // showUserAvatar={true}
         keyboardShouldPersistTaps={'never'}
       />
     </View>
