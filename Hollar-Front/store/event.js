@@ -97,7 +97,7 @@ export const findEventsThunk = (origin, radius = 20, date) => {
         headers: { }
       };
       const { data } = await axios(config)
-      // console.log("data", data)
+      console.log("data", data)
 
       const availableEvents = []
 

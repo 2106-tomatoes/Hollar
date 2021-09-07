@@ -302,12 +302,12 @@ async function seed() {
   const user5 = await User.findByPk(5)
   const user6 = await User.findByPk(6)
   
-  await user1.addEvents([2,3])
-  await user2.addEvents([1,2])
-  await user3.addEvents([3,4,2])
-  await user4.addEvents([2,4])
-  await user5.addEvents([2,3])
-  await user6.addEvents([1,4])
+  await user1.addEvents([1,2,3,4,5,6,7,8,9,12])
+  await user2.addEvents([1,2,5,7,8,9,10])
+  await user3.addEvents([2,3,4,7,10,12])
+  await user4.addEvents([4,6,7,8,11,12])
+  await user5.addEvents([3,4,6,7,9,11,12])
+  await user6.addEvents([1,4,5,6,9,7])
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded ${events.length} events`);
