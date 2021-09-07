@@ -1,19 +1,30 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { createUserThunk } from "../../store/user";
 
 const SignUp = (props) => {
   const dispatch = useDispatch();
   const history = props.history;
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [zipCode, setZipcode] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const usernameHandler = (usernameInput) => {
     setUsername(usernameInput);
@@ -27,8 +38,20 @@ const SignUp = (props) => {
   const emailHandler = (emailInput) => {
     setEmail(emailInput);
   };
+  const zipcodeHandler = (zipcodeInput) => {
+    setZipcode(zipcodeInput);
+  };
+  const cityHandler = (cityInput) => {
+    setCity(cityInput);
+  };
+  const stateHandler = (stateInput) => {
+    setState(stateInput);
+  };
   const passwordHandler = (passwordInput) => {
     setPassword(passwordInput);
+  };
+  const phoneNumberHandler = (phoneNumberInput) => {
+    setPhoneNumber(phoneNumberInput);
   };
 
   const handleSubmit = (evt) => {
@@ -39,95 +62,74 @@ const SignUp = (props) => {
         firstName,
         lastName,
         email,
+        zipCode,
+        city,
+        state,
         password,
+        phoneNumber,
         navigation
       )
     );
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <Text>Sign Up</Text>
-      <Text>username:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={usernameHandler}
-        value={username}
-      />
-      <Text>First Name:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={firstNameHandler}
-        value={firstName}
-      />
-      <Text>Last Name:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={lastNameHandler}
-        value={lastName}
-      />
-      <Text>Email:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={emailHandler}
-        value={email}
-      />
-      <Text>password:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={passwordHandler}
-        value={password}
-      />
-      
-      <Button title="Sign Up" onPress={handleSubmit} />
-      <Button title="Back" onPress={() => navigation.goBack()} />
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Sign Up</Text>
+      <View>
+        <TextInput
+          autoCapitalize="none"
+          placeholder="Username"
+          style={styles.textInput}
+          onChangeText={usernameHandler}
+          value={username}
+        />
+        <TextInput
+          placeholder="First Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={firstNameHandler}
+          value={firstName}
+        />
+        <TextInput
+          placeholder="Last Name"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={lastNameHandler}
+          value={lastName}
+        />
+        <TextInput
+          placeholder="Email"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={emailHandler}
+          value={email}
+        />
+
+        <TextInput
+          placeholder="Password"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={passwordHandler}
+          value={password}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 };
-
-// username: {
-//   type: Sequelize.STRING,
-//   unique: true,
-//   allowNull: false,
-// },
-// firstName: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
-// lastName: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
-// email: {
-//   type: Sequelize.STRING,
-//   unique: true,
-//   allowNull: false,
-// },
-// zipCode: {
-//   type: Sequelize.INTEGER,
-//   allowNull: false,
-// },
-// city: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
-// state: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
-// password: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
-// phoneNumber: {
-//   type: Sequelize.STRING,
-//   allowNull: false,
-// },
 
 export default SignUp;
 
@@ -140,11 +142,49 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: "#CCCCCC",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    height: 20,
-    fontSize: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    paddingLeft: 80,
+    paddingRight: 80,
+    paddingTop: 10,
+    paddingBottom: 10,
+    margin: 5,
+    textAlign: "center",
+  },
+
+  buttonContainer: {
+    // margin: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+  },
+  logo: {
+    height: 300,
+    width: 300,
+  },
+  button: {
+    alignItems: "center",
+    margin: 10,
+    padding: 10,
+    borderRadius: 3,
+    color: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    backgroundColor: "#669BBC",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 15,
+  },
+  headerText: {
+    fontSize: 45,
   },
 });
