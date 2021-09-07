@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
   FlatList,
   Modal,
-  Pressable
+  Pressable,
 } from "react-native";
 import { sendRSVPThunk, removeRSVPThunk } from "../../store/SingleEvent";
-import { deleteEventThunk} from "../../store/event"
+import { deleteEventThunk } from "../../store/event";
 import socketio from "../../socket";
 
 // import { io } from "socket.io-client";
@@ -29,13 +29,13 @@ const SingleEvent = (props) => {
   const singleEvent = useSelector((state) => state.singleEvent);
   const user = useSelector((state) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
-  let isRSVP=false
-  let host = false
+  let isRSVP = false;
+  let host = false;
   const username = user.username;
   // const [disableButton, setDisableButton] = useState("false")
 
   const dispatch = useDispatch();
-  const { attendanceDate, maxAttendees, description, location, name,time } =
+  const { attendanceDate, maxAttendees, description, location, name, time } =
     singleEvent;
   const navigation = useNavigation();
   const attendanceNumber = singleEvent.users ? singleEvent.users.length : 0;
@@ -47,36 +47,32 @@ const SingleEvent = (props) => {
   }, []);
 
   let disableButton = false;
-  if(user.id===singleEvent.hostId){
-    host=true
-    disableButton=true;
+  if (user.id === singleEvent.hostId) {
+    host = true;
+    disableButton = true;
   }
 
   if (maxAttendees <= attendanceNumber) {
     disableButton = true;
   }
-  
-  function RSVPstatus(eId,uId){
-    for(let i=0; i<userList.length; i++){
+
+  function RSVPstatus(eId, uId) {
+    for (let i = 0; i < userList.length; i++) {
       if (userList[i].id === user.id) {
-       dispatch(removeRSVPThunk(eId, uId))
-       isRSVP=false
-       return
+        dispatch(removeRSVPThunk(eId, uId));
+        isRSVP = false;
+        return;
       }
     }
- 
-    dispatch(sendRSVPThunk(eventId, user.id))
 
-  
-
+    dispatch(sendRSVPThunk(eventId, user.id));
   }
-  for(let i=0; i<userList.length; i++){
+  for (let i = 0; i < userList.length; i++) {
     if (userList[i].id === user.id) {
-     isRSVP =true 
-   
+      isRSVP = true;
     }
   }
-  
+
   function joinEventRoom(eventId, eventTitle) {
     navigation.navigate("Chatroom", { eventId, eventTitle });
     //Emit to join/create the room
@@ -85,14 +81,50 @@ const SingleEvent = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text>Title: {name}</Text>
-      <Text>Location: {location}</Text>
-      <Text>Description: {description}</Text>
-      <Text>Date: {attendanceDate}</Text>
-      <Text>Time: {time}</Text>
-      <Text>
-        Attendees: {attendanceNumber}/{maxAttendees}
-      </Text>
+      <View style={styles.eventDetails}>
+        <Text style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {name}
+        </Text>
+        <View>
+          <Text style={styles.headerText}>Time: </Text>
+          <Text>{time}</Text>
+          <Text style={styles.headerText}>Date: </Text>
+          <Text>{attendanceDate}</Text>
+
+          <Text style={styles.headerText}>Location: </Text>
+          <Text>{location}</Text>
+
+          <Text style={styles.headerText}>Description: </Text>
+          <Text>{description}</Text>
+
+          <Text style={styles.headerText}>Attendees:</Text>
+          <Text>
+            {attendanceNumber}/{maxAttendees}
+          </Text>
+        </View>
+      </View>
+
+      <Text>Attendees:</Text>
+      <View style={styles.attendeeBox}>
+        <FlatList
+          data={userList}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => {
+            return <View style={{ height: 1, backgroundColor: "#F3A712" }} />;
+          }}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                // onPress={() => {}}
+                style={{ margin: 15 }}
+                // onPress={()=>navigation.navigate("SingleEvent", { eventId:item.id })}
+              >
+                <Text>{item.username}</Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
       <View style={styles.objectContainer}>
         <View style={styles.buttonContainer}>
           <Button
@@ -104,87 +136,65 @@ const SingleEvent = (props) => {
         <View style={styles.buttonContainer}>
           <Button
             color="#669BBC"
-            title={isRSVP==true?'UNRSVP':'RSVP'}
+            title={isRSVP == true ? "UNRSVP" : "RSVP"}
             disabled={disableButton}
-            onPress={() => RSVPstatus(eventId,user.id)}
+            onPress={() => RSVPstatus(eventId, user.id)}
           ></Button>
         </View>
       </View>
-      <Text>Attendees:</Text>
-      <FlatList
-        data={userList}
-        style={{ flex: 1 }}
-        keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={() => {
-          return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
-        }}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              // onPress={() => {}}
-              style={{ margin: 15 }}
-              // onPress={()=>navigation.navigate("SingleEvent", { eventId:item.id })}
-            >
-              <Text>{item.username}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-      {host&&<View>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={[styles.centeredView, {backgroundColor: '#DDDDDE'}]}>
-            <View style={styles.modalView}>
-            <Text style={{textAlign:'center', paddingBottom:5}}>Are You Sure You Want to Delete This Event?</Text>
-            <Pressable
-                style={[
-                  styles.button,
-                  styles.buttonClose,
-                  { height: 35, width: 100 },
-                ]}
-                onPress={() => {
-                  dispatch(deleteEventThunk(eventId, navigation))
-                
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>Delete</Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.button,
-                  styles.buttonClose,
-                  { height: 35, width: 100 },
-                ]}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>Cancel</Text>
-              </Pressable>
+      {host && (
+        <View>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={[styles.centeredView, { backgroundColor: "#DDDDDE" }]}>
+              <View style={styles.modalView}>
+                <Text style={{ textAlign: "center", paddingBottom: 5 }}>
+                  Are You Sure You Want to Delete This Event?
+                </Text>
+                <Pressable
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    { height: 35, width: 100 },
+                  ]}
+                  onPress={() => {
+                    dispatch(deleteEventThunk(eventId, navigation));
+                  }}
+                >
+                  <Text style={{ textAlign: "center" }}>Delete</Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    { height: 35, width: 100 },
+                  ]}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  <Text style={{ textAlign: "center" }}>Cancel</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </Modal>
-        <Button
-      title="Delete Event"
-      onPress={() => setModalVisible(true)}
-      />
-      {/* <Button
+          </Modal>
+          <Button title="Delete Event" onPress={() => setModalVisible(true)} />
+          {/* <Button
       title="Delete Event"
       onPress={() => dispatch(deleteEventThunk(eventId, navigation))}
       /> */}
-      <Button
-      title="Edit Event"
-      onPress={()=> navigation.navigate("EditEvent", {singleEvent})}
-      />
-      </View>
-      }
+          <Button
+            title="Edit Event"
+            onPress={() => navigation.navigate("EditEvent", { singleEvent })}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -246,6 +256,22 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: "#E4572E",
+  },
+  eventDetails: {
+    flex: 0.8,
+    marginTop: 80,
+    margin: 5,
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: "#F3A712",
+  },
+  headerText: {
+    fontWeight: "bold",
+  },
+  attendeeBox: {
+    flex: 1,
+    justifyContent: "flex-start",
   },
 });
 
