@@ -1,6 +1,5 @@
 import axios from "axios";
 import { LOCALHOST8080 } from "@env";
-import { getDateTime } from "../reusableFuncs/reusableFunctions";
 
 
 //Actions
@@ -40,7 +39,7 @@ export const getDmChatThunk = (eventId) => {
       console.log('getDmChatThunk, eventId:', eventId);
       const response = await axios.get(`${LOCALHOST8080}/api/chatroom/${eventId}`)
       const messages = response.data;
-    
+
       //Create gifted format msg
       const giftedFormat = [];
       for(let i = 0; i < messages.length; i++) {
@@ -54,7 +53,7 @@ export const getDmChatThunk = (eventId) => {
             name: `${messages[i].user.username}`,
             avatar: 'https://placeimg.com/140/140/any',
           },
-          
+
         });
       }
 

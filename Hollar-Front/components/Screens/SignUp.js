@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import { createUserThunk } from "../../store/user";
 
@@ -46,7 +46,7 @@ const SignUp = (props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Text>Sign Up</Text>
       <Text>username:</Text>
       <TextInput
@@ -86,7 +86,7 @@ const SignUp = (props) => {
       
       <Button title="Sign Up" onPress={handleSubmit} />
       <Button title="Back" onPress={() => navigation.goBack()} />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -60,9 +60,7 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
-      console.log("use effect is working");
       if (origin) {
-        console.log("if statement is happening", origin);
         dispatch(findEventsThunk(origin, selectedValue, newdate));
         mapRef.current.animateCamera({
           center: { latitude: origin.latitude, longitude: origin.longitude },
@@ -173,11 +171,8 @@ const NearbyEvents = () => {
   if (origin === null || events === undefined) {
     return <View />;
   } else {
-    // console.log('search',events)
-    // console.log("origin in nearby events", origin)
     return (
-      // <View style={[styles.container, {backgroundColor: modalVisible ? '#000000' : ''}}>
-      <KeyboardAvoidingView style={styles.container}>
+      <View style={styles.container}>
         <MapView
           style={{ flex: 1 }}
           ref={mapRef}
@@ -265,7 +260,7 @@ const NearbyEvents = () => {
         >
           <TouchableOpacity style={{marginBottom:20}}
             onPress={handleRefresh}>
-            
+
             <Icon name="refresh" size={30} />
           </TouchableOpacity>
 
@@ -375,7 +370,7 @@ const NearbyEvents = () => {
           // enabledGestureInteraction={true}
           enabledContentTapInteraction={false}
         />
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 };

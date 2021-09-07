@@ -12,6 +12,7 @@ import directMsgsReducer from './directMsgs';
 
 import singleEventReducer from './SingleEvent'
 import demoReducer from "./demo"
+import placesReducer from "./googlePlaces"
 
 
 
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   dmRoom: dmRoomReducer,
   directMsgs: directMsgsReducer,
   singleEvent: singleEventReducer,
-  demo: demoReducer
+  demo: demoReducer,
+  places: placesReducer
 });
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(rootReducer, middleware);

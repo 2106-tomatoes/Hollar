@@ -24,6 +24,7 @@
     "expo": "~42.0.1",
     "expo-location": "~12.1.2",
     "expo-status-bar": "~1.0.4",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",

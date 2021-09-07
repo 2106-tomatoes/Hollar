@@ -28,9 +28,9 @@ const DemoScreen = (props) => {
   //     navigation.navigate("Events")
   //   });
   // }, [])
-  
+
   // const getCurrentLocation = async () => {
-    
+
   //   let { status } = await Location.requestForegroundPermissionsAsync();
   //   if (status !== 'granted') {
   //     console.log('Permission to access location was denied');
@@ -42,15 +42,13 @@ const DemoScreen = (props) => {
   //   console.log('demo screen location',location)
   //   dispatch(setOrigin(location));
   // };
-  
-  
-  console.log(`demo in DemoScreen`, demo)
+
+
   return (
     <View>
       <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>For Demo Purposes, Pressing the Button Will Set You at Farragut Square Washington,DC to View All Pre-created Events</Text>
       <Button title="Set to Demo Location" onPress={() => {
         if (!demo) {
-
           dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }))
         }
         dispatch(setDemo(demo))

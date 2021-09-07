@@ -3,7 +3,6 @@ import {LOCALHOST8080} from "@env"
 
 const SET_USER = 'SET_USER'
 const CREATE_USER = 'CREATE_USER'
-console.log('local',LOCALHOST8080)
 
 
 const setUser = (user) => {
@@ -45,7 +44,6 @@ export const createUserThunk = (username, firstName, lastName, email, zipCode, c
       const numberZip = parseInt(zipCode, 10)
       const { data } = await axios.post(`${LOCALHOST8080}/api/users`, {username, firstName, lastName, email, zipCode: numberZip, city, state, password, phoneNumber})
       dispatch(createUser(data))
-      console.log("data", data)
       navigation.navigate("Drawer")
     } catch (error) {
       console.log(error)
