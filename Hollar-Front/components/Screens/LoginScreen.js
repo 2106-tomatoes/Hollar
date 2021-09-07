@@ -1,19 +1,22 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native"; //Button here
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
-import { setUserThunk } from '../../store/user';
-
+import { setUserThunk } from "../../store/user";
 // import { Button, Icon } from '@ui-kitten/components';
 
-const FacebookIcon = (props) => (
-  <Icon name='facebook' {...props} />
-);
+const FacebookIcon = (props) => <Icon name="facebook" {...props} />;
 
 const Login = (props) => {
   const history = props.history;
-  const navigation = useNavigation()
-
+  const navigation = useNavigation();
 
   const dispatch = useDispatch();
 
@@ -34,24 +37,39 @@ const Login = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text>Login</Text>
-      <Text>username:</Text>
-      <TextInput
-        style={styles.textInput}
-        autoCapitalize="none"
-        onChangeText={usernameHandler}
-        value={username}
-      />
-      <Text>password:</Text>
-      <TextInput
-        style={styles.textInput}
-        autoCapitalize="none"
-        onChangeText={passwordHandler}
-        value={password}
-        secureTextEntry={true}
-      />
-      <Button title="Login" onPress={handleSubmit} />
-      <Button title="Back" onPress={() => navigation.goBack()} />
+      <Text style={styles.headerText}>Login</Text>
+      <View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            autoCapitalize="none"
+            placeholder="Username"
+            onChangeText={usernameHandler}
+            value={username}
+          />
+        </View>
+        <TextInput
+          style={styles.textInput}
+          autoCapitalize="none"
+          placeholder="Password"
+          onChangeText={passwordHandler}
+          value={password}
+          secureTextEntry={true}
+        />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -64,12 +82,50 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: "#CCCCCC",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    height: 20,
-    fontSize: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    paddingLeft: 80,
+    paddingRight: 80,
+    paddingTop: 10,
+    paddingBottom: 10,
+    margin: 5,
+    textAlign: "center",
+  },
+
+  buttonContainer: {
+    // margin: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+  },
+  logo: {
+    height: 300,
+    width: 300,
+  },
+  button: {
+    alignItems: "center",
+    margin: 10,
+    padding: 10,
+    borderRadius: 3,
+    color: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    backgroundColor: "#669BBC",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 15,
+  },
+  headerText: {
+    fontSize: 45,
   },
 });
 
