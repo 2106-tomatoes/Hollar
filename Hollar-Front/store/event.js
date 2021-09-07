@@ -90,6 +90,7 @@ export const findEventsThunk = (origin, radius = 20, date) => {
         return combineLatLng.push(`${coords.lat},${coords.lng}`)
       })
       // console.log('combineLatLng final', combineLatLng.join('|'))
+      console.log('GOOGLE_MAPS_APIKEY:', GOOGLE_MAPS_APIKEY);
 
       const config = {
         method: 'get',
@@ -97,7 +98,7 @@ export const findEventsThunk = (origin, radius = 20, date) => {
         headers: { }
       };
       const { data } = await axios(config)
-      // console.log("data", data)
+      console.log("data", data)
 
       const availableEvents = []
 

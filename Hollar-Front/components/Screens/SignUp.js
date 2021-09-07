@@ -13,11 +13,7 @@ const SignUp = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [zipCode, setZipcode] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
 
   const usernameHandler = (usernameInput) => {
     setUsername(usernameInput);
@@ -31,20 +27,8 @@ const SignUp = (props) => {
   const emailHandler = (emailInput) => {
     setEmail(emailInput);
   };
-  const zipcodeHandler = (zipcodeInput) => {
-    setZipcode(zipcodeInput);
-  };
-  const cityHandler = (cityInput) => {
-    setCity(cityInput);
-  };
-  const stateHandler = (stateInput) => {
-    setState(stateInput);
-  };
   const passwordHandler = (passwordInput) => {
     setPassword(passwordInput);
-  };
-  const phoneNumberHandler = (phoneNumberInput) => {
-    setPhoneNumber(phoneNumberInput);
   };
 
   const handleSubmit = (evt) => {
@@ -55,11 +39,7 @@ const SignUp = (props) => {
         firstName,
         lastName,
         email,
-        zipCode,
-        city,
-        state,
         password,
-        phoneNumber,
         navigation
       )
     );
@@ -96,27 +76,6 @@ const SignUp = (props) => {
         onChangeText={emailHandler}
         value={email}
       />
-      <Text>Zipcode:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={zipcodeHandler}
-        value={zipCode}
-      />
-      <Text>City:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={cityHandler}
-        value={city}
-      />
-      <Text>State:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={stateHandler}
-        value={state}
-      />
       <Text>password:</Text>
       <TextInput
         autoCapitalize="none"
@@ -124,13 +83,7 @@ const SignUp = (props) => {
         onChangeText={passwordHandler}
         value={password}
       />
-      <Text>Phone Number:</Text>
-      <TextInput
-        autoCapitalize="none"
-        style={styles.textInput}
-        onChangeText={phoneNumberHandler}
-        value={phoneNumber}
-      />
+      
       <Button title="Sign Up" onPress={handleSubmit} />
       <Button title="Back" onPress={() => navigation.goBack()} />
     </View>

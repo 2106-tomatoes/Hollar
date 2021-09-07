@@ -145,7 +145,7 @@ const Chatroom = (props) => {
         }}
         inverted={false}
         renderUsernameOnMessage={true}
-        showUserAvatar={true}
+        // showUserAvatar={true}
         keyboardShouldPersistTaps={"never"}
         onLongPress={(context, msg) => setUpModalThenDisplay(context, msg)}
       />
