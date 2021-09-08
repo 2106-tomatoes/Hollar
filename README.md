@@ -1,5 +1,12 @@
 # Hollar
+//Logo here
+## Events on your terms
+Why should you be locked into the first intention you had for an event? Hollar lets your plans to be as flexible as you are.
+Hollar helps you create and coordinating events by allowing you to immediatly chat with organizers and other attendees
 
+Search for events in your area, and chat with the group to find out more details or suggest changes. Make your own events and chat with friends.
+
+//Review below
 # create a .env file at the root with the details of:
 
 make sure your .env file contains the following:
@@ -24,3 +31,6 @@ Step-by-Step:
 3. socketio emits "chatMessage" with the response.data from the axios.post
 4. socket receives chatMessage and then broadcasts the message to all other clients using getMessage
 5. getMessage dispatches message when event occurs into store/chatroom and saves the message in redux-state
+
+
+//credits here
