@@ -13,7 +13,8 @@ import {
   Pressable,
   KeyboardAvoidingView,
   FlatList,
-  Platform
+  Platform,
+  Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createEventThunk } from "../../store/event";
@@ -24,6 +25,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import debounce from "lodash.debounce"
 import {getPlacesThunk, clearPlaces} from '../../store/googlePlaces'
 import * as Location from 'expo-location';
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Fumi } from "react-native-textinput-effects";
 
 
 const CreateEvent = (props) => {
@@ -125,31 +128,50 @@ const CreateEvent = (props) => {
         <Text style={styles.header}>Create Event</Text>
         <View style={{ flex: 20 }}>
           <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Name:</Text>
-            <TextInput
+            <Fumi
+                    label={"Event Name"}
+                    iconClass={FontAwesomeIcon}
+                    iconName={"bullhorn"}
+                    iconColor={"#f95a25"}
+                    iconSize={20}
+                    iconWidth={40}
+                    inputPadding={16}
               autoCapitalize="none"
-              placeholder="Name of Event"
               style={styles.textInput}
               onChangeText={nameHandler}
               value={name}
             />
           </View>
           <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Max Attendees Count:</Text>
-            <TextInput
-              placeholder="Enter Max Attendees"
+
+            <Fumi
+                    label={"Max Attendees Count"}
+                    iconClass={FontAwesomeIcon}
+                    iconName={"users"}
+                    iconColor={"#f95a25"}
+                    iconSize={20}
+                    iconWidth={40}
+                    inputPadding={16}
+       
               autoCapitalize="none"
-              placeholder="Maximum Attendees"
+
               style={styles.textInput}
               onChangeText={maxAttendeesHandler}
               value={maxAttendees}
             />
           </View>
           <View style={places.length !== 0 ? {flex: 2.5, bottom: 10} : styles.inputView}>
-              <Text style={styles.inputHeader}>Location:</Text>
-              <TextInput
+   
+              <Fumi
+                      label={"Location"}
+                      iconClass={FontAwesomeIcon}
+                      iconName={"compass"}
+                      iconColor={"#f95a25"}
+                      iconSize={20}
+                      iconWidth={40}
+                      inputPadding={16}
                 autoCapitalize="none"
-                placeholder="Enter Location"
+
                 style={styles.textInput}
                 onChangeText={locationHandler}
                 value={location}
@@ -171,7 +193,7 @@ const CreateEvent = (props) => {
                       setlatitude(location[0].latitude)
                       setlongitude(location[0].longitude)
                       }}>
-                      <Text >{item.description}</Text>
+                      <Text style={{textAlign:'center'}} >{item.description}</Text>
                     </TouchableOpacity>
                   )
                 }}
@@ -215,10 +237,16 @@ const CreateEvent = (props) => {
             />
           </View> */}
           <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Description:</Text>
-            <TextInput
+
+            <Fumi
+                    label={"Event Description"}
+                    iconClass={FontAwesomeIcon}
+                    iconName={"address-card"}
+                    iconColor={"#f95a25"}
+                    iconSize={20}
+                    iconWidth={40}
+                    inputPadding={16}
               autoCapitalize="none"
-              placeholder="Enter Description"
               style={styles.textInput}
               onChangeText={descriptionHandler}
               value={description}
@@ -226,9 +254,16 @@ const CreateEvent = (props) => {
           </View>
 
           <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Attendance Date:</Text>
+     
             <View style={styles.attendanceContainer}>
-              <TextInput
+              <Fumi
+                      label={"Date"}
+                      iconClass={FontAwesomeIcon}
+                      iconName={"calendar"}
+                      iconColor={"#f95a25"}
+                      iconSize={20}
+                      iconWidth={40}
+                      inputPadding={16}
                 placeholder={`${attendanceDate}`}
                 editable={false}
                 autoCapitalize="none"
@@ -255,13 +290,21 @@ const CreateEvent = (props) => {
             onCancel={hideDatePicker}
           />
           <View style={styles.inputView}>
-            <Text style={styles.inputHeader}>Time:</Text>
+
             <View style={styles.attendanceContainer}>
-              <TextInput
+              <Fumi
+                      label={"Time"}
+                      iconClass={FontAwesomeIcon}
+                      iconName={"history"}
+                      iconColor={"#f95a25"}
+                      iconSize={20}
+                      iconWidth={40}
+                      inputPadding={16}
                 placeholder={`${time.toLocaleTimeString()}`}
                 editable={false}
                 autoCapitalize="none"
                 style={styles.attendanceTextInput}
+                value={time.toLocaleTimeString()}
               />
               <TouchableOpacity
                 style={styles.calenderButton}
@@ -313,7 +356,7 @@ const CreateEvent = (props) => {
 };
 
 export default CreateEvent;
-
+const width = Dimensions.get("window").width-25;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -326,6 +369,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     flex: 1,
+    marginBottom:15
   },
   inputHeader: {
     fontSize: 18,
@@ -333,18 +377,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textInput: {
-    flex: 1,
-    backgroundColor: "#DDDDDE",
-    borderRadius: 9999,
-    height: 33,
-    width: 300,
-    bottom: 15,
-    margin: 12,
-    paddingHorizontal: 20,
+    borderColor: "#CCCCCC",
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    margin: 5,
+    width:width
+
   },
   inputView: {
     flex: 1,
     bottom: 10,
+    alignItems:'center'
   },
   textInputContainer: {
     paddingHorizontal: 20,
@@ -395,19 +440,23 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
+    position:'absolute',
+    left:1
+ 
   },
   attendanceTextInput: {
-    backgroundColor: "#DDDDDE",
-    borderRadius: 9999,
-    height: 37,
-    width: 300,
-    margin: 12,
-    bottom: 15,
-    paddingHorizontal: 20,
+    borderColor: "#CCCCCC",
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    margin: 5,
+    width:width,
+    
   },
   calenderButton: {
     right: 40,
-    top: 5,
+    top: 25,
   },
   timechanger: {
     bottom: 10,

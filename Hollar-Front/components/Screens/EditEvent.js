@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,8 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
+  FlatList,
+  Dimensions
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { editEventThunk } from "../../store/SingleEvent";
@@ -18,6 +20,11 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import CalendarPicker from "react-native-calendar-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Fumi } from "react-native-textinput-effects";
+import debounce from "lodash.debounce";
+import { getPlacesThunk, clearPlaces } from "../../store/googlePlaces";
+import * as Location from "expo-location";
 
 const EditEvent = (props) => {
   const dispatch = useDispatch();
@@ -26,6 +33,10 @@ const EditEvent = (props) => {
   const singleEvent = props.route.params.singleEvent;
   const ref = useRef();
   const currentDate = new Date();
+  const debouncedLocation = useCallback(
+    debounce((location) => dispatch(getPlacesThunk(location)), 1000),
+    []
+  );
 
   const [name, setName] = useState("");
   const [maxAttendees, setmaxAttendees] = useState("");
@@ -38,6 +49,7 @@ const EditEvent = (props) => {
   const [calModalVisible, setCalModalVisible] = useState(false);
   const [time, setTime] = useState(currentDate);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const places = useSelector((state) => state.places);
 
   useEffect(() => {
     setName(singleEvent.name);
@@ -47,7 +59,7 @@ const EditEvent = (props) => {
     setlongitude(singleEvent.longitude);
     setDescription(singleEvent.description);
     setAttendanceDate(singleEvent.attendanceDate);
-    ref.current.setAddressText(singleEvent.location);
+    // ref.current.setAddressText(singleEvent.location);
   }, []);
 
   const nameHandler = (nameInput) => {
@@ -58,6 +70,7 @@ const EditEvent = (props) => {
   };
   const locationHandler = (locationInput) => {
     setlocation(locationInput);
+    debouncedLocation(locationInput);
   };
   const descriptionHandler = (descriptionInput) => {
     setDescription(descriptionInput);
@@ -119,66 +132,92 @@ const EditEvent = (props) => {
       <Text style={styles.header}>Edit Event</Text>
       <View style={{ flex: 20 }}>
         <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Name:</Text>
-          <TextInput
+          <Fumi
+            label={"Event Name"}
+            iconClass={FontAwesomeIcon}
+            iconName={"bullhorn"}
+            iconColor={"#f95a25"}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
             autoCapitalize="none"
-            placeholder="Name of Event"
             style={styles.textInput}
             onChangeText={nameHandler}
             value={name}
           />
         </View>
         <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Max Attendees Count:</Text>
-          <TextInput
-            placeholder="Enter Max Attendees"
+
+          <Fumi
+            label={"Max Attendees Count"}
+            iconClass={FontAwesomeIcon}
+            iconName={"users"}
+            iconColor={"#f95a25"}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
             autoCapitalize="none"
-            placeholder="Maximum Attendees"
             style={styles.textInput}
             onChangeText={maxAttendeesHandler}
             value={maxAttendees}
           />
         </View>
-        {/* <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Location:</Text>
-          <TextInput
+        <View
+          style={
+            places.length !== 0 ? { flex: 2.5, bottom: 10 } : styles.inputView
+          }
+        >
+          <Fumi
+            label={"Location"}
+            iconClass={FontAwesomeIcon}
+            iconName={"compass"}
+            iconColor={"#f95a25"}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
             autoCapitalize="none"
             style={styles.textInput}
             onChangeText={locationHandler}
             value={location}
           />
-        </View> */}
-        <View style={styles.inputView}>
-          <Text>Location:</Text>
-          <GooglePlacesAutocomplete
-            ref={ref}
-            placeholder="Enter Location"
-            styles={styles.textInput}
-            nearbyPlacesAPI="GooglePlacesSearch"
-            debounce={500}
-            enablePoweredByContainer={false}
-            fetchDetails={true}
-            minLength={2}
-            returnKeyType={"search"}
-            query={{
-              key: GOOGLE_MAPS_APIKEY,
-              language: "en",
-            }}
-            onPress={(data, details = null) => {
-              console.log(
-                "details.geometry.location",
-                details.geometry.location
-              );
-              setlatitude(details.geometry.location.lat);
-              setlongitude(details.geometry.location.lng);
-              console.log("data.description", data.description);
-              setlocation(data.description);
-            }}
-          />
+          {places.length !== 0 && (
+            <FlatList
+              data={places}
+              keyExtractor={(item) => item.place_id}
+              ItemSeparatorComponent={() => {
+                return (
+                  <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />
+                );
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={async () => {
+                      setlocation(item.description);
+                      dispatch(clearPlaces());
+                      const location = await Location.geocodeAsync(
+                        item.description
+                      );
+                      setlatitude(location[0].latitude);
+                      setlongitude(location[0].longitude);
+                    }}
+                  >
+                    <Text>{item.description}</Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          )}
         </View>
         <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Description:</Text>
-          <TextInput
+          <Fumi
+                label={"Event Description"}
+                iconClass={FontAwesomeIcon}
+                iconName={"address-card"}
+                iconColor={"#f95a25"}
+                iconSize={20}
+                iconWidth={40}
+                inputPadding={16}
             autoCapitalize="none"
             placeholder="Enter Description"
             style={styles.textInput}
@@ -196,9 +235,15 @@ const EditEvent = (props) => {
           />
         </View> */}
         <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Attendance Date:</Text>
           <View style={styles.attendanceContainer}>
-            <TextInput
+            <Fumi
+          label={"Date"}
+          iconClass={FontAwesomeIcon}
+          iconName={"calendar"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
               placeholder={`${attendanceDate}`}
               editable={false}
               autoCapitalize="none"
@@ -230,9 +275,15 @@ const EditEvent = (props) => {
             </View> */}
         </View>
         <View style={styles.inputView}>
-          <Text style={styles.inputHeader}>Time:</Text>
           <View style={styles.attendanceContainer}>
-            <TextInput
+            <Fumi
+            label={"Time"}
+            iconClass={FontAwesomeIcon}
+            iconName={"history"}
+            iconColor={"#f95a25"}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
               placeholder={`${time.toLocaleTimeString()}`}
               editable={false}
               autoCapitalize="none"
@@ -251,11 +302,11 @@ const EditEvent = (props) => {
           </View>
         </View>
         <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="time"
-            onConfirm={onChange}
-            onCancel={hideDatePicker}
-          />
+          isVisible={isDatePickerVisible}
+          mode="time"
+          onConfirm={onChange}
+          onCancel={hideDatePicker}
+        />
       </View>
       <View style={{ marginTop: 15 }}>
         <Button title="Edit Event" onPress={() => setModalVisible(true)} />
@@ -309,7 +360,6 @@ const EditEvent = (props) => {
             setCalModalVisible(!calModalVisible);
           }}
         >
-          
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <CalendarPicker onDateChange={DateChange} />
@@ -334,6 +384,7 @@ const EditEvent = (props) => {
 };
 
 export default EditEvent;
+const width = Dimensions.get("window").width-25;
 
 const styles = StyleSheet.create({
   container: {
@@ -354,13 +405,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textInput: {
-    flex: 1,
-    backgroundColor: "#DDDDDE",
-    borderRadius: 9999,
-    height: 37,
-    width: 300,
-    margin: 12,
-    paddingHorizontal: 20,
+    borderColor: "#CCCCCC",
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    margin: 5,
+    width:width
   },
   inputView: {
     flex: 1,
@@ -414,14 +465,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
+    position:'absolute',
+    left:1
   },
   attendanceTextInput: {
-    backgroundColor: "#DDDDDE",
-    borderRadius: 9999,
-    height: 37,
-    width: 300,
-    margin: 12,
-    paddingHorizontal: 20,
+    borderColor: "#CCCCCC",
+    borderWidth: 2,
+    borderRadius: 3,
+    height: 40,
+    fontSize: 15,
+    margin: 5,
+    width:width,
   },
   calenderButton: {
     right: 40,

@@ -7,9 +7,12 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Dimensions
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { createUserThunk } from "../../store/user";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Fumi } from "react-native-textinput-effects";
 
 const SignUp = (props) => {
   const dispatch = useDispatch();
@@ -76,37 +79,67 @@ const SignUp = (props) => {
     <View style={styles.container}>
       <Text style={styles.headerText}>Sign Up</Text>
       <View>
-        <TextInput
+        <Fumi
+          label={"Username"}
+          iconClass={FontAwesomeIcon}
+          iconName={"users"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           autoCapitalize="none"
-          placeholder="Username"
           style={styles.textInput}
           onChangeText={usernameHandler}
           value={username}
         />
-        <TextInput
-          placeholder="First Name"
+        <Fumi
+          label={"First Name"}
+          iconClass={FontAwesomeIcon}
+          iconName={"user"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           autoCapitalize="none"
           style={styles.textInput}
           onChangeText={firstNameHandler}
           value={firstName}
         />
-        <TextInput
-          placeholder="Last Name"
+        <Fumi
+          label={"Last Name"}
+          iconClass={FontAwesomeIcon}
+          iconName={"user"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           autoCapitalize="none"
           style={styles.textInput}
           onChangeText={lastNameHandler}
           value={lastName}
         />
-        <TextInput
-          placeholder="Email"
+        <Fumi
+          label={"Email"}
+          iconClass={FontAwesomeIcon}
+          iconName={"envelope"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           autoCapitalize="none"
           style={styles.textInput}
           onChangeText={emailHandler}
           value={email}
         />
 
-        <TextInput
-          placeholder="Password"
+        <Fumi
+          label={"Password"}
+          iconClass={FontAwesomeIcon}
+          iconName={"unlock"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           autoCapitalize="none"
           style={styles.textInput}
           onChangeText={passwordHandler}
@@ -132,7 +165,7 @@ const SignUp = (props) => {
 };
 
 export default SignUp;
-
+const width = Dimensions.get("window").width-25;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -146,12 +179,9 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     height: 40,
     fontSize: 15,
-    paddingLeft: 80,
-    paddingRight: 80,
-    paddingTop: 10,
-    paddingBottom: 10,
     margin: 5,
-    textAlign: "center",
+    width:width
+
   },
 
   buttonContainer: {
