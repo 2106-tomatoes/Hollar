@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Op } = require("sequelize");
-const axios = require("axios")
+const axios = require("axios");
 
 const {
   models: { User, Event, Attendees },
