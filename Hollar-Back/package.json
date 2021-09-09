@@ -3,10 +3,6 @@
   "version": "2.0.0",
   "description": "Some boilerplate code",
   "main": "index.js",
-  "engines": {
-    "npm": "7.x",
-    "node": "12.x"
-  },
   "scripts": {
     "seed": "node script/seed.js",
     "start": "node server",
@@ -19,6 +15,7 @@
   "author": "Fullstack Academy of Code",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.0",
     "compression": "^1.7.3",
     "dotenv": "^10.0.0",
@@ -35,7 +32,6 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
     "@babel/register": "^7.12.10",
-    "axios": "^0.21.4",
     "axios-mock-adapter": "^1.16.0",
     "babel-loader": "^8.2.2",
     "chai": "^4.2.0",
