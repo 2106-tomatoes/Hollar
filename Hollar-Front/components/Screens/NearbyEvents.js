@@ -14,6 +14,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Keyboard,
+  RefreshControl
 } from "react-native";
 import * as Location from "expo-location";
 import { setOrigin } from "../../store/origin";
@@ -53,6 +54,8 @@ const NearbyEvents = () => {
   let displayEvents = [];
   const navigation = useNavigation();
   const mapRef = useRef();
+  const fixedheight = Dimensions.get("window").height*.15;
+  console.log(`fixedheight`, fixedheight)
 
   const searchHandler = (searchInput) => {
     setSearch(searchInput);
@@ -60,14 +63,16 @@ const NearbyEvents = () => {
 
   useEffect(() => {
     navigation.addListener("focus", () => {
+      console.log('thisis the origin',origin)
       if (origin) {
+        console.log('finding the events!')
         dispatch(findEventsThunk(origin, selectedValue, newdate));
         mapRef.current.animateCamera({
           center: { latitude: origin.latitude, longitude: origin.longitude },
         });
       }
     });
-  }, [events.length]);
+  }, [events,origin]);
 
   useEffect(() => {
     if (search === "") return;
@@ -76,7 +81,7 @@ const NearbyEvents = () => {
       return event.name.includes(search) || event.description.includes(search);
     });
     setsearchEvents(searchEvents);
-  }, [search]);
+  }, [search,events]);
 
   // useEffect(() => {
   //   mapRef.current.animateCamera({center: {latitude: origin.latitude, longitude: origin.longitude}})
@@ -127,8 +132,13 @@ const NearbyEvents = () => {
         ItemSeparatorComponent={() => {
           return <View style={{ height: 1, backgroundColor: "#DDDDDF" }} />;
         }}
+        refreshControl={
+          <RefreshControl
+
         refreshing={refreshing}
-        onRefresh={handleRefresh}
+        onRefresh={()=>handleRefresh()}
+        />
+        }
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -363,7 +373,7 @@ const NearbyEvents = () => {
 
         <BottomSheet
           ref={sheetRef}
-          snapPoints={[40, 300, 200, 100, 450]}
+          snapPoints={[fixedheight, 300, 200, 100, 450]}
           borderRadius={10}
           renderContent={renderContent}
           style={{ position: "absolute", zIndex: 3, elevation: 3 }}
