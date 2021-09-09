@@ -363,7 +363,7 @@ const NearbyEvents = () => {
 
         <BottomSheet
           ref={sheetRef}
-          snapPoints={[450, 300, 200, 100, 40]}
+          snapPoints={[40, 300, 200, 100, 450]}
           borderRadius={10}
           renderContent={renderContent}
           style={{ position: "absolute", zIndex: 3, elevation: 3 }}

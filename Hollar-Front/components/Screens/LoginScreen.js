@@ -7,9 +7,12 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Dimensions
 } from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
 import { setUserThunk } from "../../store/user";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Fumi } from "react-native-textinput-effects";
 // import { Button, Icon } from '@ui-kitten/components';
 
 const FacebookIcon = (props) => <Icon name="facebook" {...props} />;
@@ -40,18 +43,31 @@ const Login = (props) => {
       <Text style={styles.headerText}>Login</Text>
       <View>
         <View style={styles.inputContainer}>
-          <TextInput
+          <Fumi
+            label={"Username"}
+            iconClass={FontAwesomeIcon}
+            iconName={"user"}
+            iconColor={"#f95a25"}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
             style={styles.textInput}
             autoCapitalize="none"
-            placeholder="Username"
             onChangeText={usernameHandler}
             value={username}
           />
         </View>
-        <TextInput
+        <Fumi
+          label={"Password"}
+          iconClass={FontAwesomeIcon}
+          iconName={"unlock"}
+          iconColor={"#f95a25"}
+          iconSize={20}
+          iconWidth={40}
+          inputPadding={16}
           style={styles.textInput}
           autoCapitalize="none"
-          placeholder="Password"
+          // placeholder="Password"
           onChangeText={passwordHandler}
           value={password}
           secureTextEntry={true}
@@ -73,6 +89,8 @@ const Login = (props) => {
     </View>
   );
 };
+
+const width = Dimensions.get("window").width-25;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -86,12 +104,11 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     height: 40,
     fontSize: 15,
-    paddingLeft: 80,
-    paddingRight: 80,
-    paddingTop: 10,
-    paddingBottom: 10,
+
     margin: 5,
-    textAlign: "center",
+  
+    width:width
+    
   },
 
   buttonContainer: {

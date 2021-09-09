@@ -102,9 +102,21 @@ async function seed() {
       hostId: 1,
     }),
     Event.create({ // 0.74 mi
-      name: "Coffee and chat",
+      name: "skateboard Event at Dupont Circle",
+      location: "Dupont Circle Washington, DC",
+      maxAttendees: 4,
+      description: "Skating in the circle",
+      eventObjectType: "event",
+      latitude: 38.9097, 
+      longitude: -77.0433,
+      attendanceDate: "2021-09-24",
+      hostId: 6
+    }),
+
+    Event.create({ // 0.74 mi
+      name: "Coffee and Chat",
       location: "1301 Connecticut Ave NW, Washington, DC 20036",
-      maxAttendees: 3,
+      maxAttendees: 10,
       description: "coffee n chat",
       eventObjectType: "event",
       latitude: 38.90780705175437, 
@@ -139,7 +151,7 @@ async function seed() {
 
     // <= 10 mi
     Event.create({ // 8.95 mi
-      name: "meetup",
+      name: "skateboard meetup",
       location: "Walker Mill, MD",
       maxAttendees: 10,
       description: "today's meetup",
@@ -174,10 +186,10 @@ async function seed() {
       hostId: 4
     }),
     Event.create({ // 20.00 mi
-      name: "weekend trip",
+      name: "skateboard here!!!!",
       location: "8566-8580 Foundry St, Savage, MD 20763",
       maxAttendees: 4,
-      description: "meet here for trip",
+      description: "meet here for skateboarding!",
       eventObjectType: "event",
       latitude: 39.135795049098654,  
       longitude: -76.82484451733113,
@@ -187,10 +199,10 @@ async function seed() {
     
     // <= 25 mi
     Event.create({ // 23.25 mi
-      name: "meet and board games",
+      name: "cool skateboards and boardgames!",
       maxAttendees: 5,
       location: "Town Center, Columbia, MD 21044",
-      description: "board games",
+      description: "board games while skateboards",
       eventObjectType: "event",
       latitude: 39.212987732696554, 
       longitude: -76.88546244111267,
@@ -233,19 +245,7 @@ async function seed() {
       hostId: 2
     }),
 
-    // > 50 mi
-    Event.create({ // 62.78 mi
-      name: "chick fil a",
-      maxAttendees: 4,
-      location: "1001 Beards Hill Rd, Aberdeen, MD 21001",
-      description: "hungry?",
-      eventObjectType: "event",
-      latitude: 39.52254515164078,
-      longitude: -76.18520087304923,
-      attendanceDate: "2021-09-24",
-      hostId: 6
-    }),
-    
+
 
     // // New York events
     // Event.create({

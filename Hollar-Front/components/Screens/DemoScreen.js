@@ -49,7 +49,7 @@ const DemoScreen = (props) => {
       <Text style={{textAlign:'center', marginBottom:10, marginTop:10}}>For Demo Purposes, Pressing the Button Will Set You at Farragut Square Washington,DC to View All Pre-created Events</Text>
       <Button title="Set to Demo Location" onPress={() => {
         if (!demo) {
-          dispatch(setOrigin({ latitude: 38.8977, longitude: -77.0365 }))
+          dispatch(setOrigin({ latitude: 38.900479, longitude: -77.041112 }))
         }
         dispatch(setDemo(demo))
         // else {
