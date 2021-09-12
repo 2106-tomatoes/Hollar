@@ -20,11 +20,7 @@ const SignUp = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [zipCode, setZipcode] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
 
   const usernameHandler = (usernameInput) => {
     setUsername(usernameInput);
@@ -38,20 +34,8 @@ const SignUp = (props) => {
   const emailHandler = (emailInput) => {
     setEmail(emailInput);
   };
-  const zipcodeHandler = (zipcodeInput) => {
-    setZipcode(zipcodeInput);
-  };
-  const cityHandler = (cityInput) => {
-    setCity(cityInput);
-  };
-  const stateHandler = (stateInput) => {
-    setState(stateInput);
-  };
   const passwordHandler = (passwordInput) => {
     setPassword(passwordInput);
-  };
-  const phoneNumberHandler = (phoneNumberInput) => {
-    setPhoneNumber(phoneNumberInput);
   };
 
   const handleSubmit = (evt) => {
@@ -62,11 +46,7 @@ const SignUp = (props) => {
         firstName,
         lastName,
         email,
-        zipCode,
-        city,
-        state,
         password,
-        phoneNumber,
         navigation
       )
     );

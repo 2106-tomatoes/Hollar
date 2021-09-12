@@ -10,18 +10,18 @@ import {
 } from "react-native"; //Button here
 import { connect, useDispatch } from "react-redux";
 import { setUserThunk } from "../../store/user";
-// import { Button, Icon } from '@ui-kitten/components';
 
-const FacebookIcon = (props) => <Icon name="facebook" {...props} />;
 
 const Login = (props) => {
   const history = props.history;
   const navigation = useNavigation();
+  const { setUser } = props;
 
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
 
   const usernameHandler = (usernameInput) => {
     setUsername(usernameInput);
@@ -30,14 +30,17 @@ const Login = (props) => {
     setPassword(passwordInput);
   };
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
-    dispatch(setUserThunk(username, password, navigation));
+    // dispatch(setUserThunk(username, password, navigation));
+    const response = await setUser(username, password, navigation);
+    setErrMsg(response);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Login</Text>
+      <Text style={{color: 'red'}}>{errMsg}</Text>
       <View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -129,4 +132,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (username, password, navigation) => dispatch(setUserThunk(username, password, navigation))
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Login);

@@ -20,7 +20,7 @@ import { createDmEventThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 
 const Chatroom = (props) => {
   // console.log("props in chatroom", props)
@@ -100,6 +100,20 @@ const Chatroom = (props) => {
     setModalVisible(true);
   }
 
+  // Styling chat bubble
+  const renderBubble = (props) => (
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        left: { },
+        right: {
+          backgroundColor: '#29335c'
+        },
+      }}
+    />
+  );
+
+
   return (
     <View style={styles.container}>
       <Modal
@@ -148,6 +162,7 @@ const Chatroom = (props) => {
         // showUserAvatar={true}
         keyboardShouldPersistTaps={"never"}
         onLongPress={(context, msg) => setUpModalThenDisplay(context, msg)}
+        renderBubble={renderBubble}
       />
     </View>
   );
@@ -216,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#29335c",
   },
   textStyle: {
     color: "white",

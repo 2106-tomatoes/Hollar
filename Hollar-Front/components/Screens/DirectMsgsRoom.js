@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import { getDmChatThunk, sendDmChatThunk } from "../../store/directMsgsRoom";
 import socketio from "../../socket";
 import { useNavigation } from "@react-navigation/native";
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 
 const DirectMsgsRoom = (props) => {
@@ -52,6 +52,19 @@ const DirectMsgsRoom = (props) => {
     setInput("");
   }
 
+  // Styling chat bubble
+  const renderBubble = (props) => (
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        left: { },
+        right: {
+          backgroundColor: '#29335c'
+        },
+      }}
+    />
+  );
+
 
   return (
     <View
@@ -70,6 +83,7 @@ const DirectMsgsRoom = (props) => {
         renderUsernameOnMessage={true}
         // showUserAvatar={true}
         keyboardShouldPersistTaps={'never'}
+        renderBubble={renderBubble}
       />
     </View>
   );

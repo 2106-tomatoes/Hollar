@@ -26,8 +26,9 @@ export const setUserThunk = (username, password, navigation) => {
         username,
         password
       }})
-      if (data === null) {
-        navigation.navigate("Login")
+      if (typeof data === 'string') {
+        // navigation.navigate("Login")
+        return data;
       } else {
         dispatch(setUser(data))
         navigation.navigate("Drawer")
@@ -38,11 +39,11 @@ export const setUserThunk = (username, password, navigation) => {
   }
 }
 
-export const createUserThunk = (username, firstName, lastName, email, zipCode, city, state, password, phoneNumber, navigation) => {
+export const createUserThunk = (username, firstName, lastName, email, password, navigation) => {
   return async (dispatch) => {
     try {
-      const numberZip = parseInt(zipCode, 10)
-      const { data } = await axios.post(`${LOCALHOST8080}/api/users`, {username, firstName, lastName, email, zipCode: numberZip, city, state, password, phoneNumber})
+      // const numberZip = parseInt(zipCode, 10)
+      const { data } = await axios.post(`${LOCALHOST8080}/api/users`, {username, firstName, lastName, email, password})
       dispatch(createUser(data))
       navigation.navigate("Drawer")
     } catch (error) {

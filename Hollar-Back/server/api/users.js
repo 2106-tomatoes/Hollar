@@ -24,13 +24,36 @@ router.get("/", async (req, res, next) => {
 
 router.get("/login", async (req, res, next) => {
   try {
+    // const user = await User.findOne({
+    //   where: {
+    //     username: req.headers.username,
+    //     password: req.headers.password,
+    //   },
+    // });
     const user = await User.findOne({
       where: {
         username: req.headers.username,
-        password: req.headers.password,
       },
     });
-    res.json(user);
+
+    const sameUser = await User.findOne({
+      where: {
+        password: req.headers.password
+      }
+    });
+
+    if(!user && !sameUser) {
+      res.send('Incorrect username and password');
+    } else if(!sameUser) {
+      res.send('Incorrect password');
+    } else if(!user) {
+      res.send('Incorrect username')
+    } else {
+      res.send(user);
+    }
+
+    
+    // res.json(user);
   } catch (err) {
     next(err);
 

@@ -50,6 +50,7 @@ const CreateEvent = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [time, setTime] = useState(currentDate);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [errMsg, setErrMsg] = useState(""); 
 
   const nameHandler = (nameInput) => {
     setName(nameInput);
@@ -97,6 +98,11 @@ const CreateEvent = (props) => {
   const handleSubmit = (evt) => {
     evt.preventDefault();
 
+    if(latitude === "" || longitude === "") {
+      setErrMsg("Please put in a valid address");
+      return;
+    } 
+
     dispatch(
       createEventThunk(
         name,
@@ -111,6 +117,7 @@ const CreateEvent = (props) => {
         navigation
       )
     );
+
     setName("");
     setmaxAttendees("");
     setlocation("");
@@ -118,11 +125,24 @@ const CreateEvent = (props) => {
     setlongitude("");
     setDescription("");
     setAttendanceDate(`${newCurrentdDate}`);
+    setErrMsg("");
   };
+
+  const submitLocation = async (item) => {
+    setlocation(item.description)
+    dispatch(clearPlaces())
+
+    const location = await Location.geocodeAsync(item.description);
+    setlatitude(location[0].latitude);
+    setlongitude(location[0].longitude);
+  }
+
+
   return (
 
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         <Text style={styles.header}>Create Event</Text>
+        <Text style={{color: 'red'}}>{errMsg}</Text>
         <View style={{ flex: 20 }}>
           <View style={styles.inputView}>
             <Text style={styles.inputHeader}>Name:</Text>
@@ -164,13 +184,7 @@ const CreateEvent = (props) => {
                 }}
                 renderItem={({item}) => {
                   return (
-                    <TouchableOpacity onPress={async () => {
-                      setlocation(item.description)
-                      dispatch(clearPlaces())
-                      const location = await Location.geocodeAsync(item.description)
-                      setlatitude(location[0].latitude)
-                      setlongitude(location[0].longitude)
-                      }}>
+                    <TouchableOpacity onPress={() => submitLocation(item)}>
                       <Text >{item.description}</Text>
                     </TouchableOpacity>
                   )
