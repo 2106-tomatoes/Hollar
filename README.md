@@ -15,7 +15,7 @@ React Native
 - Used both standard native components and community driven components. For the community driven components, most notably they are:
   - React Navigation: for a drawer based navigation where a menu would appear on the side of your screen with choices to select and upon selecting, navigates you to the selected screen.
   - React-Native-Google-Places-Autocomplete: as you type an address, suggestions would show up from a dropdown list.
-  - React-Native-Maps: rendering a map based on Google Maps.
+  - React-Native-Maps: rendering an interactive map based on Google Maps.
   - React-Native-Reanimated-Bottom-Sheet: the slide up menu to view events happening around you.
   - React-Native-Gifted-Chat: the UI for direct messaging and group messaging.
 
