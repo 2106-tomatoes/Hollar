@@ -11,4 +11,6 @@ Search for events in your area, and chat with the group to find out more details
 Hollar is a mobile app primarily based on React Native and Expo, followed by Google Maps Platform API, Socket.io and Express JS. With React Native and Expo, together they allowed us to build a frontend that's flexible with iOS and Android. Then to build out our core features we used Google Maps Platform APIs and Socket.io. Finally supporting all of this we have Express JS as our backend with a PostgreSQL database. Here's a more detailed overview:
 
 React Native
-- Frontend components and functionality 
+- Frontend components and functionality
+- We used both standard native components and community driven components. For the community driven components, most notably they are:
+  - React Navigation
