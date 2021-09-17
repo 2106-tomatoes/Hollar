@@ -33,4 +33,4 @@ Socket.io
 
 Backend (Express JS, Sequelize, PostgreSQL)
 - Express JS as our HTTP server and routing to handle frontend requests.
-- Sequelize used with Express JS's routing to query the PostgreSQL database and respond to the frontend's request.
+- Sequelize used with Express JS's routing to query and write to the PostgreSQL database and respond to the frontend's request.
