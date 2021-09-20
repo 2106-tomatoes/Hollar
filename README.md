@@ -24,8 +24,8 @@ Expo
 - Grants the app permission to use key functions of the phone itself like geolocation.
 
 Google Maps Platform API
-- Enables our core feature which allows events to be found based on a set distance of your choosing from your current location.
-- Enables address information to be available when user is searching for or typing out an address.
+- Distance Matrix API: enables our core feature which allows events to be found based on a set distance of your choosing from your current location.
+- Places API: enables address information to be available when user is searching for or typing out an address.
 
 Socket.io
 - Enables group messaging (a chatroom for that event) for users that are possibly interested in the selected event. 
